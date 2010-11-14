@@ -1,0 +1,21 @@
+
+Plan
+====
+
+1. T (Σ A B) ≅ Σ (T A) (□T B) given def. of □T
+
+2. □ for containers = □ for functors
+
+3. Check details of init => elim (e.g. two commuting triangles)
+
+4. Spell out elim => init (need dmap ≅ map)
+
+5. Check that ⟦elim_T⟧_Fam ≅ Elim for simple ind.-ind.
+
+6. Generalise □ and dmap for non-endofunctors, can we derive □G (from □G^?)
+   [need BiAlg closed under Σ]
+
+7. Establish elim ≅ init for the general case
+
+8. Establish laws for □ so we can derive the adhoc eliminators
+
