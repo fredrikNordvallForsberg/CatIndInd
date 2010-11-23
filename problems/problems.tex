@@ -1,0 +1,320 @@
+\documentclass{article}
+
+\usepackage{amssymb}
+\usepackage{amsthm}
+\usepackage{amsmath}
+\usepackage{amstext}
+
+\usepackage{xypic}
+\usepackage{stmaryrd}
+\usepackage{enumerate}
+\usepackage{mathtools}
+
+\input header.inc
+
+\begin{document}
+
+\section*{Problem 1: $F (\Sigma\ A\ B) \cong \Sigma\ (F A)\ (\square_F B))$}
+
+Here is a useful little construction: let $\widehat{\cdot} : ((x : A) \to B(a)) \to A \to \Sigma\ A\ B$ be defined by $\widehat{g}(x) = \langle x , g(x)\rangle$. Notice that $\pi_0 \circ \widehat{g} = \id$ and $\pi_1 \circ \widehat{g} = g$ for any $g$.
+
+\begin{definition}
+  Given functor $F : \Set \to \Set$, we define
+\begin{align*}
+\square_F &: \{A : \Set\} \to (P : A \to \Set) \to F(A) \to \Set \\
+\dmap_F &: \{A : \Set\} \to \{P : A \to \Set\} \to ((x : A) \to  P(x)) \to (x : F(A)) \to \square_F(P, x)
+\end{align*}
+  by
+\begin{align*}
+  \square_F(B, x) &= \{ y : F\ (\Sigma\ A\ B )\ |\ F(\pi_0)(y) = x\} \\
+  \dmap_F(g, x) &= \langle F(\widehat{g})(x), \refl\rangle
+\end{align*}
+Notice that we are using the fact that $\pi_0 \circ \widehat{g} = \id$, so that $F(\pi_0)(F(\widehat{g})(x)) = F(\pi_0 \circ \widehat{g})(x) = F(\id)(x) = x$, and $\refl$ has the right type.
+\end{definition}
+
+\begin{problem}
+  \begin{enumerate}[(i)]
+  \item There is $\varphi : F (\Sigma\ A\ B) \xrightarrow{\cong} \Sigma\ (F A)\ (\square_F B))$.
+  \item $\pi_0 \circ \varphi = F(\pi_0)$.
+  \item For $g : (x : A) \to B(x)$, we have $\widehat{\dmap_F(g)} = \varphi \circ F(\widehat{g})$.
+  \end{enumerate}
+\label{problem1}
+\end{problem}
+\begin{proof}
+  \begin{enumerate}[(i)]
+  \item Define
+  \[
+    \varphi :  F (\Sigma\ A\ B) \to \Sigma\ (F A)\ (\square_F B))
+  \]
+  and
+  \[
+    \psi :  \Sigma\ (F A)\ (\square_F B)) \to F (\Sigma\ A\ B)
+  \]
+  by
+  \[
+  \varphi(y) = \langle F(\pi_0)(y), \langle y, \refl\rangle\rangle
+  \]
+  \[
+  \psi(\langle x, \langle y, p\rangle\rangle) = y.
+  \]
+  Then $\psi(\varphi(y)) = \psi(\langle F(\pi_0)\ y, \langle y,
+  \refl\rangle\rangle) = y$ and for every $\langle x, \langle y,
+  p\rangle\rangle : \Sigma\ (F A)\ (\square_F B))$, we have $x =
+  F(\pi_0)(y)$ by $p$ and $p = \refl$ by proof irrelevance, so that
+  $\varphi(\psi(\langle x, \langle y, p\rangle\rangle)) = \varphi(y) = \langle
+  F(\pi_0)(y), \langle y, \refl\rangle\rangle = \langle x, \langle y,
+  p\rangle\rangle $. Hence $F (\Sigma\ A\ B) \cong \Sigma\ (F A)\
+  (\square_F B))$.
+  \item $\pi_0(\varphi(y)) = \pi_0(\langle F(\pi_0)(y), \langle y, \refl\rangle\rangle) = F(\pi_0)(y)$.
+  \item $\widehat{\dmap_F(g)}(x) = \langle x , \dmap_F(g, x)\rangle = \langle x , \langle F(\widehat{g})(x), \refl\rangle\rangle$, and also
+ $\varphi(F(\widehat{g})(x))$ $=$ $\langle F(\pi_0)(F(\widehat{g})(x)), \langle (F(\widehat{g})(x), \refl\rangle\rangle$ $=$ $\langle F(\pi_0 \circ \widehat{g})(x)), \langle (F(\widehat{g})(x), \refl\rangle\rangle$ $=$ $\langle x, \langle (F(\widehat{g})(x), \refl\rangle\rangle$ since $\pi_0 \circ \widehat{g} = \id$. Hence $\widehat{\dmap_F(g)} = \varphi \circ F(\widehat{g})$.
+  \end{enumerate}
+\end{proof}
+
+\section*{Problem 2: $\square$ for containers $\cong$ $\square$ for functors}
+
+\begin{definition}
+  For a container $S \triangleleft P$, we define
+  \[
+  \square_{S \triangleleft P} : \{A : \Set\} \to (B : A \to \Set) \to \sem{S \triangleleft P}\ A \to \Set
+  \]
+  by  $\square_{S \triangleleft P}(B, \langle s , f\rangle) = (p : P(s)) \to B(f(p))$.
+\end{definition}
+
+\begin{problem}
+   For all $A : \Set$, $B : A \to \Set$ and $\langle s , f \rangle : \sem{S \triangleleft P}(A)$, 
+\[
+\square_{S \triangleleft P}(B, \langle s , f \rangle) \cong \square_{\sem{S \triangleleft P}}(B, \langle s , f \rangle).
+\] \label{problem2}
+\end{problem}
+\begin{proof}
+  Define
+  \[
+    \varphi :  ((p : P(s)) \to B(f(p))) \to \{ \langle s', f'\rangle : \Sigma s' : S\ . (P(s') \to \Sigma\ A\ B )\ |\ \langle s' , \pi_0 \circ f'\rangle = \langle s, f\rangle\}
+  \]
+  and
+  \[
+ \psi : \{ \langle s', f'\rangle : \Sigma s' : S\ . (P(s') \to \Sigma\ A\ B )\ |\ \langle s' , \pi_0 \circ f'\rangle = \langle s, f\rangle\} \to ((p : P(s)) \to B(f(p)))
+  \]
+  by
+  \[
+  \varphi(g) = \langle \langle s, (\lambda p\ .\ \langle f(p), g(p)\rangle)\rangle, \langle\refl, \ext(\refl)\rangle\rangle \]\[
+  \psi(\langle\langle s', f'\rangle, r \rangle) = \pi_1 \circ f'
+  \]
+(there's lots of invented notation for equality proofs and hidden substitutions going on here). Now
+$\psi(\varphi(g)) = \psi(\langle \langle s, (\lambda p\ .\ \langle f(p), g(p)\rangle)\rangle, \langle\refl, \ext(\refl)\rangle\rangle) = \pi_1 \circ (\lambda p\ .\ \langle f(p), g(p)\rangle) = g$ and 
+\begin{align*}
+\varphi(\psi(\langle\langle s', f'\rangle, r \rangle)) &= \varphi(\pi_1 \circ f') \\
+&= \langle \langle s, (\lambda p\ .\ \langle f(p), \pi_1(f'(p))\rangle)\rangle, \langle\refl, \ext(\refl)\rangle\rangle \\
+&=  \langle \langle s', (\lambda p\ .\ \langle \pi_0(f'(p)), \pi_1(f'(p))\rangle)\rangle, r\rangle \\
+&=  \langle \langle s', f'\rangle, r\rangle
+\end{align*}
+where we have used eta for $\Sigma$ and $\Pi$ in the last equality.
+
+\end{proof}
+
+
+We can make $\square_F$ into a functor $\boxdot_F : \Fam(\Set) \to
+\Fam(\Set)$ [in general $\Fam(\mathbb{C}) \to \Fam(\mathbb{D})$?] by
+defining $\boxdot_F(A, B) = (F(A), \square_F(A, B))$ for objects and
+$\boxdot(f, g) = (F(f), \lambda\ x\ \langle y, \refl\rangle\ . \langle F([f,g])(y), \refl\rangle)$ where $[f,g] :
+\Sigma\ A\ B \to \Sigma\ A'\ B'$ is the obvious map, and the last $\refl$ is of the right type since $\pi_0 \circ [f, g] = f \circ \pi_0$.
+
+Similarly, we can define $\boxdot_{S \triangleleft P}(A, B) = (\sem{S
+  \triangleleft P}(A), \square_{S \triangleleft P})$ for objects and
+and $\boxdot_{S \triangleleft P}(f, g) = (\sem{S \triangleleft P}(f),
+\lambda (s, h)\ j\ p\ .\ g(h(p), j(p) ))$ for morphisms $(f, g) : (A,
+B) \to (A', B')$. The result can now be strengthened to:
+
+\begin{proposition}
+  There is a natural isomorphism $\eta : \square_{S \triangleleft P} \Rightarrow \square_{\sem{S \triangleleft P}}$.
+\end{proposition}
+\begin{proof}
+  We have already constructed the components at each $(A, B)$ and
+  shown them to be isomorphisms in the proof of Problem
+  \ref{problem2}. All that is left to do is to check the naturality
+  condition, but this follows from a straightforward verification:
+  \[
+  \xymatrix
+  {
+    j \ar@{|->}[r] \ar@{|->}[d] & {\langle\langle s , (\lambda\ p\ .\ \langle h(p), j(p)\rangle)\rangle, \refl\rangle}
+                                   \ar@{|->}[d] \\
+    {\lambda\ p\ .\ g(h(p), j(p))} \ar@{|->}[r] & {\langle\langle s , (\lambda\ p\ .\ \langle f(h(p)), g(h(p), j(p))\rangle)\rangle, \refl\rangle}
+  }
+  \]
+  
+\end{proof}
+
+
+\section*{Problem 3: Init $\implies$ elim (in $\Set$)}
+
+Let $F : \Set \to \Set$ be a functor and $(\muF, \inn_F)$ a $F$-algebra, i.e.\ 
+\[
+\muF : \Set \qquad \qquad \inn_F : F (\muF) \to \muF.
+\]
+
+\subsection*{$\square_F$ and $\dmap_F$}
+
+Let us first record what we need and expect from $\square_F$ and $\dmap_F$. They should have types
+\begin{align*}
+\square_F &: \{A : \Set\} \to (P : A \to \Set) \to F(A) \to \Set \\
+\dmap_F &: \{A : \Set\} \to \{P : A \to \Set\} \to ((x : A) \to  P(x)) \to (x : F(A)) \to \square_F(P, x)
+\end{align*}
+and satisfy
+\begin{equation}
+  \label{eq:square}
+  \tag{$\ast_{\square}$}
+F (\Sigma\ A\ P) \cong \Sigma\ (F A)\ (\square_F P))
+\end{equation}
+and this isomorphism $\varphi$ must satisfy
+\begin{equation}
+  \label{eq:square2}
+  \tag{$\ast\ast_{\square}$}
+\xymatrix
+{
+F(\Sigma\ A\ P) \ar^-{\varphi}[r] \ar_{F(\pi_0)}[d] & \Sigma\ (F\ A)\ (\square_F\ P) \ar^{\pi_0}[dl] \\
+F\ A  & 
+}
+\end{equation}
+i.e.\ $\pi_0 \circ \varphi = F(\pi_0)$. For $\dmap_F$, we must for all $f : (x : A) \to B(x)$ have
+\begin{equation}
+  \label{eq:dmap}
+  \tag{$\ast_{\dmap}$}
+\xymatrix{
+F\ A \ar^-{F(\widehat{f})}[r] \ar_{\widehat{\dmap_F(f)}}[d]& F(\Sigma\ A\ B) \ar^{\varphi}[dl] \\
+\Sigma\ (F\ A)\ (\square_F\ B) & 
+}
+\end{equation}
+i.e.\ $\widehat{\dmap_F(f)} = \varphi \circ F(\widehat{f})$.
+
+For $\square_F(P, x) = \{ y : F\ (\Sigma\ A\ P )\ |\ F(\pi_0)(y) = x\}$ and $\dmap_F(g, x) = \langle F(\widehat{g})(x), \refl\rangle$, this holds, as proved in Problem \ref{problem1}.
+
+\subsection*{The equivalence of elim and init}
+
+\begin{principle}[Elim]
+  The elimination principle for $F$ says that we have
+\begin{multline*}
+\elim_F : (P : \muF \to \Set) \to \big( (x : F(\muF)) \to \square_F(P, x) \to P(\inn_F(x))\big) \\ \to (x : \muF) \to P(x)
+\end{multline*}
+and computation rule
+\[
+\elim_F(P, g, \inn_F(x)) = g(x, \dmap_F(\elim_F(P, g), x))
+\]
+\end{principle}
+
+\begin{principle}[Init]
+  The initial algebra principle for $F$ says that $(\muF, \inn_F)$ is the \emph{initial} algebra for $F$, i.e.\ for any other $F$-algebra $(X, f)$, there is $\fold(f) : \muF \to X$ such that
+\[
+\xymatrix
+{
+F(\muF) \ar^{\inn_F}[r] \ar_{F(\fold(f))}[d] & \muF \ar^{\fold(f)}[d]\\
+F(X) \ar^{f}[r] & X
+}
+\]
+commutes.
+\end{principle}
+
+\begin{problem}
+  Init $\implies$ elim.
+\end{problem}
+\begin{proof}
+  Assume that $(\muF, \inn_F)$ is initial. We must construct
+\begin{multline*}
+\elim_F : (P : \muF \to \Set) \to \big( (x : F(\muF)) \to \square_F(P, x) \to P(\inn_F(x))\big) \\ \to (x : \muF) \to P(x)
+\end{multline*}
+such that
+\[
+\elim_F(P, g, \inn_F(x)) = g(x, \dmap_F(\elim_F(P, g), x)).
+\]
+Let $P : \muF \to \Set$ and $g : (x : F(\muF)) \to \square_F(P, x) \to P(\inn_F(x))$ be given. The plan is to make $\Sigma\ \muF\ P$ into a $F$-algebra $(\Sigma\ \muF\ P, h)$ and then show that $\pi_0 \circ \fold(h) = \id$, so that $\pi_1 \circ \fold(h) : (x : \muF) \to P(x)$. We can then define $\elim_F(P, g, x) = \pi_1(\fold(f)(x))$ and must show that the computation rule holds.
+
+First, we need to define $h : F(\Sigma\ \muF\ P) \to \Sigma\ \muF\ P$. Let $\varphi : F (\Sigma\ \muF\ P) \xrightarrow{\cong} \Sigma\ (F\ A)\ (\square_F\ P)$ be the witness of (\ref{eq:square}). We can then define
+\[
+h(x) = \langle \inn_F(\pi_0(\varphi(x))), g(\pi_0(\varphi(x)),\pi_1(\varphi(x)))\rangle,
+\]
+so that $\fold(h) : \muF \to \Sigma\ \muF\ P$. We also know that
+\begin{equation}
+\label{eq:diagram1}
+\xymatrix
+{
+F(\muF) \ar^{\inn_F}[r] \ar_{F(\fold(h))}[d] & \muF \ar^{\fold(h)}[d]\\
+F(\Sigma\ \muF\ P) \ar^{h}[r] & \Sigma\ \muF\ P
+}
+\end{equation}
+commutes. Now $\pi_0(h(x)) = \inn_F(\pi_0(\varphi(x))) \stackrel{(\text{\ref{eq:square2}})}{=} \inn_F(F(\pi_0)(x))$, so that the diagram
+\begin{equation}
+\label{eq:diagram2}
+\xymatrix
+{
+F(\Sigma\ \muF\ P) \ar^{h}[r] \ar_{F(\pi_0)}[d] & \Sigma\ \muF\ P \ar^{\pi_0}[d] \\
+F(\muF) \ar^{\inn_F}[r] & \muF 
+}
+\end{equation}
+commutes. Pasting Diagram (\ref{eq:diagram1}) and (\ref{eq:diagram2}) together, we get the commuting diagram
+\[
+\xymatrix
+{
+%F(\Sigma\ \muF\ P) \ar^{h}[r] \ar_{F(\pi_0)}[d] & \Sigma\ \muF\ P \ar^{\pi_0}[d] \\
+F(\muF) \ar^{\inn_F}[r] \ar_{F(\fold(h))}[d] & \muF \ar^{\fold(h)}[d]\\
+F(\Sigma\ \muF\ P) \ar^{h}[r] \ar^{h}[r] \ar_{F(\pi_0)}[d] & \Sigma\ \muF\ P \ar^{\pi_0}[d] \\
+F(\muF) \ar^{\inn_F}[r] & \muF 
+}
+\]
+which shows that $\pi_0 \circ \fold(h) : (\muF, \inn_F) \to (\muF,
+\inn_F)$ is a morphism in the category of $F$-algebras. But also $\id_{\muF}$ is such a morphism, and since $ (\muF, \inn_F)$ is initial, we must have $\pi_0 \circ \fold(h) = \id$. Hence we can define $\elim_F(P, g) \coloneqq \pi_1 \circ \fold(h) : (x : \muF) \to P(x)$.
+
+It remains to be shown that $\elim_F(P, g, \inn_F(x)) = g(x,
+\dmap_F(\elim_F(P, g), x))$. Unfolding the definition of $\elim_F$, we
+see that we must prove $\pi_1(\fold(h)(\inn_F(x))) = g(x,
+\dmap_F(\pi_1\circ\fold(h), x))$. Since $\fold(h) \circ \inn_F = h \circ F(\fold(h))$ by (\ref{eq:diagram1}), the left hand side reduces to $\pi_1(h(F(\fold(h)(x))))$ which is equal to $g(\pi_0(\varphi(F(\fold(h)(x)))),$ $\pi_1(\varphi(F(\fold(h)(x)))))$ by the definition of $h$. It is thus enough to show that
+\begin{enumerate}[(i)]
+\item $\pi_0 \circ \varphi \circ F(\fold(h)) = \id$ \label{comprule1}
+\item $\pi_1 \circ \varphi \circ F(\fold(h)) = \dmap_F(\pi_1\circ\fold(h))$. \label{comprule2}
+\end{enumerate}
+Identity (\ref{comprule1}) is easily taken care of: by (\ref{eq:square2}), $\pi_0 \circ \varphi = F(\pi_0)$, so that we have $\pi_0(\varphi(F(\fold(h)(x)))) = F(\pi_0)(F(\fold(h)(x)))) = F(\pi_0 \circ \fold(h))(x) = F(\id)(x) = x$.
+
+For (\ref{comprule2}), note that eta for $\Sigma$ implies $\fold(h)(x) = \langle \pi_0(\fold(h)(x)), \pi_1(\fold(h)(x))\rangle$ $=$ $\langle x, \pi_1(\fold(h)(x))\rangle$ so that $\fold(h) = \widehat{f}$ for $f \coloneqq \pi_1 \circ \fold(h)$. Hence, using $\pi_1 \circ \widehat{g} = g$ several times for different functions $g$, we have
+\begin{align*}
+  \dmap_F(\pi_1 \circ \fold(h)) &=  \dmap_F(\pi_1 \circ \widehat{f}) \\
+  &= \dmap_F(f) \\
+  &= \pi_1 \circ \widehat{\dmap_F(f)} \\
+  &\!\!\!\!\!\!\stackrel{\text{(\ref{eq:dmap})}}{=} \pi_1 \circ \varphi \circ F(\widehat{f}) = \pi_1 \circ \varphi \circ F(\fold(h))
+\end{align*}
+which takes care of (\ref{comprule2}), and we are done.
+\end{proof}
+
+%It might be worth reflecting on what properties of $\Set$ we have used
+%in the proof. We have explicitly defined $h : F(\Sigma\ \muF\ P) \to
+%\Sigma\ \muF\ P$ and used that we know what $\pi_0 \circ h$ and $\pi_1
+%\circ h$ are.
+
+
+\section*{Problem 4: Elim $\implies$ init (in $\Set$)}
+
+\begin{problem}
+  Elim $\implies$ init.
+\end{problem}
+\begin{proof}
+  Let $(X. f)$ be a $F$-algebra. We must construct $\fold(f) : \muF
+  \to X$ such that $\fold(f) \circ \inn_F = f \circ F(\fold(f))$. We have 
+  \begin{multline*}
+    \elim_F : (P : \muF \to \Set) \to \big(g : (x : F(\muF)) \to \square_F(P, x) \to P(\inn_F(x))\big) \\ \to (x : \muF) \to P(x)
+  \end{multline*}
+  such that $\elim_F(P, g, \inn_F(x)) = g(x, \dmap_F(\elim_F(P, g), x))$,
+  so let us choose $P = K\ X$ to be constantly $X$ and
+$g(x, y) = f(F(\pi_1)(\varphi^{-1}(\langle x, y\rangle))))$, and define $\fold(f) = \elim_F(K\ X, g)$. Then $\fold(f) : \muF \to X$, and
+\begin{align*}
+  \fold(f)(\inn_F(x)) &= \elim_F(P, g, \inn_F(x)) \\
+  &= g(x, \dmap_F(\elim_F(P, g), x)) \\
+  &= f(F(\pi_1)(\varphi^{-1}(\langle x, \dmap_F(\elim_F(P, g), x)\rangle)))) \\
+  &= f \circ F(\pi_1) \circ \varphi^{-1} \circ (\lambda x\ .\ \langle x, \dmap_F(\fold(f), x)\rangle)(x) \\
+  &= f \circ F(\pi_1) \circ \varphi^{-1} \circ \widehat{\dmap_F(\fold(f))}(x) \\
+  &\!\!\!\!\!\!\stackrel{\text{(\ref{eq:dmap})}}{=} f \circ F(\pi_1) \circ \varphi^{-1} \circ \varphi \circ F(\widehat{\fold(f)})(x) \\
+  &= f \circ F(\pi_1 \circ \widehat{\fold(f)})(x) \\
+  &= f \circ F(\fold(f))(x),
+\end{align*}
+so $\fold(f) \circ \inn_F = f \circ F(\fold(f))$ as required.
+\end{proof}
+
+\end{document}
+
