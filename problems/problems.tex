@@ -316,5 +316,102 @@ $g(x, y) = f(F(\pi_1)(\varphi^{-1}(\langle x, y\rangle))))$, and define $\fold(f
 so $\fold(f) \circ \inn_F = f \circ F(\fold(f))$ as required.
 \end{proof}
 
+\section*{Problem 5: $\sem{\elim_T}_{\Fam} \cong \elim$ for simple ind.-ind.}
+
+If we consider ``simple'' induction-induction where the constructors
+for $B$ do not refer to the constructors for $A$, the code for an
+inductive-inductive set is given by two functors
+\[
+F : (A : \Set) \to (B : A \to \Set) \to \Set
+\]
+\[
+G : (A : \Set) \to (B : A \to \Set) \to F(A, B) \to \Set,
+\]
+i.e. an endofunctor $FG$ on $\Fam(\Set)$. The formation and
+introduction rules we expect now says that there is $(A, B) :
+\Fam(\Set)$ and $(c, d) : FG(A, B) \to_{\Fam(\Set)} (A, B)$, i.e.
+\[
+A : \Set \qquad \qquad B : A \to \Set
+\]
+\[
+c : F(A, B) \to A \qquad \qquad d : (x : F(A, B)) \to G(A, B, x) \to B(c(x)).
+\]
+
+Here are the types of the eliminators I would expect (whatever
+$\square_F$, $\square_G$, $\dmap_F$, $\dmap_G$ are):
+\begin{multline*}
+\elim_F :  (P : A \to \Set) \to (Q : (x : A) \to B(x) \to P(x) \to \Set) \to \\
+ (\overline{c} : (x : F(A, B)) \to \square_F(P, Q, x) \to P(c(x))) \to \\
+ (\overline{d} : (x : F(A, B)) \to (y : G(A, B, x)) \to (\overline{x} : \square_F(P, Q, x)) \\ \to \square_G(P, Q, x, y, \overline{x}) \to Q(c(x), d(x, y), \overline{c}(x, \overline{x}))) \to \\
+ (x : A) \to P(x)
+\end{multline*}
+\begin{multline*}
+\elim_G :  (P : A \to \Set) \to (Q : (x : A) \to B(x) \to P(x) \to \Set) \to \\
+ (\overline{c} : (x : F(A, B)) \to \square_F(P, Q, x) \to P(c(x))) \to \\
+ (\overline{d} : (x : F(A, B)) \to (y : G(A, B, x)) \to (\overline{x} : \square_F(P, Q, x)) \\ \to \square_G(P, Q, x, y, \overline{x}) \to Q(c(x), d(x, y), \overline{c}(x, \overline{x}))) \to \\
+ (x : A) \to (y : B(x)) \to Q(x, y, \elim_F(P, Q, \overline{c}, \overline{d}, x))
+\end{multline*}
+with computation rules
+\[
+\elim_F(P, Q, \overline{c}, \overline{d}, c(x)) = \overline{c}(x, \dmap_F(f, g, x))
+\]
+\[
+\elim_G(P, Q, \overline{c}, \overline{d}, c(x), d(x, y)) = \overline{d}(x, y, \dmap_F(f, g, x), \dmap_G(f, g, x, y))
+\]
+where $f = \elim_F(P, Q, \overline{c}, \overline{d})$, $g = \elim_G(P, Q, \overline{c}, \overline{d})$.
+
+
+
+\begin{problem}
+  The interpretation of ordinary $\elim_T$ in $\Fam(\Set)$ is $\elim_F$ and $\elim_G$.
+\end{problem}
+\begin{proof}
+Let us compile a small list of translations (of course, one should prove that this list is correct):
+
+\begin{itemize}
+\item $\sem{A : \Set}$ should be $A : \Set$, $B : A \to \Set$ -- the new basic objects are families.
+\item $\sem{x : A}$ should be $x : A$ and $y : B(x)$.
+\item $\sem{f : A \to A'}$ should be $f : A \to A'$, $g : (x : A) \to B(x) \to B'(f(x))$ -- a family morphism.
+\item $\sem{P : A \to \Set}$ should be $P : A \to \Set$, $Q : (a : A) \to B(a) \to P(a) \to \Set$ since we want $\sem{P} : \sem{A} \sem{\to} \sem{\Set} = (A, B) \to_{\Fam(\Set)} \Fam(\Set)$.
+\item $\sem{x : A \vdash p : P(x)}$ should be $x : A \vdash p : P(x)$ (or should we allow $x : A, y : B(x) \vdash p : P(x)$ here?) and $x : A, y : B(x) \vdash q : Q(x, y, p)$.
+\item $\sem{f : (x : A) \to P(x)}$ should be $f : (x : A) \to P(x)$ and $g : (x : A) \to \mbox{(y : B(x))} \to Q(x, y, f(x))$.
+\item $\sem{\Sigma\ A\ P}$ should be $\Sigma\ A\ P : \Set$, $(\lambda\ \langle a, p\rangle\ .\ \Sigma\ b\!:\!B(a).Q(a,b, p)))$ -- this is a a set and a family over it.
+\item $\sem{\widehat{f}}$ should, given $f : (x : A) \to P(x)$ and $g : (x : A) \to (y : B(x)) \to Q(x, y, f(x))$ [i.e.\ $\sem{f : (x : A) \to P(x)}$]  be a function $\widehat{f} : A \to \Sigma\ A\ P$, $\widehat{f}(a) = \langle a, f(a)\rangle$, and a function $\widehat{g} : (a : A) \to B(a) \to  \Sigma\ b\!:\!B(a).Q(a,b, f(a))$, $\widehat{g}(a, b) = \langle b, g(a, b)\rangle$.
+\end{itemize}
+We do not need all of these yet, but they should be useful in the future.
+
+Now, we can start to deconstruct $\elim_F$ and $\elim_G$. We already
+noticed that $F$ and $G$ form an endofunctor $FG$ on $\Fam(\Set)$. We
+also see that the arguments $P : A \to \Set$ and $Q : (a : A) \to B(a)
+\to P(a) \to \Set$ are the interpretation of some $P : A \to \Set$,
+i.e.\ $\sem{P} = (P, Q)$.
+
+Moving on, we notice that $\square_F(P, Q) : F(A, B) \to \Set$ and
+$\square_G(P, Q) : \\ (x : F(A, B)) \to G(A, B, x) \to \square_F(P, Q,
+x) \to \Set$ is a family over $(F(A,B), G(A,B))$, i.e. the interpretation of some $\square_{FG} : FG(AB) \to \Set$.
+
+With some currying, we see that $\overline{c} : (x : F(A, B)) \to
+\square_F(P, Q, x) \to P(c(x))$ and $\overline{d} : (x : F(A, B)) \to
+(y : G(A, B, x)) \to (\overline{x} : \square_F(P, Q, x)) \to
+\square_G(P, Q, x, y, \overline{x}) \to Q(c(x), d(x, y),
+\overline{c}(x, \overline{x}))$ just form a family morphism from $xy :
+\Sigma\ (F(A, B), G(A, B))\ (\square_F(P, Q), \square_G(P, Q))$ to
+$(P, Q)((c, d)(\sem{\pi_0}(xy)))$, i.e. they are the interpretation of some $g : (x : \Sigma\ FG(AB)\ (\square_{FG}\ P)) \to P(\inn_{FG}(\pi_0(x)))$.
+
+
+Finally, we see that $(\elim_F(P, Q,
+\overline{c}, \overline{d}), \elim_G(P, Q, \overline{c},
+\overline{d})$ is a dependent morphism from $(xy : (A, B))$ to $(P,
+Q)(xy)$.
+
+All in all, $(\elim_F, \elim_G)$ is thus the translation of 
+\begin{multline*}
+\elim_{FG} : (P : A \to \Set) \to \big(g : (x : \Sigma\ (FG(A))\ \square_{FG}(P)) \to P(\inn_{FG}(\pi_0(x)))\big) \\ \to (x : A) \to P(x)
+\end{multline*}
+which is the ususal eliminator. The computation rules also seem to be
+exactly the interpretatino of the usual computation rules.
+\end{proof}
+
+
 \end{document}
 
