@@ -16,7 +16,10 @@
 
 \section*{Problem 1: $F (\Sigma\ A\ B) \cong \Sigma\ (F A)\ (\square_F B))$}
 
-Here is a useful little construction: let $\widehat{\cdot} : ((x : A) \to B(a)) \to A \to \Sigma\ A\ B$ be defined by $\widehat{g}(x) = \langle x , g(x)\rangle$. Notice that $\pi_0 \circ \widehat{g} = \id$ and $\pi_1 \circ \widehat{g} = g$ for any $g$.
+Here is a useful little construction: let $\widehat{\cdot} : ((x : A)
+\to B(a)) \to A \to \Sigma\ A\ B$ be defined by $\widehat{g}(x) =
+\langle x , g(x)\rangle$. Notice that $\pi_0 \circ \widehat{g} = \id$
+and $\pi_1 \circ \widehat{g} = g$ for any $g$.
 
 \begin{definition}
   Given functor $F : \Set \to \Set$, we define
@@ -187,14 +190,17 @@ F\ A \ar^-{F(\widehat{f})}[r] \ar_{\widehat{\dmap_F(f)}}[d]& F(\Sigma\ A\ B) \ar
 \end{equation}
 i.e.\ $\widehat{\dmap_F(f)} = \varphi \circ F(\widehat{f})$.
 
-For $\square_F(P, x) = \{ y : F\ (\Sigma\ A\ P )\ |\ F(\pi_0)(y) = x\}$ and $\dmap_F(g, x) = \langle F(\widehat{g})(x), \refl\rangle$, this holds, as proved in Problem \ref{problem1}.
+For $\square_F(P, x) = \{ y : F\ (\Sigma\ A\ P )\ |\ F(\pi_0)(y) =
+x\}$ and $\dmap_F(g, x) = \langle F(\widehat{g})(x), \refl\rangle$,
+this holds, as proved in Problem \ref{problem1}.
 
 \subsection*{The equivalence of elim and init}
 
 \begin{principle}[Elim]
   The elimination principle for $F$ says that we have
 \begin{multline*}
-\elim_F : (P : \muF \to \Set) \to \big( (x : F(\muF)) \to \square_F(P, x) \to P(\inn_F(x))\big) \\ \to (x : \muF) \to P(x)
+  \elim_F : (P : \muF \to \Set) \to \big( (x : F(\muF)) \to
+  \square_F(P, x) \to P(\inn_F(x))\big) \\ \to (x : \muF) \to P(x)
 \end{multline*}
 and computation rule
 \[
@@ -203,7 +209,9 @@ and computation rule
 \end{principle}
 
 \begin{principle}[Init]
-  The initial algebra principle for $F$ says that $(\muF, \inn_F)$ is the \emph{initial} algebra for $F$, i.e.\ for any other $F$-algebra $(X, f)$, there is $\fold(f) : \muF \to X$ such that
+  The initial algebra principle for $F$ says that $(\muF, \inn_F)$ is
+  the \emph{initial} algebra for $F$, i.e.\ for any other $F$-algebra
+  $(X, f)$, there is $\fold(f) : \muF \to X$ such that
 \[
 \xymatrix
 {
@@ -226,9 +234,17 @@ such that
 \[
 \elim_F(P, g, \inn_F(x)) = g(x, \dmap_F(\elim_F(P, g), x)).
 \]
-Let $P : \muF \to \Set$ and $g : (x : F(\muF)) \to \square_F(P, x) \to P(\inn_F(x))$ be given. The plan is to make $\Sigma\ \muF\ P$ into a $F$-algebra $(\Sigma\ \muF\ P, h)$ and then show that $\pi_0 \circ \fold(h) = \id$, so that $\pi_1 \circ \fold(h) : (x : \muF) \to P(x)$. We can then define $\elim_F(P, g, x) = \pi_1(\fold(f)(x))$ and must show that the computation rule holds.
+Let $P : \muF \to \Set$ and $g : (x : F(\muF)) \to \square_F(P, x) \to
+P(\inn_F(x))$ be given. The plan is to make $\Sigma\ \muF\ P$ into a
+$F$-algebra $(\Sigma\ \muF\ P, h)$ and then show that $\pi_0 \circ
+\fold(h) = \id$, so that $\pi_1 \circ \fold(h) : (x : \muF) \to
+P(x)$. We can then define $\elim_F(P, g, x) = \pi_1(\fold(f)(x))$ and
+must show that the computation rule holds.
 
-First, we need to define $h : F(\Sigma\ \muF\ P) \to \Sigma\ \muF\ P$. Let $\varphi : F (\Sigma\ \muF\ P) \xrightarrow{\cong} \Sigma\ (F\ A)\ (\square_F\ P)$ be the witness of (\ref{eq:square}). We can then define
+First, we need to define $h : F(\Sigma\ \muF\ P) \to \Sigma\ \muF\
+P$. Let $\varphi : F (\Sigma\ \muF\ P) \xrightarrow{\cong} \Sigma\ (F\
+A)\ (\square_F\ P)$ be the witness of (\ref{eq:square}). We can then
+define
 \[
 h(x) = \langle \inn_F(\pi_0(\varphi(x))), g(\pi_0(\varphi(x)),\pi_1(\varphi(x)))\rangle,
 \]
@@ -241,7 +257,9 @@ F(\muF) \ar^{\inn_F}[r] \ar_{F(\fold(h))}[d] & \muF \ar^{\fold(h)}[d]\\
 F(\Sigma\ \muF\ P) \ar^{h}[r] & \Sigma\ \muF\ P
 }
 \end{equation}
-commutes. Now $\pi_0(h(x)) = \inn_F(\pi_0(\varphi(x))) \stackrel{(\text{\ref{eq:square2}})}{=} \inn_F(F(\pi_0)(x))$, so that the diagram
+commutes. Now $\pi_0(h(x)) = \inn_F(\pi_0(\varphi(x)))
+\stackrel{(\text{\ref{eq:square2}})}{=} \inn_F(F(\pi_0)(x))$, so that
+the diagram
 \begin{equation}
 \label{eq:diagram2}
 \xymatrix
@@ -261,19 +279,34 @@ F(\muF) \ar^{\inn_F}[r] & \muF
 }
 \]
 which shows that $\pi_0 \circ \fold(h) : (\muF, \inn_F) \to (\muF,
-\inn_F)$ is a morphism in the category of $F$-algebras. But also $\id_{\muF}$ is such a morphism, and since $ (\muF, \inn_F)$ is initial, we must have $\pi_0 \circ \fold(h) = \id$. Hence we can define $\elim_F(P, g) \coloneqq \pi_1 \circ \fold(h) : (x : \muF) \to P(x)$.
+\inn_F)$ is a morphism in the category of $F$-algebras. But also
+$\id_{\muF}$ is such a morphism, and since $ (\muF, \inn_F)$ is
+initial, we must have $\pi_0 \circ \fold(h) = \id$. Hence we can
+define $\elim_F(P, g) \coloneqq \pi_1 \circ \fold(h) : (x : \muF) \to
+P(x)$.
 
 It remains to be shown that $\elim_F(P, g, \inn_F(x)) = g(x,
 \dmap_F(\elim_F(P, g), x))$. Unfolding the definition of $\elim_F$, we
 see that we must prove $\pi_1(\fold(h)(\inn_F(x))) = g(x,
-\dmap_F(\pi_1\circ\fold(h), x))$. Since $\fold(h) \circ \inn_F = h \circ F(\fold(h))$ by (\ref{eq:diagram1}), the left hand side reduces to $\pi_1(h(F(\fold(h)(x))))$ which is equal to $g(\pi_0(\varphi(F(\fold(h)(x)))),$ $\pi_1(\varphi(F(\fold(h)(x)))))$ by the definition of $h$. It is thus enough to show that
+\dmap_F(\pi_1\circ\fold(h), x))$. Since $\fold(h) \circ \inn_F = h
+\circ F(\fold(h))$ by (\ref{eq:diagram1}), the left hand side reduces
+to $\pi_1(h(F(\fold(h)(x))))$ which is equal to
+$g(\pi_0(\varphi(F(\fold(h)(x)))),$ $\pi_1(\varphi(F(\fold(h)(x)))))$
+by the definition of $h$. It is thus enough to show that
 \begin{enumerate}[(i)]
 \item $\pi_0 \circ \varphi \circ F(\fold(h)) = \id$ \label{comprule1}
 \item $\pi_1 \circ \varphi \circ F(\fold(h)) = \dmap_F(\pi_1\circ\fold(h))$. \label{comprule2}
 \end{enumerate}
-Identity (\ref{comprule1}) is easily taken care of: by (\ref{eq:square2}), $\pi_0 \circ \varphi = F(\pi_0)$, so that we have $\pi_0(\varphi(F(\fold(h)(x)))) = F(\pi_0)(F(\fold(h)(x)))) = F(\pi_0 \circ \fold(h))(x) = F(\id)(x) = x$.
+Identity (\ref{comprule1}) is easily taken care of: by
+(\ref{eq:square2}), $\pi_0 \circ \varphi = F(\pi_0)$, so that we have
+$\pi_0(\varphi(F(\fold(h)(x)))) = F(\pi_0)(F(\fold(h)(x)))) = F(\pi_0
+\circ \fold(h))(x) = F(\id)(x) = x$.
 
-For (\ref{comprule2}), note that eta for $\Sigma$ implies $\fold(h)(x) = \langle \pi_0(\fold(h)(x)), \pi_1(\fold(h)(x))\rangle$ $=$ $\langle x, \pi_1(\fold(h)(x))\rangle$ so that $\fold(h) = \widehat{f}$ for $f \coloneqq \pi_1 \circ \fold(h)$. Hence, using $\pi_1 \circ \widehat{g} = g$ several times for different functions $g$, we have
+For (\ref{comprule2}), note that eta for $\Sigma$ implies $\fold(h)(x)
+= \langle \pi_0(\fold(h)(x)), \pi_1(\fold(h)(x))\rangle$ $=$ $\langle
+x, \pi_1(\fold(h)(x))\rangle$ so that $\fold(h) = \widehat{f}$ for $f
+\coloneqq \pi_1 \circ \fold(h)$. Hence, using $\pi_1 \circ \widehat{g}
+= g$ several times for different functions $g$, we have
 \begin{align*}
   \dmap_F(\pi_1 \circ \fold(h)) &=  \dmap_F(\pi_1 \circ \widehat{f}) \\
   &= \dmap_F(f) \\
@@ -372,11 +405,23 @@ Let us compile a small list of translations (of course, one should prove that th
 \item $\sem{A : \Set}$ should be $A : \Set$, $B : A \to \Set$ -- the new basic objects are families.
 \item $\sem{x : A}$ should be $x : A$ and $y : B(x)$.
 \item $\sem{f : A \to A'}$ should be $f : A \to A'$, $g : (x : A) \to B(x) \to B'(f(x))$ -- a family morphism.
-\item $\sem{P : A \to \Set}$ should be $P : A \to \Set$, $Q : (a : A) \to B(a) \to P(a) \to \Set$ since we want $\sem{P} : \sem{A} \sem{\to} \sem{\Set} = (A, B) \to_{\Fam(\Set)} \Fam(\Set)$.
-\item $\sem{x : A \vdash p : P(x)}$ should be $x : A \vdash p : P(x)$ (or should we allow $x : A, y : B(x) \vdash p : P(x)$ here?) and $x : A, y : B(x) \vdash q : Q(x, y, p)$.
-\item $\sem{f : (x : A) \to P(x)}$ should be $f : (x : A) \to P(x)$ and $g : (x : A) \to \mbox{(y : B(x))} \to Q(x, y, f(x))$.
-\item $\sem{\Sigma\ A\ P}$ should be $\Sigma\ A\ P : \Set$, $(\lambda\ \langle a, p\rangle\ .\ \Sigma\ b\!:\!B(a).Q(a,b, p)))$ -- this is a a set and a family over it.
-\item $\sem{\widehat{f}}$ should, given $f : (x : A) \to P(x)$ and $g : (x : A) \to (y : B(x)) \to Q(x, y, f(x))$ [i.e.\ $\sem{f : (x : A) \to P(x)}$]  be a function $\widehat{f} : A \to \Sigma\ A\ P$, $\widehat{f}(a) = \langle a, f(a)\rangle$, and a function $\widehat{g} : (a : A) \to B(a) \to  \Sigma\ b\!:\!B(a).Q(a,b, f(a))$, $\widehat{g}(a, b) = \langle b, g(a, b)\rangle$.
+\item $\sem{P : A \to \Set}$ should be $P : A \to \Set$, $Q : (a : A)
+  \to B(a) \to P(a) \to \Set$ since we want $\sem{P} : \sem{A}
+  \sem{\to} \sem{\Set} = (A, B) \to_{\Fam(\Set)} \Fam(\Set)$.
+\item $\sem{x : A \vdash p : P(x)}$ should be $x : A \vdash p : P(x)$
+  (or should we allow $x : A, y : B(x) \vdash p : P(x)$ here?) and $x
+  : A, y : B(x) \vdash q : Q(x, y, p)$.
+\item $\sem{f : (x : A) \to P(x)}$ should be $f : (x : A) \to P(x)$
+  and $g : (x : A) \to \mbox{(y : B(x))} \to Q(x, y, f(x))$.
+\item $\sem{\Sigma\ A\ P}$ should be $\Sigma\ A\ P : \Set$, $(\lambda\
+  \langle a, p\rangle\ .\ \Sigma\ b\!:\!B(a).Q(a,b, p)))$ -- this is a
+  a set and a family over it.
+\item $\sem{\widehat{f}}$ should, given $f : (x : A) \to P(x)$ and $g
+  : (x : A) \to (y : B(x)) \to Q(x, y, f(x))$ [i.e.\ $\sem{f : (x : A)
+    \to P(x)}$] be a function $\widehat{f} : A \to \Sigma\ A\ P$,
+  $\widehat{f}(a) = \langle a, f(a)\rangle$, and a function
+  $\widehat{g} : (a : A) \to B(a) \to \Sigma\ b\!:\!B(a).Q(a,b,
+  f(a))$, $\widehat{g}(a, b) = \langle b, g(a, b)\rangle$.
 \end{itemize}
 We do not need all of these yet, but they should be useful in the future.
 
@@ -388,15 +433,16 @@ i.e.\ $\sem{P} = (P, Q)$.
 
 Moving on, we notice that $\square_F(P, Q) : F(A, B) \to \Set$ and
 $\square_G(P, Q) : \\ (x : F(A, B)) \to G(A, B, x) \to \square_F(P, Q,
-x) \to \Set$ is a family over $(F(A,B), G(A,B))$, i.e. the interpretation of some $\square_{FG} : FG(AB) \to \Set$.
+x) \to \Set$ is a family over $(F(A,B), G(A,B))$, i.e. the
+interpretation of some $\square_{FG} : FG(AB) \to \Set$.
 
-With some currying, we see that $\overline{c} : (x : F(A, B)) \to
-\square_F(P, Q, x) \to P(c(x))$ and $\overline{d} : (x : F(A, B)) \to
+We see that $\overline{c} : (x : F(A, B)) \to
+\square_F(P, Q, x) \to P(c(x))$ and $\overline{d} : (x : F(A, B)) \\ \to
 (y : G(A, B, x)) \to (\overline{x} : \square_F(P, Q, x)) \to
 \square_G(P, Q, x, y, \overline{x}) \to Q(c(x), d(x, y),
-\overline{c}(x, \overline{x}))$ just form a family morphism from $xy :
-\Sigma\ (F(A, B), G(A, B))\ (\square_F(P, Q), \square_G(P, Q))$ to
-$(P, Q)((c, d)(\sem{\pi_0}(xy)))$, i.e. they are the interpretation of some $g : (x : \Sigma\ FG(AB)\ (\square_{FG}\ P)) \to P(\inn_{FG}(\pi_0(x)))$.
+\overline{c}(x, \overline{x}))$ form a family morphism $(x : (F(A, B)), G(A, B)) \to (\square_F(P, Q), \square_G(P, Q))(x) \to
+(P, Q)((c, d)x)$, i.e. they are the interpretation of
+some $g : (x : FG(AB)) \to (\square_{FG}\ P)(x) \to P(\inn_{FG}(x))$.
 
 
 Finally, we see that $(\elim_F(P, Q,
@@ -406,7 +452,7 @@ Q)(xy)$.
 
 All in all, $(\elim_F, \elim_G)$ is thus the translation of 
 \begin{multline*}
-\elim_{FG} : (P : A \to \Set) \to \big(g : (x : \Sigma\ (FG(A))\ \square_{FG}(P)) \to P(\inn_{FG}(\pi_0(x)))\big) \\ \to (x : A) \to P(x)
+\elim_{FG} : (P : A \to \Set) \to \big(g : (x : FG(A)) \to \square_{FG}(P)(x) \to P(\inn_{FG}(x))\big) \\ \to (x : A) \to P(x)
 \end{multline*}
 which is the ususal eliminator. The computation rules also seem to be
 exactly the interpretatino of the usual computation rules.
