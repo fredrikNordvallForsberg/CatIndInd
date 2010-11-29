@@ -458,6 +458,55 @@ which is the ususal eliminator. The computation rules also seem to be
 exactly the interpretatino of the usual computation rules.
 \end{proof}
 
+\section*{$\square_F$ and $\dmap_F$ again}
+
+Problem \ref{problem1} can actually be strengthened in the following way:
+
+\begin{proposition}
+  Let $X_F : \{ A : \Set\} \to (P : A \to \Set) \to F(A) \to \Set$. Then $X_F(P, x) \cong \square_F(P, x)$ if and only if there is
+\begin{equation}
+  \label{eq:square}
+  \tag{$\ast_{\square}$}
+\varphi : F (\Sigma\ A\ P) \xrightarrow{\cong} \Sigma\ (F A)\ (X P))
+\end{equation}
+such that
+\begin{equation}
+  \label{eq:square2}
+  \tag{$\ast\ast_{\square}$}
+\xymatrix
+{
+F(\Sigma\ A\ P) \ar^-{\varphi}[r] \ar_{F(\pi_0)}[d] & \Sigma\ (F\ A)\ (X P) \ar^{\pi_0}[dl] \\
+F\ A  & 
+}
+\end{equation}
+%i.e.\ $\pi_0 \circ \varphi = F(\pi_0)$. 
+\end{proposition}
+\begin{proof}
+  ($\Rightarrow$) Let $\psi : \square_F(P, x) \xrightarrow{\cong}
+  X_F(P, x)$. From the proof of Problem \ref{problem1}, we know that
+  there is $\varphi_0 : F (\Sigma\ A\ P) \xrightarrow{\cong} \Sigma\
+  (F A)\ (\square_F P)$ satisfying (\ref{eq:square2}). Define $\varphi
+  \coloneqq \varphi_0 \circ [\id, \psi]$. Then $\varphi$ is an
+  isomorphism (with inverse $[id, \psi^{-1}] \circ \varphi_0^{-1}$)
+  and the following diagram commutes:
+\[
+\xymatrix
+{
+F(\Sigma\ A\ P) \ar^-{\varphi_0}[r] \ar_{F(\pi_0)}[dr] & \Sigma\ (F\ A)\ (\square_F P) \ar^-{[\id, \psi]}[r] \ar^{\pi_0}[d] & \Sigma\ (F\ A)\ (X P) \ar^{\pi_0}[dl] \\
+& F\ A  & 
+}
+\]
+which shows that (\ref{eq:square2}) holds.
+
+($\Leftarrow$) Assume (\ref{eq:square}) and (\ref{eq:square2}) holds. Then
+\begin{align*}
+  X(P, x) &= \{ \pi_1(z)\ | \ z : \Sigma\ F(A)\ (X(P)) \wedge \pi_0(z) = x \} \\
+          &\cong \{ \pi_1(\varphi(y))\ | \ y : F(\Sigma\ A\ P) \wedge \pi_0(\varphi(y)) = x \} \\
+          &= \{ \pi_1(\varphi(y))\ | \ y : F(\Sigma\ A\ P) \wedge F(\pi_0)(y) = x \} \\
+          &\cong \{ y : F(\Sigma\ A\ P) \ |\  F(\pi_0)(y) = x \} = \square_F(P, x)
+\end{align*}
+\end{proof}
+
 
 \end{document}
 

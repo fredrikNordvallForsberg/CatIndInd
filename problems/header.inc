@@ -1,10 +1,17 @@
 \newcommand{\Set}{\ensuremath{\text{Set}}}
+\newcommand{\Type}{\ensuremath{\text{Type}}}
 \newcommand{\Fam}{\ensuremath{\text{Fam}}}
 
 \newcommand{\refl}{\ensuremath{\text{refl}}}
 \newcommand{\ext}{\ensuremath{\text{ext}}}
 
 \newcommand{\id}{\ensuremath{\text{id}}}
+
+\newcommand{\fst}{\ensuremath{\text{fst}}}
+\newcommand{\snd}{\ensuremath{\text{snd}}}
+
+\newcommand{\zero}{\ensuremath{\mathbf{0}}}
+\newcommand{\one}{\ensuremath{\mathbf{1}}}
 
 \newtheorem{theorem}{Theorem}
 \newtheorem{lemma}[theorem]{Lemma}
@@ -13,6 +20,8 @@
 \theoremstyle{definition}
 \newtheorem{example}[theorem]{Example}
 \newtheorem{definition}[theorem]{Definition}
+\newtheorem{remark}[theorem]{Remark}
+\newtheorem{note}[theorem]{Note}
 \newtheorem{problem}{Problem}
 \newtheorem*{principle}{Principle}
 
@@ -24,6 +33,8 @@
 \newcommand{\fold}{\ensuremath{\text{fold}}}
 \newcommand{\inn}{\ensuremath{\text{in}}}
 
+\newcommand{\Bialg}{\ensuremath{\text{BiAlg}}}
+\newcommand{\ALG}{\ensuremath{\overline{\text{Alg}}}}
 
 % For convenience
 \newcommand{\muF}{\ensuremath{\mu F}}

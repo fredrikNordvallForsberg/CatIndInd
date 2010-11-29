@@ -1,0 +1,394 @@
+\documentclass{article}
+
+\usepackage{amssymb}
+\usepackage{amsthm}
+\usepackage{amsmath}
+\usepackage{amstext}
+
+\usepackage[all]{xy}
+\xyoption{2cell}
+\UseTwocells
+
+\usepackage{stmaryrd}
+\usepackage{enumerate}
+\usepackage{mathtools}
+
+\usepackage{alltt}
+
+
+\input header.inc
+
+\title{The categorical setting for the general case} % of ind.-ind. definitions}
+\author{Fredrik Nordvall Forsberg}
+
+\begin{document}
+
+\maketitle
+
+\begin{abstract}
+  \noindent This note will try to explain the categorical setting for
+  the general case of inductive-inductive definitions, first the
+  Warsaw-Nottingham version, and then Anton's recent
+  suggestion. Finally, I will show that the two versions in fact are
+  (trivially) isomorphic.
+\end{abstract}
+
+\section{Common starting point}
+
+
+Before we start, recall the category $\Fam(\Set)$:
+\begin{definition}
+  The category $\Fam(\Set)$ has
+  \begin{itemize}
+  \item objects: pairs $A : \Set$, $B : A \to \Set$.
+  \item morphisms $(A, B) \Rightarrow_{\Fam(\Set)} (A', B')$: $f : A \to A'$, $g : (a : A) \to B(a) \to B(f(a))$.
+  \end{itemize}
+  The identity on $(A, B)$ is $(\lambda x . x, \lambda x, y. y)$ and composition is given by $(f', g') \circ (f, g) \coloneqq (f' \circ f, \lambda (x : A)(y : B(x)) . g'(f(x), g(x, y))$.
+\hfill $\blacksquare$
+\end{definition}
+
+Our inductive-inductive sets are given to us as a functor
+\[
+F : \Fam(\Set) \to \Set
+\]
+and an ``operation''
+\[
+G : (A : \Set)(B : A \to \Set)(c : F(A,B) \to A) \to F(A,B) \to \Set
+\]
+(we will see in what sense $G$ has to be functorial later). After two
+examples, let us fix such $F$ and $G$.
+
+\begin{example}[Platforms and buildings]
+The platforms and buildings are given by the following code in Agda:
+\begin{verbatim}
+mutual
+  data Platform : Set where
+    ground : Platform
+    extension : (p : Platform) -> Building p -> Platform
+
+  data Building : Platform -> Set where
+    onTop : (p : Platform) -> Building p
+    hangingUnder : (p : Platform) -> (b : Building p)
+                                      -> Building (extension p b)  
+\end{verbatim}
+which corresponds to
+  \begin{align*}
+     F(A, B) &= 1 + \Sigma\ A\ B \\
+     G(A, B, c, x) &= 1 + \Sigma a : A, b : B(a).\ x = \text{inr}(\langle a, b\rangle)
+  \end{align*}
+\hfill $\blacksquare$
+\end{example}
+
+\begin{example}[Contexts and types] \mbox{}
+
+\begin{alltt}
+mutual
+  data Context : Set where
+       \(\varepsilon\) : Context
+    _::_ : (\(\Gamma\) : Context) -> Type \(\Gamma\) -> Context
+
+  data Type : Context -> Set where
+    \(\iota\)  : (\(\Gamma\) : Context) -> Type \(\Gamma\)
+    \(\Pi\) : (\(\Gamma\) : Context) -> (A : Type \(\Gamma\)) -> (B : Type (\(\Gamma\) :: A)) -> Type \(\Gamma\)
+\end{alltt}
+is represented by the functors
+
+\begin{align*}
+  F(A, B) &= 1 + \Sigma\ A\ B \\
+  G(A, B, c, x) &= 1 + \Sigma a : A, b : B(a), B(c (\text{inr}(\langle a, b\rangle))).\ c(x) = a.
+\end{align*}
+\hfill $\blacksquare$
+\end{example}
+
+
+
+\section{Bialgebra version} \label{nottingham}
+
+
+We will now go from these functors to the sets defined by them. The
+important concept is that of a bialgebra:
+
+\begin{definition}
+  Let $S, T : \mathbb{C} \to \mathbb{D}$ be functors. The category $\Bialg(S, T)$ of
+  \emph{$(S, T)$-bialgebras} has
+  \begin{itemize}
+  \item objects: an object $X \in |\mathbb{C}|$ together with a morphism $\alpha : SX \to TX$.
+  \item morphisms $(X, \alpha) \Rightarrow_{\Bialg(S, T)} (Y, \beta)$: morphisms $f : X \to Y$ such that the following diagram commutes:
+\[
+\xymatrix{
+SX \ar^-{\alpha}[r] \ar_-{Sf}[d] & TY \ar^-{Tf}[d] \\
+SX \ar^-{\beta}[r] & TY \\
+}
+\]
+  \end{itemize}
+  Composition and identity morphisms are inherited from $\mathbb{C}$.
+\hfill $\blacksquare$
+\end{definition}
+
+\begin{remark} We might want to come up with a new name, as
+``bialgebra'' seems to be already taken. Wikipedia informs me that
+\begin{quote}
+  ``in mathematics, a bialgebra over a field $K$ is a structure (vector
+  space) which is both a unital associative algebra and a coalgebra
+  over $K$, such that these structures are compatible.''
+\end{quote}
+I will still use the terminology bialgebra for now.
+\end{remark}
+
+\begin{note}
+  $(T, S)$-bialgebras are a generalisation of $T$-algebras, as an $(T,
+  \text{ID})$-bialgebra is exactly an $T$-algebra (where $\text{ID} :
+  \mathbb{C} \to \mathbb{C}$ is the identity functor).
+\end{note}
+
+\begin{note}
+  Let $S, T : \mathbb{C} \to \mathbb{D}$. There is always a forgetful
+  functor $V : \Bialg(S, T) \to \mathbb{C}$ defined by $V(X, \alpha) =
+  X$, $V(f, p) = f$ (where $p$ is the proof that the diagram commutes
+  -- in a less type theoretical formalisation, there is of course no $p$).
+\end{note}
+
+The following (non-commuting!) diagram might be useful as a map to what follows:
+\[
+\xymatrix{
+\Set & \ar@/_1pc/_-{F}[l] \ar@/^1pc/^-{U}[l]  \Fam(\Set)
+ & \Bialg(F, U) \ar@/_1pc/_-{\widehat{G}}[l] \ar@/^1pc/^-{V}[l] & \Bialg(\widehat{G}, W) \ar@/_1pc/_-{\overline{U}}[l] \ar@/^1pc/^-{W}[l] & E \ar@{_{`}->}[l]
+}
+\]
+
+
+Recall that we have a functor $F : \Fam(\Set) \to \Set$.
+Let $U : \Fam(\Set) \to \Set$ be the forgetful functor (i.e.\ $U(A, B)
+= A$, $U(f, g) = f$).  Consider the category $\Bialg(F,
+U)$. Concretely, it has as objects triples $A : \Set$, $B : A \to
+\Set$, $c : F(A, B) \to A$ and morphisms $(A, B, c)
+\Rightarrow_{\Bialg(F, U)} (A', B', c')$ are pairs $f : A \to A'$, $g
+: (a : A) \to B(a) \to B'(f(a))$ such that
+\[
+\xymatrix{
+F(A, B) \ar^-{c}[r] \ar_-{F(f,g)}[d] & A \ar^-{f}[d] \\
+F(A',B') \ar^-{c'}[r] & A' \\
+}
+\]
+
+The idea now is to make
+\[
+G : (A : \Set)(B : A \to \Set)(c : F(A,B) \to A) \to F(A,B) \to \Set
+\]
+into a functor $\widehat{G} : \Bialg(F, U) \to \Fam(\Set)$ by defining
+\begin{align*}
+\widehat{G}(A, B, c) &= (F(A, B), G(A, B, c)) \\
+\widehat{G}(f,g, p) &= (F(f,g), G(f,g, p))
+\end{align*}
+This requires $G$ to be functorial in the sense that if $(f, g, p) : (A, B, c) \Rightarrow_{\Bialg(F, U)} (A', B', c')$ -- i.e.\ $f : A \to A'$, $g : (a : A) \to B(a) \to B'(f(a))$ and $p : f \circ c = c' \circ F(f,g)$ -- then
+\[
+G(f,g,p) : (x : F(A, B)) \to G(A, B, c, x) \to G(A', B', c', F(f,g)(x)).
+\]
+Let $V : \Bialg(F, U) \to \Fam(\Set)$ be the forgetful functor, and
+consider the category $\Bialg(\widehat{G}, V)$. It has objects
+quadruples $A : \Set$, $B : A \to \Set$, $c : F(A, B) \to A$, $d :
+\widehat{G}(A, B, c) \Rightarrow_{\Fam(\Set)} (A, B)$ and a
+morphism $(A, B, c, d) \Rightarrow_{\Bialg(\widehat{G}, V)} (A', B',
+c', d')$ is a morphism $(f, g, p) : (A, B, c) \Rightarrow_{\Bialg(F, U)} (A', B', c')$ such that
+\[
+\xymatrix{
+\widehat{G}(A, B, c) \ar^-{d}[r] \ar_-{\widehat{G}(f,g, p)}[d] & (A, B) \ar^-{(f, g)}[d] \\
+\widehat{G}((A',B', c') \ar^-{d'}[r] & (A',B') \\
+}
+\]
+More explicitly, $d : \widehat{G}(A, B, c) \Rightarrow_{\Fam(\Set)}
+(A, B)$ means that $d = (d_0, d_1)$ where $d_0 : F(A, B) \to A$ and
+$d_1 : (x : F(A, B)) \to G(A, B, c) \to B(d_0(x))$. However, we would
+like that $d_0 = c$, so that $d_1 : (x : F(A, B)) \to G(A, B, c) \to
+B(c(x))$.
+
+For this end, consider the functor $\overline{U} :
+\Bialg(\widehat{G}, V) \to \Bialg(F, U)$ defined by
+\begin{align*}
+  \overline{U}(A, B, c, (d_0, d_1)) &\coloneqq (V(A, B, c), U(d_0, d_1)) = (A, B, d_0) \\
+  \overline{U}(f, g) &\coloneqq V(f, g) %TODO: what happens to p, p' ?
+\end{align*}
+This is well-typed, since $F \circ V = U \circ \widehat{G}$ by construction
+\[
+F(V(A, B, c)) = F(A, B) = U(F(A, B), G(A, B, c)) = U(\widehat{G}(A, B, c))
+\]
+and hence
+\begin{align*}
+U(d_0, d_1) &: U(\widehat{G}(A, B, c)) \to U(V(A, B, c)) \\
+            &: F(V(A, B, c)) \to U(V(A, B, c)),
+\end{align*}
+i.e.\ $(V(A, B, c), U(d_0, d_1))$ is an object of $\Bialg(F, U)$.  As
+usual, there is also a forgetful functor $W : \Bialg(\widehat{G}, V)
+\to \Bialg(F, u)$ with $W(A, B, c, d) = (A, B, c)$. Now consider the
+category $E$ which is the equalizer of $W$ and $\overline{U}$ in
+Cat. $E$ is the subcategory of $\Bialg(\widehat{G}, V)$ where for objects
+\[
+W(A, B, c, (d_0, d_1)) = \overline{U}(A, B, c, (d_0, d_1)) \Leftrightarrow
+(A, B, c) = (A, B, d_0) \Leftrightarrow
+c = d_0.
+\]
+
+\begin{remark}
+  From a type theoretic perspective, this requires an equality on the
+  large type $A \to \Set$, since we need $B = B : A \to \Set$. The
+  conclusion we need only talks about equality on the set $F(A, B) \to
+  A$, though.
+\end{remark}
+
+We can spell out the category $E$ as the category with
+\begin{itemize}
+\item Objects: $A : \Set$, $B : A \to \Set$, $c : F(A, B) \to \Set$, $d : (x : F(A, B)) \to G(A, B, c, x) \to B(c(x))$.
+\item Morphisms $(A, B, c, d) \Rightarrow (A', B', c', d')$: $(f, g) :
+  (A, B, c) \Rightarrow_{\Bialg(F, U)} (A', B', c')$ such that
+  \[
+  g(c(x), d(x, y)) = d'(F(f,g)(x), G(f,g)(x, y)).
+  \]
+[This equation is only well-typed since $(f,g)$ is an $\Bialg(F, U)$ morphism -- the LHS has type $B(f(c(x))$, the RHS $B(c'(F(f,g)(x)))$, but $f(c(x)) = c'(F(f,g)(x)$ for $\Bialg(F,U)$ morphisms.]
+\end{itemize}
+
+The intended interpretation of the inductive-inductive definition given by $F$, $G$ is the initial object in $E$.
+
+\section{Anton's version} \label{anton}
+
+In Anton's version, we approach things slightly differently. The main
+difference is that we make $F$ into a functor on $\Fam(\Set)$ by
+choosing the empty family over $F(A, B)$. This allows us to use the following structure (with $\mathbb{C}$ instantiated to $\Fam(\Set)$):
+
+\begin{definition}
+  Let $S : \mathbb{C} \to \mathbb{C}$ and $T : S$-Alg $\to \mathbb{C}$
+  be functors. The category $\ALG(S, T)$ of \emph{$(S, T)$-algebras} has
+  \begin{itemize}
+  \item objects: an object $X \in |\mathbb{C}|$, a morphism $f : SX \to X$ and a morphism $g : T(X, f) \to X$.
+  \item morphisms $(X, f, g) \Rightarrow_{\ALG(S, T)} (Y, f', g')$: morphisms $h : X \to Y$ such that the following diagram commutes:
+\[
+\xymatrix{
+SX \ar^-{f}[r] \ar_-{Sh}[d] & X \ar^-{h}[d] & T(X, f) \ar_-{g}[l] \ar^-{T(h, p)}[d] \\
+SY \ar_-{f'}[r] \ar@{}|{(p)}[ur] & Y  & T(Y, f') \ar^-{g'}[l]  \\
+}
+\]
+  \end{itemize}
+  Composition and identity morphisms are inherited from $\mathbb{C}$.
+\hfill $\blacksquare$
+\end{definition}
+
+Given a functor $F : \Fam(\Set) \to \Set$, we construct a functor
+$\widehat{F} : \Fam(\Set) \to \Fam(\Set)$ by defining
+\begin{align*}
+  \widehat{F}(A, B) &= (F(A, B), \lambda x.\ \zero) \\
+  \widehat{F}(f, g) &= (F(f, g), \lambda x, y.\ y)
+\end{align*}
+Now we want to make
+\[
+G : (A : \Set)(B : A \to \Set)(c : F(A,B) \to A) \to F(A,B) \to \Set
+\]
+into a functor $\widehat{G} : \widehat{F}$-Alg $\to \Fam(\Set)$ by defining
+\begin{align*}
+  \widehat{G}(A, B, (c_0, c_1)) &= (F(A, B), G(A, B, c_0)) \\
+  \widehat{G}(f, g, p) &= (F(f, g), G(f, g, p))
+\end{align*}
+where we assume that $G$ to be functorial in the sense that if $(f, g,
+p) : (A, B, c_0, c_1) \Rightarrow_{\widehat{F}\text{-Alg}} (A', B',
+c_0', c_1')$ -- i.e.\ $f : A \to A'$, $g : (a : A) \to B(a) \to
+B'(f(a))$ and $p : (f,g) \circ (c_0, c_1) = (c_0', c_1') \circ
+(F(f,g), \lambda x\ .!_{\zero})$ -- then
+\[
+G(f,g,p) : (x : F(A, B)) \to G(A, B, c, x) \to G(A', B', c', F(f,g)(x)).
+\]
+That $(f,g) \circ (c_0, c_1) = (c_0', c_1') \circ
+(F(f,g), \lambda x, y.\ y)$ means that 
+\begin{itemize}
+\item $f \circ c_0 = F(f,g) \circ c_0'$, and
+\item for all $x : F(A, B)$, $y : \zero$, we have $g(c_0(x), c_1(x, y)) = c_1'(F(f,g)(x), y)$.
+\end{itemize}
+However, since $c_1 : (x : F(A, B)) \to \zero \to B(c_0(x))$ and $c_1' : (x' : F(A', B')) \to \zero \to B'(c_0'(x'))$, we have $c_1(x) = !_{B(c_0(x))}$ and $c_1'(F(f,g)(x)) = !_{B'(c_0'(F(F,g)(x)))}$ for all $x$ by extensionality. This reduces the second equation to 
+\[
+g(c_0(x), !_{B(c_0(x))}(y)) = !_{B'(c_0'(F(F,g)(x)))}(y),
+\]
+but since $\lambda y.\ g(c_0(x), !_{B(c_0(x))}(y)) : \zero \to
+B'(f(c_0(x)))$ and $f \circ c_0 = F(f, g) \circ c_0'$ by the first
+equation, the second equation must hold by the uniqueness of
+$!_{B'(c_0'(F(f,g)(x)))}$. Hence, $p$ only needs to be a proof that $f
+\circ c_0 = F(f,g) \circ c_0'$.
+
+Now consider the category $\ALG(\widehat{F}, \widehat{G})$. An object consists of
+\begin{itemize}
+\item $A : \Set$, $B : A \to \Set$,
+\item $c_0 : F(A, B) \to A$, $c_1 : (x : F(A, B) \to \zero \to B(c_0(x))$,
+\item $d_0 : F(A, B) \to A$, $d_1 : (x : F(A, B)) \to G(A, B, c_0) \to B(d_0(x))$.
+\end{itemize}
+However, we would like $c_0 = d_0$ so that $d_1$ gets the right
+type. Consider the forgetful functor $W : \ALG(\widehat{F}, \widehat{G}) \to \widehat{F}$-Alg defined by
+\begin{align*}
+  W(A, B, c_0, c_1, d_0, d_1) &= (A, B, c_0, c_1) \\
+  W(f, g, p, q)    &= (f, g, p)
+\end{align*}
+and the functor $\overline{U} : \ALG(\widehat{F}, \widehat{G}) \to \widehat{F}$-Alg defined by
+\begin{align*}
+  \overline{U}(A, B, c_0, c_1, d_0, d_1) &= (A, B, d_0, \lambda x.\ !_{B(d_0(x))}) \\
+  \overline{U}(f, g, p, q)    &= (f, g, \fst(q).)
+\end{align*}
+
+Consider the equaliser $E'$ of $W$ and $\overline{U}$ in Cat. It is
+the subcategory of $\ALG(\widehat{F}, \widehat{G})$ where $W(A, B, c,
+d) = \overline{U}(A, B, c, d)$, i.e. $d_0 = c_0$. (We already know
+that $c_1 = \lambda x.\ !_{B(d_0(x))}$ by extensionality.) Thus, $E'$
+(is isomorphic to a category which) has objects
+\begin{itemize}
+\item $A : \Set$, $B : A \to \Set$,
+\item $c_0 : F(A, B) \to A$,
+\item $d_1 : (x : F(A, B)) \to G(A, B, c_0, x) \to B(c_0(x))$
+\end{itemize}
+and a morphism $(A, B, c_0, d_1) \Rightarrow (A', B', c_0', d_0')$
+consists of a morphism $(f, g) : (A, B) \Rightarrow_{\Fam(\Set)} (A', B')$, a proof $p : f
+\circ c_0 = c_0' \circ F(f, g)$ and a proof $q : (f, g) \circ (c_0,
+d_0) = (c_0', d_0') \circ (F(f,g), G(f, g, p))$.
+
+The intended interpretation of the inductive-inductive set is the
+initial object in this category.
+
+\begin{remark}
+  Another option is to have $G(A, B, c) : A \to \Set$ and define
+  $\widehat{G}(A, B, c_0, c_1) = (A, G(A, B, c_0))$. We then need to
+  ensure that $d_0 = \id$ instead of $d_0 = c_0$. I cannot immediately
+  see how to achieve this by using e.g.\ equalizers.
+\end{remark}
+
+\section{Relating the two approaches}
+
+Let $E$ be the category from Section \ref{nottingham} and $E'$ the category from Section \ref{anton}.
+They both have objects quadruples
+\begin{itemize}
+\item $A : \Set$, $B : A \to \Set$,
+\item $c : F(A, B) \to A$,
+\item $d : (x : F(A, B)) \to G(A, B, c, x) \to B(c(x))$
+\end{itemize}
+[this is not strictly true, as $E'$ is only isomorphic to such a
+category -- every object in $E'$ also has a redundant copy of $\lambda
+x . !_{B(c(x))}$, for example. Thus, $E$ and $E'$ are not equal on the
+nose, but only isomorphic -- but why would we expect anything else?]
+
+Are the morphisms also the same? Let us consider morphisms from $(A,
+B, c, d)$ to $(A', B', c', d')$ in both categories.  In $E$, they are
+$(f, g) : (A, B, c) \Rightarrow_{\Bialg(F, U)} (A', B', c')$ such that
+  \[
+  g(c(x), d(x, y)) = d'(F(f,g)(x), G(f,g)(x, y)).
+  \]
+Spelt out, this means
+\begin{itemize}
+\item $(f, g) : (A, B) \Rightarrow_{\Fam(\Set)} (A', B')$, such that
+\item $p : f \circ c = c' \circ F(f,g)$, and
+\item $g(c(x), d(x, y)) = d'(F(f,g)(x), G(f,g, p)(x, y))$.
+\end{itemize}
+
+In $E'$, we have morphisms $(f, g) : (A, B) \Rightarrow_{\Fam(\Set)} (A', B')$, a proof $p : f
+\circ c = c' \circ F(f, g)$ and a proof $q : (f, g) \circ (c,
+d) = (c', d') \circ (F(f,g), G(f, g, p))$. The first two conditions obviously correspond to the first two conditions for $E$. Spelling out the last condition, this means
+\begin{itemize}
+\item $f \circ c = c' \circ F(f,g)$ (again), and
+\item $g(c(x), d(x, y)) = d'(F(f,g)(x), G(f,g, p)(x, y))$,
+\end{itemize}
+which matches the last condition for $E$. Hence $E$ and $E'$ are
+isomorphic, and deciding which one to work with is a matter of taste.
+
+\end{document}
+
