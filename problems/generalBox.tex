@@ -1,0 +1,267 @@
+\documentclass{article}
+
+\usepackage{amssymb}
+\usepackage{amsthm}
+\usepackage{amsmath}
+\usepackage{amstext}
+
+\usepackage{xypic}
+\usepackage{stmaryrd}
+\usepackage{enumerate}
+\usepackage{mathtools}
+
+\input header.inc
+
+\title{Generalising $\square_F$ and $\dmap_F$ for non-endofunctors}
+
+
+\author{Fredrik Nordvall Forsberg}
+
+\begin{document}
+\maketitle
+
+\section{The standard situation}
+
+In the ordinary situation, we have an endofunctor $F : \Set \to \Set$
+representing an inductive definition, i.e.\ we have a set $\muF$ and a
+constructor $c : F(\muF) \to \muF$. The eliminator has type
+\begin{multline*}
+\elim_F : (P : \muF \to \Set) \to (g : (x : F(\muF)) \to \square_F(\muF, P,x)
+   \to P(c(x))) \\ \to (x : \muF) \to P(x)
+\end{multline*}
+and computation rule
+\[
+\elim_F(P, g, c(x)) = g(x, \dmap_F(\muF, P, \elim_F(P, g), x)).
+\]
+Here, 
+\[
+\square_F : (A : \Set) \to (P : A \to \Set) \to F(A) \to \Set
+\]
+gives the induction hypothesis (it is called `IH' in the
+induction-recursion papers) and
+\begin{multline*}
+  \dmap_F : (A : \Set) \to (P : A \to \Set) \to ((x : A) \to P(x)) \\
+  \to (x : F(A)) \to \square_F(A, P, x)
+\end{multline*}
+takes care of the recursive calls (in the IR papers, it is called
+mapIH). Both $\square_F$ and $\dmap_F$ can be explicitly defined:
+\begin{align*}
+\square_F(A, P, x) &= \{ y : F(\Sigma\ A\ P)\ |\ F(\pi_0)(y) = x \} \\
+\dmap_F(A, P, g, x) &= F(\widehat{g})(x)
+\end{align*}
+where $\widehat{g} : A \to \Sigma\ A \ P$ is defined by
+$\widehat{g}(z) = \langle z , g(z)\rangle$. Note that $\pi_0 \circ
+\widehat{g} = \id$, so that
+\[
+F(\pi_0)(F(\widehat{g})(x)) = F(\pi_0 \circ \widehat{g})(x))
+                            = F(\id)(x)
+                            = \id(x)
+                            = x
+\]
+which shows that indeed $\dmap_F(A, P, g, x) : \square_F(A, P, x)$.
+One can show that this definition of $\square_F$ is naturally
+isomorphic to the definition in the IR papers (see Problem 2 in
+\texttt{problems.pdf}).
+
+However, we prefer to just use some abstract properties of $\square_F$
+and $\dmap_F$, namely
+\begin{equation}
+  \label{eq:square}
+  \tag{$\ast_{\square}$}
+F (\Sigma\ A\ B) \cong \Sigma\ F(A)\ \square_F(A, B)
+\end{equation}
+and this isomorphism $\varphi$ satisfies
+\begin{equation}
+  \label{eq:square2}
+  \tag{$\ast\ast_{\square}$}
+\xymatrix
+{
+F(\Sigma\ A\ B) \ar^-{\varphi}[r] \ar_{F(\pi_0)}[d] & \Sigma\ F(A)\ \square_F(A, B) \ar^{\pi_0}[dl] \\
+F(A)  & 
+}
+\end{equation}
+i.e.\ $\pi_0 \circ \varphi = F(\pi_0)$. For $\dmap_F$, we have for all
+$f : (x : A) \to B(x)$
+\begin{equation}
+  \label{eq:dmap}
+  \tag{$\ast_{\dmap}$}
+\xymatrix{
+F(A) \ar^-{F(\widehat{f})}[r] \ar_{\widehat{\dmap_F(f)}}[d]& F(\Sigma\ A\ B) \ar^{\varphi}[dl] \\
+\Sigma\ F(A)\ \square_F(A, B) & 
+}
+\end{equation}
+i.e.\ $\widehat{\dmap_F(f)} = \varphi \circ F(\widehat{f})$.
+
+\section{Generalising $\square_F$ and $\dmap_F$ for non-endofunctors}
+
+Let us now try to generalise things, first by moving away from the
+category $\Set$ to an arbitrary category $\mathbb{C}$ (with some
+structure, of course), and then by replacing the endofunctor $F :
+\mathbb{C} \to \mathbb{C}$ with just a functor $F : \mathbb{C} \to
+\mathbb{D}$.
+
+\subsection{The category $\sem{\Fam}(\mathbb{C})$ of interpretations
+  of families in $\mathbb{C}$}
+
+Let us for the moment assume that the category $\mathbb{C}$ is a model
+of type theory. I want to define a category $\sem{\Fam}(\mathbb{C})$
+of ``interpretations of families in $\mathbb{C}$''. It has as objects
+an interpretation of `$A : \Set, B : A \to \Set$' in $\mathbb{C}$, and
+a morphism from $\sem{A, B}$ to $\sem{A', B'}$ is an interpretation of
+`$f : A \to A', g : (x : A) \to B(x) \to B'(f(x))$'.
+
+\begin{example}[$\mathbb{C} = \Set$]
+  For $\mathbb{C} = \Set$, we recover the usual category $\Fam(\Set)$
+  of families of sets, i.e.\ we have objects pairs $(A, B)$ where $A :
+  \Set$ and $B : A \to \Set$, and a morphism $(A, B) \to (A', B')$ is
+  a pair $f : A \to A'$, $g : (x : A) \to B(x) \to B'(f(x))$.
+\end{example}
+
+\begin{example}[$\mathbb{C} = \Fam(\Set)$]
+  Unless I am mistaken, the objects in $\sem{\Fam}(\Fam(\Set))$ are
+  tuples $((A_0, A_1), (B_0, B_1))$ where
+  \begin{align*}
+    A_0 &: \Set, \\
+    A_1 &: A_0 \to \Set, \\
+    B_0 &: A_0 \to \Set, \\
+    B_1 &: (x : A_0) \to A_1(x) \to  B_0(x) \to \Set.
+  \end{align*}
+ A morphism from $((A_0, A_1), (B_0, B_1))$ to
+  $((A'_0, A'_1), (B'_0, B'_1))$ consists of 
+  \begin{align*}
+    f_0 &: A_0 \to A'_0, \\
+    f_1 &: (x : A_0) \to A_1(x) \to A'_1(f_0(x)), \\
+    g_0 &: (x : A_0) \to B_0(x) \to B'_0(f_0(x)) \\
+    g_1 &: (x : A_0) \to (y : A_1(x)) \to (z : B_0(x)) \to B_1(x, y, z) \\
+    & \qquad \qquad\qquad \qquad\qquad \qquad\qquad \to B'_1(f_0(x), f_1(x, y), g_0(x, z)).
+  \end{align*}
+\end{example}
+
+\begin{question}
+  Is there a better way to present $\sem{\Fam}(\mathbb{C})$?
+\end{question}
+
+\subsection{$\Sigma$ as a functor from $\sem{\Fam}(\mathbb{C})$ to $\mathbb{C}$}
+
+Now, I notice that the sigma constructor takes a family $(A, B)$ of
+sets and gives me a set $\Sigma\ A\ B$ back. It is also functorial,
+since if I have a morphism $(f, g) : (A, B) \to (A', B')$, then I can
+construct a morphism $[f, g] : \Sigma\ A\ B \to \Sigma\ A'\ B'$ by defining
+\[
+[f, g] \langle a, b\rangle = \langle f(a), g(a, b)\rangle.
+\]
+
+In the general case, I would thus like to generalise $\Sigma$ to a functor
+\[
+\Sigma_{\mathbb{C}} : \sem{\Fam}(\mathbb{C}) \to \mathbb{C}
+\]
+together with some kind of (interpretation of) projection morphisms \\
+$\pi_0 : \Sigma_{\mathbb{C}}(A, B) \to A$, $\pi_1 : (x :
+\Sigma_{\mathbb{C}}(A, B)) \to B(\pi_0(x))$.
+
+\begin{question}
+  I probably would like $\Sigma_{\mathbb{C}}$ to be the interpretation
+  of $\Sigma$ in $\mathbb{C}$. For morphisms, this would mean that I
+  want $\Sigma_{\mathbb{C}}(f,g)$ to be the interpretation of $[f,g]$?
+\end{question}
+
+\subsection{$\square$ is a functor $\square' : \Set^{\Set} \to \Fam(\Set)^{\Fam(\Set)}$}
+
+Looking at the type 
+\[
+\square_F : (A : \Set) \to (P : A \to \Set) \to F(A) \to \Set
+\]
+of $\square_F$ again, we see that we can write this as
+\[
+\square' : \Set^{\Set} \to \Fam(\Set)^{\Fam(\Set)}
+\]
+if we define $\square'(F) = \lambda (A, B) .\ (F(A), \square_F(A,
+B))$. For $\square'(F)$ to be a functor $\Fam(\Set)$ to $\Fam(\Set)$,
+it must also act on morphisms. Suppose $(f, g) : (A, B) \to (A',
+B')$. We must find a morphism from $\square'(F)(A, B)$ to
+$\square'(F)(A', B')$, i.e.\ from
+\[
+(F(A),  \{ y : F(\Sigma\ A\ B)\ |\ F(\pi_0)(y) = x \})
+\]
+to
+\[
+(F(A'),  \{ y : F(\Sigma\ A'\ B')\ |\ F(\pi_0)(y) = x \}).
+\]
+But $f : A \to A'$, so $m = F(f) : F(A) \to F(A')$ can be our first
+component. Now we need to define
+\begin{multline*}
+  n : (x : F(A)) \to \{ y : F(\Sigma\ A\ B)\ |\ F(\pi_0)(y) = x \} \\
+  \to \{ z : F(\Sigma\ A'\ B')\ |\ F(\pi_0)(z) = F(f)(x) \}
+\end{multline*}
+Let $n(x) = F([f, g])$. We need to prove that $F(\pi_0)(F([f, g])(y))
+= F(f)(x)$ for $y : F(\Sigma\ A\ B)$ such that $F(\pi_0)(y) = x$. But
+$\pi_0 \circ [f, g] = f \circ \pi_0$, so
+\[
+F(\pi_0)(F([f, g])(y)) = F(\pi_0 \circ [f, g])(y) = F(f \circ
+\pi_0)(y) = F(f)(F(\pi_0)(y)) = F(f)(x).
+\]
+Thus we can take $\square'(F)(f,g) = (n, m) = (F(f), \lambda x .\
+F([f,g]))$. This shows that $\square'(F) : \Fam(\Set)^{\Fam(\Set)}$ if
+$F : \Set \to \Set$ is a functor.
+
+However, we want more! We want $\square'$ to be a functor $\square' :
+\Set^{\Set} \to \Fam(\Set)^{\Fam(\Set)}$. We have defined the object
+part of $\square'$, what is the morphism part? Given a natural
+transformation $\eta : F \xrightarrow{\cdot} G$, we have to construct
+a natural transformation $\square'(\eta) : \square'(F)
+\xrightarrow{\cdot} \square'(G)$. The component of $\square'(\eta)$ at
+$(A, B)$ consists of a function $f : F(A) \to G(A)$ and a function $g
+: (x : F(A)) \to \square_F(A, B, x) \to \square_G(A, B, f(x))$. For
+$f$, we can choose $f = \eta_A$. Choose $g(x) = \eta_{\Sigma\ A\
+  B}$. Certainly $\eta_{\Sigma A B} : F(\Sigma\ A\ B) \to G(\Sigma\ A\
+B)$, but do we have $G(\pi_0)(\eta_{\Sigma A B}(y)) = \eta_a(x)$,
+given that $F(\pi_0)(y) = x$? Yes, because substituting $x =
+F(\pi_0)(y)$, we end up with the equation $G(\pi_0)(\eta_{\Sigma A
+  B}(y)) = \eta_a(F(\pi_0)(y))$, which is exactly the naturality
+condition!
+\[
+\xymatrix
+{
+F(\Sigma\ A\ B) \ar^-{\eta_{\Sigma A B}}[r] \ar_{F(\pi_0)}[d] & G(\Sigma\ A\ B) \ar^{G(\pi_0)}[d] \\
+F(A) \ar_-{\eta_{A}}[r] & G(A) 
+}
+\]
+Hence we can define $\square'(\eta)_{(A, B)} = (\eta_A,
+\lambda x .\ \eta_{\Sigma A B})$. The naturality of $\square'(\eta)$
+follows directly from the naturality of $\eta$.
+
+\subsection{A generalised $\square_F$ for $F$ not an endofunctor}
+
+Assume that $\mathbb{C}$ and $\mathbb{D}$ are categories such that
+$\sem{\Fam}({\mathbb{C}})$ and $\sem{\Fam}({\mathbb{D}})$ make
+sense. (Then $\Sigma_{\mathbb{C}}$ and $\Sigma_{\mathbb{D}}$ should
+make sense as well.) We can then generalise $\square_F$ to a functor
+\[
+\square : \mathbb{D}^{\mathbb{C}} \to \sem{\Fam}(\mathbb{C}) \to \sem{\Fam}(\mathbb{C})
+\]
+such that there is a natural isomorphism
+\begin{equation}
+  \label{eq:square}
+  \tag{$\ast_{\square}$}
+\eta : F \circ \Sigma \xrightarrow{\cdot} \Sigma\ \circ \square
+\end{equation}
+satisfying
+\begin{equation}
+  \label{eq:square2}
+  \tag{$\ast\ast_{\square}$}
+\xymatrix
+{
+F(\Sigma\ A\ B) \ar^-{\eta_{(A, B)}}[r] \ar_{F(\pi_0)}[d] & \Sigma\ F(A)\ \square_F(A, B) \ar^{\pi_0}[dl] \\
+F(A)  & 
+}
+\end{equation}
+i.e.\ $\pi_0 \circ \varphi = F(\pi_0)$.
+
+\ldots
+
+\section{Comparision with Fibrational Induction Rules for Initial Algebras}
+
+
+
+\end{document}
+

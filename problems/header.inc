@@ -23,6 +23,7 @@
 \newtheorem{remark}[theorem]{Remark}
 \newtheorem{note}[theorem]{Note}
 \newtheorem{problem}{Problem}
+\newtheorem{question}{Question}
 \newtheorem*{principle}{Principle}
 
 \newcommand{\sem}[1]{\ensuremath{\llbracket #1 \rrbracket}}
