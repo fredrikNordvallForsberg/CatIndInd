@@ -5,7 +5,7 @@
 \usepackage{amsmath}
 \usepackage{amstext}
 
-\usepackage{xypic}
+\usepackage[all]{xypic}
 \usepackage{stmaryrd}
 \usepackage{enumerate}
 \usepackage{mathtools}
@@ -95,30 +95,39 @@ i.e.\ $\widehat{\dmap_F(f)} = \varphi \circ F(\widehat{f})$.
 \section{Generalising $\square_F$ and $\dmap_F$ for non-endofunctors}
 
 Let us now try to generalise things, first by moving away from the
-category $\Set$ to an arbitrary category $\mathbb{C}$ (with some
+category $\Set$ to an arbitrary category $\C$ (with some
 structure, of course), and then by replacing the endofunctor $F :
-\mathbb{C} \to \mathbb{C}$ with just a functor $F : \mathbb{C} \to
-\mathbb{D}$.
+\C \to \C$ with just a functor $F : \C \to
+\D$.
 
-\subsection{The category $\sem{\Fam}(\mathbb{C})$ of interpretations
-  of families in $\mathbb{C}$}
+\subsection{The category $\semFam(\C)$ of interpretations
+  of families in $\C$}
 
-Let us for the moment assume that the category $\mathbb{C}$ is a model
-of type theory. I want to define a category $\sem{\Fam}(\mathbb{C})$
-of ``interpretations of families in $\mathbb{C}$''. It has as objects
-an interpretation of `$A : \Set, B : A \to \Set$' in $\mathbb{C}$, and
+Let us for the moment assume that the category $\C$ is a model
+of type theory. I want to define a category $\semFam(\C)$
+of ``interpretations of families in $\C$''. It has as objects
+an interpretation of `$A : \Set, B : A \to \Set$' in $\C$, and
 a morphism from $\sem{A, B}$ to $\sem{A', B'}$ is an interpretation of
 `$f : A \to A', g : (x : A) \to B(x) \to B'(f(x))$'.
 
-\begin{example}[$\mathbb{C} = \Set$]
-  For $\mathbb{C} = \Set$, we recover the usual category $\Fam(\Set)$
+Assuming that the interpretation of `$A : \Set$' in $\C$ is
+$\sem{A} : \C$, there should also be a forgetful functor $U :
+\semFam(\C) \to \C$ defined by $U(\sem{A},
+\sem{B})$ = $\sem{A}$ and $U(\sem{f}, \sem{g})$ = $\sem{f}$.
+
+
+\begin{example}[$\C = \Set$]
+  For $\C = \Set$, we recover the usual category $\Fam(\Set)$
   of families of sets, i.e.\ we have objects pairs $(A, B)$ where $A :
   \Set$ and $B : A \to \Set$, and a morphism $(A, B) \to (A', B')$ is
   a pair $f : A \to A'$, $g : (x : A) \to B(x) \to B'(f(x))$.
+
+  The forgetful functor $U$ is the usual forgetful functor $U :
+  \Fam(\Set) \to \Set$; $U(A, B) = A$, $U(f, g) = f$.
 \end{example}
 
-\begin{example}[$\mathbb{C} = \Fam(\Set)$]
-  Unless I am mistaken, the objects in $\sem{\Fam}(\Fam(\Set))$ are
+\begin{example}[$\C = \Fam(\Set)$]
+  Unless I am mistaken, the objects in $\semFam(\Fam(\Set))$ are
   tuples $((A_0, A_1), (B_0, B_1))$ where
   \begin{align*}
     A_0 &: \Set, \\
@@ -135,13 +144,14 @@ a morphism from $\sem{A, B}$ to $\sem{A', B'}$ is an interpretation of
     g_1 &: (x : A_0) \to (y : A_1(x)) \to (z : B_0(x)) \to B_1(x, y, z) \\
     & \qquad \qquad\qquad \qquad\qquad \qquad\qquad \to B'_1(f_0(x), f_1(x, y), g_0(x, z)).
   \end{align*}
+$U((A_0, A_1), (B_0, B_1)) = (A_0, A_1)$, $U((f_0, f_1), (g_0, g_1)) = (f_0, f_1)$.
 \end{example}
 
 \begin{question}
-  Is there a better way to present $\sem{\Fam}(\mathbb{C})$?
+  Is there a better way to present $\semFam(\C)$?
 \end{question}
 
-\subsection{$\Sigma$ as a functor from $\sem{\Fam}(\mathbb{C})$ to $\mathbb{C}$}
+\subsection{$\Sigma$ as a functor from $\semFam(\C)$ to $\C$}
 
 Now, I notice that the sigma constructor takes a family $(A, B)$ of
 sets and gives me a set $\Sigma\ A\ B$ back. It is also functorial,
@@ -150,19 +160,26 @@ construct a morphism $[f, g] : \Sigma\ A\ B \to \Sigma\ A'\ B'$ by defining
 \[
 [f, g] \langle a, b\rangle = \langle f(a), g(a, b)\rangle.
 \]
+The projection $\pi_0$ takes me from $\Sigma\ A\ B$ to $A = U(A,B)$, and $\pi_0
+\circ [f, g] = f \circ \pi_0$. It is thus a natural transformation
+$\pi_0 : \Sigma \xrightarrow{\cdot} U$.
+
 
 In the general case, I would thus like to generalise $\Sigma$ to a functor
 \[
-\Sigma_{\mathbb{C}} : \sem{\Fam}(\mathbb{C}) \to \mathbb{C}
+\Sigma_{\C} : \semFam(\C) \to \C
 \]
-together with some kind of (interpretation of) projection morphisms \\
-$\pi_0 : \Sigma_{\mathbb{C}}(A, B) \to A$, $\pi_1 : (x :
-\Sigma_{\mathbb{C}}(A, B)) \to B(\pi_0(x))$.
+together with a natural transformation $\pi_0 : \Sigma_{\C} \xrightarrow{\cdot} U$.
 
 \begin{question}
-  I probably would like $\Sigma_{\mathbb{C}}$ to be the interpretation
-  of $\Sigma$ in $\mathbb{C}$. For morphisms, this would mean that I
-  want $\Sigma_{\mathbb{C}}(f,g)$ to be the interpretation of $[f,g]$?
+  Do we need $\pi_1 : (x : \Sigma_{\C}(A, B)) \to B(\pi_0(x))$
+  as well?
+\end{question}
+
+\begin{question}
+  I probably would like $\Sigma_{\C}$ to be the interpretation
+  of $\Sigma$ in $\C$. For morphisms, this would mean that I
+  want $\Sigma_{\C}(f,g)$ to be the interpretation of $[f,g]$?
 \end{question}
 
 \subsection{$\square$ is a functor $\square' : \Set^{\Set} \to \Fam(\Set)^{\Fam(\Set)}$}
@@ -230,20 +247,33 @@ Hence we can define $\square'(\eta)_{(A, B)} = (\eta_A,
 \lambda x .\ \eta_{\Sigma A B})$. The naturality of $\square'(\eta)$
 follows directly from the naturality of $\eta$.
 
+Now that $\Sigma$ and $\square$ can be seen as functors, we can
+replace the isomorphism $\varphi$ in (\ref{eq:square}) with a natural
+isomorphism $\eta : F \circ \Sigma \xrightarrow{\cdot} \Sigma\ \circ
+\square$. One can easily check that the isomorphism given in Problem 1
+in fact is natural:
+\[
+\xymatrix
+{
+F(\Sigma\ A\ B) \ar^-{\eta_{(A, B)}}[r] \ar_{F([f, g])}[d] & \Sigma\ F(A)\ \square_F(A,B) \ar^{[F(f), [F([f,g])]]}[d] \\
+F(\Sigma\ A'\ B')  \ar_-{\eta_{(A',B')}}[r] & \Sigma\ F(A')\ \square_F(A',B')
+}
+\]
+
 \subsection{A generalised $\square_F$ for $F$ not an endofunctor}
 
-Assume that $\mathbb{C}$ and $\mathbb{D}$ are categories such that
-$\sem{\Fam}({\mathbb{C}})$ and $\sem{\Fam}({\mathbb{D}})$ make
-sense. (Then $\Sigma_{\mathbb{C}}$ and $\Sigma_{\mathbb{D}}$ should
+Assume that $\C$ and $\D$ are categories such that
+$\semFam({\C})$ and $\semFam({\D})$ make
+sense. (Then $\Sigma_{\C}$ and $\Sigma_{\D}$ should
 make sense as well.) We can then generalise $\square_F$ to a functor
 \[
-\square : \mathbb{D}^{\mathbb{C}} \to \sem{\Fam}(\mathbb{C}) \to \sem{\Fam}(\mathbb{C})
+\square : \D^{\C} \to \semFam(\C) \to \semFam(\C)
 \]
 such that there is a natural isomorphism
 \begin{equation}
   \label{eq:square}
   \tag{$\ast_{\square}$}
-\eta : F \circ \Sigma \xrightarrow{\cdot} \Sigma\ \circ \square
+\eta : F \circ \Sigma_{\C} \xrightarrow{\cdot} \Sigma_{\D}\ \circ \square_F
 \end{equation}
 satisfying
 \begin{equation}
@@ -251,13 +281,142 @@ satisfying
   \tag{$\ast\ast_{\square}$}
 \xymatrix
 {
-F(\Sigma\ A\ B) \ar^-{\eta_{(A, B)}}[r] \ar_{F(\pi_0)}[d] & \Sigma\ F(A)\ \square_F(A, B) \ar^{\pi_0}[dl] \\
+F(\Sigma_{\C}\ A\ B) \ar^-{\eta_{(A, B)}}[r] \ar_{F(\pi_0)}[d] & \Sigma_{\D}\ F(A)\ \square_F(A, B) \ar^{\pi_0}[dl] \\
 F(A)  & 
 }
 \end{equation}
-i.e.\ $\pi_0 \circ \varphi = F(\pi_0)$.
+i.e.\ $\pi_0 \circ \eta_{(A, B)} = F(\pi_0)$.
 
-\ldots
+\subsection{The Inverse image}
+\label{inverseImage}
+
+If $\C$ also has an inverse image operation which maps $f : X
+\to Y$ to $f^* : \semFam(\C)$ with $U(f^*) = Y$, we can
+define $\square_F(X) = (F(U(X)), (F(\pi_{0_X}))^*)$.
+
+We have to check that (\ref{eq:square}) and (\ref{eq:square2})
+hold. \ldots more conditions on $^*$ needed (corresponding to being
+left adjoint to reindexing) \ldots
+% For (\ref{eq:square}), define $\eta : F \circ
+%\Sigma_{\C} \xrightarrow{\cdot} \Sigma_{\D}\ \circ
+%\square_F$ by
+%\[
+%\eta_{X} = 
+%\]
+
+\section{$\Sigma$ in the relevant categories}
+Let us write $\Pow_{\C}(X)$ for the interpretation of $X \to \Set$ in
+$\C$.
+
+\begin{definition}
+  A category $\C$ \emph{has sigma types} if $\semFam(\C)$ and a
+  forgetful functor $U : \semFam(\C) \to \C$ exists, together with a
+  functor $\Sigma_{\C} : \semFam(\C) \to \C$ and a natural
+  transformation $\pi_0 : \Sigma_{\C} \to U$.
+\end{definition}
+
+\begin{definition}
+  Let $\C$, $\D$ be categories having sigma types.  We say that
+  \emph{$\C$ and $\D$ have boxes} if there is a functor $\square :
+  \D^{\C} \to \semFam(\D)^\semFam(C)$ satisfying (\ref{eq:square}) and
+  (\ref{eq:square2}).
+\end{definition}
+
+Section \ref{inverseImage} starts exploring the idea that if $\C$ and
+$\D$ have sigma types, and $\D$ in addition an inverse image
+operation, then $\C$ and $\D$ have boxes.
+
+\subsection{$\Sigma$ and $\square$ in $\Set$}
+
+This has been covered already. 
+
+\subsection{$\Sigma$ and $\square$ in $\Fam(\Set)$}
+
+\subsection{$\Sigma$ and $\square$ in $\Bialg(F, G)$ for $F, G : \C \to \D$}
+
+Assume that $\C$ and $\D$ have boxes. Then $\Bialg(F, G)$ have sigma
+types, and $\semFam(\Bialg(F, G)) = \Bialg(\square_F, \square_G)$.
+
+\begin{remark}
+  If one notices that $\square$ is the morphism part of the (weak)
+  functor $\semFam :$ Cat$_{\text{models of TT}} \to $ Cat, this
+  becomes
+  \[
+  \semFam(\Bialg(F, G)) = \Bialg(\semFam(F), \semFam(G)),
+  \]
+  which looks rather natural.
+\end{remark}
+
+
+\subsubsection{$\Sigma$ in $\Bialg(F, G)$}
+
+Let $\varphi_F : F (\Sigma(A, P)) \to \Sigma(\square_F(A, P))$ and
+similarly $\varphi_G$ be the natural isomorphisms for the boxes in
+$\C$, $\D$. Given $(A, P) : \semFam(\C)$ and $(c, d) : \square_F(A, P)
+\to \square_G(A, P)$, i.e. an object in $\semFam(\Bialg(F, G))$, we
+construct
+\[
+\Sigma_{\Bialg(F, G)}\ (A, c)\ (P, d) = (\Sigma_{\C}\ A\ P, \varphi^{-1}_G \circ [c, d] \circ \varphi_F)
+\]
+where $[c, d] = \Sigma_\C(c, d) : \Sigma_\C \square_F(A, P) \to
+\Sigma_\C \square_G(A, P)$ is the morphism part of $\Sigma_\C$ applied
+to $(c, d)$. For morphisms, given $(f, g) : ((A, P), (c, d))
+\to_{\semFam(\Bialg(F, G))} ((A', P'), (c', d'))$, i.e.\ $(f, g) : (A,
+P) \to_{\semFam(\C)} (A', P')$ such that
+\begin{equation}
+\label{eq:331}
+\xymatrix{
+\square_F(A, P) \ar^-{(c, d)}[r] \ar_-{\square_F(f, g)}[d] & \square_G(A, P) \ar^-{\square_G(f, g)}[d] \\
+\square_F(A', P') \ar^-{(c', d')}[r] & \square_G(A', P') \\
+}
+\end{equation}
+commutes, we define $\Sigma_{\Bialg(F, G)}(f, g) = \Sigma_{\C}(f, g)$.
+We have to check that this really is a morphism in
+$\Bialg(F, G)$, i.e.\ that the following commutes:
+
+\[
+\xymatrix{
+F(\Sigma_{\C}\ A\ P) \ar^-{\varphi^{-1}_G \circ [c, d] \circ \varphi_F}[rr] \ar_-{F[f, g]}[d] & & G(\Sigma_{\C}\ A\ P) \ar^-{G[f,g]}[d] \\
+F(\Sigma_{\C}\ A'\ P') \ar^-{\varphi^{-1}_G \circ [c', d'] \circ \varphi_F}[rr] & & G(\Sigma_{\C}\ A'\ P')
+}
+\]
+By the naturality of $\varphi$, we have $\Sigma\square_F(f, g) \circ
+\varphi_F = \varphi_F \circ F\Sigma(f, g)$ or equivalently $F\Sigma(f,
+g) = \varphi^{-1} \circ \Sigma\square_F(f, g) \circ \varphi_F$. This
+shows that the left and rightmost squares in the following diagram
+commutes. The outermost square commutes by (\ref{eq:331}), and the top
+and bottom squares by definition, so that the square in the middle
+commutes by diagram chasing, and we are done:
+\[
+\xymatrix{
+\Sigma_{\C}\square_F(A,P) \ar^-{[c, d]}[rr]  \ar_-{\Sigma\square_F(f, g)}@<-5ex>@/_2pc/[ddd] & & \Sigma_{\C}\square_G(A,P) \ar^-{\varphi^{-1}_G}@/^/[d] \ar^-{\Sigma\square_G(f, g)}@<5ex>@/^2pc/[ddd] \\
+F(\Sigma_{\C}\ A\ P) \ar^-{\varphi_F}[u] \ar^-{\varphi^{-1}_G \circ [c, d] \circ \varphi_F}[rr] \ar_-{F[f, g]}[d] & & G(\Sigma_{\C}\ A\ P) \ar^-{G[f,g]}[d] \ar^-{\varphi_G}@/^/[u] \\
+F(\Sigma_{\C}\ A'\ P') \ar_-{\varphi_F}@/_/[d] \ar^-{\varphi^{-1}_G \circ [c', d'] \circ \varphi_F}[rr] & & G(\Sigma_{\C}\ A'\ P') \\
+\Sigma_{\C}\square_F(A',P') \ar_-{\varphi^{-1}_F}@/_/[u] \ar^-{[c', d']}[rr]  & & \Sigma_{\C}\square_G(A',P') \ar^-{\varphi^{-1}_G}[u] 
+}
+\]
+
+\subsubsection{$\pi_0$ in $\Bialg(F, G)$}
+
+For $\pi_0 : \Sigma_{\Bialg(F, G)}\ (A, c)\ (P, d) \to (A, c)$, we of course define $(\pi_0)_{\Bialg(F, G)} = (\pi_0)_{\C}$. We have to check that the diagram
+\[
+\xymatrix{
+F(\Sigma_{\C}\ A\ P) \ar^-{\varphi^{-1}_G \circ [c, d] \circ \varphi_F}[rr] \ar_-{F(\pi_0)}[d] & & G(\Sigma_{\C}\ A\ P) \ar^-{G(\pi_0)}[d] \\
+F(A) \ar^-{c}[rr] & & G(A)
+}
+\]
+commutes. But by (\ref{eq:square2}), $G(\pi_0) = \pi_0 \circ \varphi_G$ so that
+\begin{align*}
+  G(\pi_0) \circ \varphi^{-1}_G \circ [c, d] \circ \varphi_F
+%  &= \pi_0 \circ \varphi_G \circ \varphi^{-1}_G \circ [c, d] \circ \varphi_F \\
+  = \pi_0 \circ [c, d] \circ \varphi_F %\\
+  = c \circ \pi_0  \circ \varphi_F %\\
+  = c \circ F(\pi_0).
+\end{align*}
+
+\subsubsection{$\square_{\widehat{G}}$ for $\widehat{G} : \semFam(\Bialg(F, U)) \to \Fam(\Set)$}
+
+
 
 \section{Comparision with Fibrational Induction Rules for Initial Algebras}
 

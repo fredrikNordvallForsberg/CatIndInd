@@ -1,6 +1,3 @@
-\newcommand{\Set}{\ensuremath{\text{Set}}}
-\newcommand{\Type}{\ensuremath{\text{Type}}}
-\newcommand{\Fam}{\ensuremath{\text{Fam}}}
 
 \newcommand{\refl}{\ensuremath{\text{refl}}}
 \newcommand{\ext}{\ensuremath{\text{ext}}}
@@ -39,3 +36,12 @@
 
 % For convenience
 \newcommand{\muF}{\ensuremath{\mu F}}
+\newcommand{\C}{\ensuremath{\mathbb{C}}}
+\newcommand{\D}{\ensuremath{\mathbb{D}}}
+
+\newcommand{\Set}{\ensuremath{\text{Set}}}
+\newcommand{\Type}{\ensuremath{\text{Type}}}
+\newcommand{\Fam}{\ensuremath{\text{Fam}}}
+\newcommand{\semFam}{\ensuremath{\sem{\Fam}}}
+\newcommand{\Pow}{\ensuremath{\text{Pow}}}
+
