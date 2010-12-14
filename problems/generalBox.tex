@@ -291,11 +291,11 @@ i.e.\ $\pi_0 \circ \eta_{(A, B)} = F(\pi_0)$.
 \label{inverseImage}
 
 If $\C$ also has an inverse image operation which maps $f : X
-\to Y$ to $f^* : \semFam(\C)$ with $U(f^*) = Y$, we can
-define $\square_F(X) = (F(U(X)), (F(\pi_{0_X}))^*)$.
+\to Y$ to $\invIm{f} : \semFam(\C)$ with $U(\invIm{f}) = Y$, we can
+define $\square_F(X) = (F(U(X)), \invIm{(F(\pi_{0_X}))})$.
 
 We have to check that (\ref{eq:square}) and (\ref{eq:square2})
-hold. \ldots more conditions on $^*$ needed (corresponding to being
+hold. \ldots more conditions on $\invIm{\cdot}$ needed (corresponding to being
 left adjoint to reindexing) \ldots
 % For (\ref{eq:square}), define $\eta : F \circ
 %\Sigma_{\C} \xrightarrow{\cdot} \Sigma_{\D}\ \circ
@@ -331,6 +331,47 @@ operation, then $\C$ and $\D$ have boxes.
 This has been covered already. 
 
 \subsection{$\Sigma$ and $\square$ in $\Fam(\Set)$}
+\label{boxFamSet}
+
+\begin{multline*}
+\Sigma_{\Fam(\Set)} : (A : \Set)(B : A \to \Set) \to \\
+     (P : A \to \Set)(Q: (x : A) \to B(a) \to P(a) \to \Set) \to \Fam(\Set)
+\end{multline*}
+\[
+\Sigma_{\Fam(\Set)}(A, B, P, Q) = (\Sigma\ A\ P, \lambda \langle a, p\rangle . \Sigma b\!:\!B(a).\ Q(a, b, p))
+\]
+
+\[
+(\pi_0, \overline{\pi_0})_{(A, B), (P, Q)} : \Sigma_{\Fam(\Set)}(A, B, P, Q) \to (A, B)
+\]
+\[
+(\pi_0, \overline{\pi_0})_{(A, B), (P, Q)}(\langle a, p\rangle, \langle b, q\rangle) = (a, b)
+\]
+
+
+Let $F : \Fam(\Set) \to \Set$. Then
+\[
+\square_F : \semFam(\Fam(\Set)) \to \Fam(\Set)
+\]
+\begin{align*}
+\square_F((A, B), (P, Q), x)
+ &= \{ y : F(\Sigma_{\Fam(\Set)}\ (A, B)\ (P, Q)) | F(\pi_0, \overline{\pi_0})(y) = x\} \\
+ &= \{ y : F(\Sigma\ A\ P, \lambda \langle a, p\rangle . \Sigma b\!:\!B(a).\ Q(a, b, p)) | F(\pi_0, \overline{\pi_0})(y) = x\}
+\end{align*}
+
+\subsection{Inverse image in $\Fam(\Set)$}
+
+Given $(f, g) : (A, B) \to (A', B')$, we can define $(f, g)^{-1} :
+(A', B') \to \Fam(\Set)$ by
+\[
+(f, g)^{-1} = (f^{-1}, g^{-1})
+\]
+where $f^{-1} : A' \to \Set$, $f^{-1}(x) = \{ y : A\ |\ f(y) = x\}$, and 
+\[
+g^{-1} : (x : A') \to B'(x) \to f^{-1}(x) \to \Set,
+\] 
+$g^{-1}(x, b, y) = \{ z : B(y)\ |\ g(y, z) = b \}$. The equality $g(y,
+z) = b$ typechecks since $f(y) = x$, hence $g(y, z) : B'(f(y)) = B'(x)$.
 
 \subsection{$\Sigma$ and $\square$ in $\Bialg(F, G)$ for $F, G : \C \to \D$}
 
@@ -346,6 +387,7 @@ types, and $\semFam(\Bialg(F, G)) = \Bialg(\square_F, \square_G)$.
   \]
   which looks rather natural.
 \end{remark}
+
 
 
 \subsubsection{$\Sigma$ in $\Bialg(F, G)$}
@@ -416,9 +458,88 @@ commutes. But by (\ref{eq:square2}), $G(\pi_0) = \pi_0 \circ \varphi_G$ so that
 
 \subsubsection{$\square_{\widehat{G}}$ for $\widehat{G} : \semFam(\Bialg(F, U)) \to \Fam(\Set)$}
 
+First, notice that $\square_U(A, B, P, Q, x) \cong P(x)$ for the forgetful functor $U$:
+\begin{align*}
+\square_U(A, B, P, Q, x)
+&= \{ z : U(\Sigma_{\Fam(\Set)}\ (A, B)\ (P, Q)\ |\ U(\pi_0, \overline{\pi_0})(z) = x\} \\
+&= \{ z : \Sigma\ A\ P\ |\ \pi_0(z) = x\} \\
+&= \{ \langle x, y\rangle : \Sigma\ A\ P\ \} \cong P(x)
+\end{align*}
+where the isomorphism sends $\langle x, y\rangle : \Sigma\ A\ P$ to $y
+: P(x)$ and the inverse sends $y : P(x)$ to $\langle x,
+y\rangle$. Thus, we can replace the morphism $d : (x : F(A, B)) \to
+\square_F(A, B, P, Q, x) \to \square_U(A, B, P, Q, c(x))$ with a
+morphism $d' : (x : F(A, B)) \to \square_F(A, B, P, Q, x) \to P(c(x))$
+in the definition of $\semFam(\Bialg(F, U))$. This also simplifies the
+definition of the morphism of $\Sigma_{\Bialg(F, U)}$ to be $[c, d']
+\circ \varphi_F$ instead of $\varphi^{-1}_U [c, d] \circ \varphi_F$.
+
+We now define
+\[
+\square_{\widehat{G}} : \semFam(\Bialg(F, U)) \to \semFam(\Fam(\Set)).
+\]
+by
+\[
+  \square_{\widehat{G}}((A, B), (P, Q), (c, d)) =
+  (\widehat{G}(A, B, c), \invIm{(\widehat{G}(\pi_0, \overline{\pi_0}))}).
+\]
+
+Explicitly, we have 
+
+\begin{multline*}
+    \square_{\widehat{G}}((A, B), (P, Q), (c, d)) = \\
+  (F(A, B), G(A, B, c), \square_F(A, B, P, Q), \square_G(A, B, P, Q, c, d))
+\end{multline*}
+where $\square_F$ is exactly the $\square_F$ from Section
+\ref{boxFamSet}, i.e.
+\[
+\square_F(A, B, P, Q, x) =
+\{ y : F(\Sigma_{\Fam(\Set)}\ (A, B)\ (P, Q))\ |\ F(\pi_0, \overline{\pi_0})(y) = x\},
+\]
+and $\square_G(A, B, P, Q, c, d) : (x : F(A, B) \to G(A, B, c, x) \to \square_F(A, B, P,
+Q, x) \to \Set$ is defined by
+\begin{multline*}
+\square_G(A, B, P, Q, c, d, x, b, y) = \\
+  \{ z : G(\Sigma_{\Fam(\Set)}\ (A, B)\ (P, Q), [c, d] \circ \varphi_F, y)\ |\ G(\pi_0, \overline{\pi_0}, y, z) = b \}
+\end{multline*}
 
 
-\section{Comparision with Fibrational Induction Rules for Initial Algebras}
+\section{Example}
+
+Let us try to calculate $\square_F$ and $\square_G$ for the contexts and types.
+\begin{align*}
+  F(A, B) &= 1 + \Sigma\ A\ B \\
+  G(A, B, c, x) &= 1 + \Sigma a : A, b : B(a), B(c (\text{inr}(\langle a, b\rangle))).\ c(x) = a.
+\end{align*}
+
+For $\square_F$, we get
+\[
+\square_F(A, B, P, Q, x) = \{ y : 1 + \Sigma \langle a, p\rangle\!:\!(\Sigma\ A\ P)\ .\ \Sigma\!b\!: B(a)\ .\ Q(a, b, p)\ |\ (1 + [\pi_0, \overline{\pi_0}])(y) = x \}
+\]
+so that
+\begin{align*}
+  \square_F(A, B, P, Q, \inl(\oneelt)) &\cong \one \\
+  \square_F(A, B, P, Q, \inr(\langle a, b\rangle)) &\cong (p : P(a)) \times Q(a, b, p)
+\end{align*}
+
+For $\square_G$, we have in all its glory
+\begin{multline*}
+  \square_G(A, B, P, Q, c, \overline{c}, x, y, \overline{x}) = \\
+  \{ z : 1 + \Sigma \langle a, p\rangle\!:\!(\Sigma\ A\ P)\ . \langle
+  b, q\rangle\!:\! \Sigma\!b\!: B(a)\ .\ Q(a, b, p)\ . 
+  \Sigma b'\!:\!B(c(\inr(\langle a, b\rangle)))\ . \\ Q(c(\inr(\langle a,
+  b\rangle)), b', \overline{c}(\inr(\langle a, b\rangle),
+  \inr\langle\langle a, b\rangle, \langle a, b\rangle\rangle)).  
+  [c, \overline{c}](\varphi_F(\overline{x}) = (a, p) \\|\ (1 + [\pi_0, [\pi_0, \overline{\pi_0}]])(\overline{x}, z) = y \}
+\end{multline*}
+which, ignoring indicies, should be
+\[
+  \square_G(A, B, P, Q, x, \inl(\oneelt), \overline{x}) \cong \one
+\]\vskip -1cm
+\begin{multline*}
+  \square_F(A, B, P, Q, x, \inr(\langle a, b, b'\rangle), \overline{x}) \cong \\
+(p : P(a)) \times (q : Q(a, b, p)) \times Q(c(\inr(\langle a, b\rangle)), b', \overline{c}(\inr(\langle a, b\rangle), \inr(\langle p, q\rangle))).
+\end{multline*}
 
 
 

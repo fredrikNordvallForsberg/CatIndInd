@@ -7,8 +7,13 @@
 \newcommand{\fst}{\ensuremath{\text{fst}}}
 \newcommand{\snd}{\ensuremath{\text{snd}}}
 
+\newcommand{\inl}{\ensuremath{\text{inl}}}
+\newcommand{\inr}{\ensuremath{\text{inr}}}
+
 \newcommand{\zero}{\ensuremath{\mathbf{0}}}
 \newcommand{\one}{\ensuremath{\mathbf{1}}}
+
+\newcommand{\oneelt}{\ensuremath{\star}}
 
 \newtheorem{theorem}{Theorem}
 \newtheorem{lemma}[theorem]{Lemma}
@@ -45,3 +50,4 @@
 \newcommand{\semFam}{\ensuremath{\sem{\Fam}}}
 \newcommand{\Pow}{\ensuremath{\text{Pow}}}
 
+\newcommand{\invIm}[1]{\ensuremath{#1^{*}}}
