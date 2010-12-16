@@ -359,6 +359,18 @@ Let $F : \Fam(\Set) \to \Set$. Then
  &= \{ y : F(\Sigma\ A\ P, \lambda \langle a, p\rangle . \Sigma b\!:\!B(a).\ Q(a, b, p)) | F(\pi_0, \overline{\pi_0})(y) = x\}
 \end{align*}
 
+We can also turn 
+\begin{align*}
+f &: (x : A) \to P(x) \\ g &: (x : A) \to (y :B(x)) \to Q(x, y, f(x))
+\end{align*}
+ (the interpretation of $f : (x : A0 \to P(x)$
+into 
+\[
+\widehat{(f, g)} : (A, B) \to \Sigma_{\Fam(\Set)}\ (A, B)\ (P, Q)
+\]
+by defining $\widehat{(f, g)} = (\widehat{f}, \widehat{g})$ where $\widehat{f}(x) = \langle x, f(x)\rangle$ and $\widehat{g}(x, y) = \langle y, g(x, y)\rangle$.
+
+
 \subsection{Inverse image in $\Fam(\Set)$}
 
 Given $(f, g) : (A, B) \to (A', B')$, we can define $(f, g)^{-1} :
@@ -456,6 +468,8 @@ commutes. But by (\ref{eq:square2}), $G(\pi_0) = \pi_0 \circ \varphi_G$ so that
   = c \circ F(\pi_0).
 \end{align*}
 
+%\subsubsection{$\widehat{\cdot}$ in $\Bialg(F, G)$}
+
 \subsubsection{$\square_{\widehat{G}}$ for $\widehat{G} : \semFam(\Bialg(F, U)) \to \Fam(\Set)$}
 
 First, notice that $\square_U(A, B, P, Q, x) \cong P(x)$ for the forgetful functor $U$:
@@ -496,7 +510,7 @@ where $\square_F$ is exactly the $\square_F$ from Section
 \square_F(A, B, P, Q, x) =
 \{ y : F(\Sigma_{\Fam(\Set)}\ (A, B)\ (P, Q))\ |\ F(\pi_0, \overline{\pi_0})(y) = x\},
 \]
-and $\square_G(A, B, P, Q, c, d) : (x : F(A, B) \to G(A, B, c, x) \to \square_F(A, B, P,
+and $\square_G(A, B, P, Q, c, d) : (x : F(A, B)) \to G(A, B, c, x) \to \square_F(A, B, P,
 Q, x) \to \Set$ is defined by
 \begin{multline*}
 \square_G(A, B, P, Q, c, d, x, b, y) = \\
@@ -541,7 +555,131 @@ which, ignoring indicies, should be
 (p : P(a)) \times (q : Q(a, b, p)) \times Q(c(\inr(\langle a, b\rangle)), b', \overline{c}(\inr(\langle a, b\rangle), \inr(\langle p, q\rangle))).
 \end{multline*}
 
+\section{$\dmap_F$ and $\dmap_{\widehat{G}}$}
+
+We want to define
+\begin{align*}
+\dmap_F :\ & (A : \Set)(B : A \to \Set) \to \\
+           & (P : A \to \Set)(Q : (x : A) \to B(x) \to P(x) \to \Set) \to \\
+           & (f : (x : A) \to P(x)) \to \\ 
+           & (g : (x : A) \to (y : B(x)) \to Q(x, y, f(x))) \to \\
+           & (x : F(A, B)) \to \square_F(A, B, P, Q, x)
+\end{align*}
+and
+\begin{align*}
+\dmap_G :\ & (A : \Set)(B : A \to \Set) \to \\
+           & (P : A \to \Set)(Q : (x : A) \to B(x) \to P(x) \to \Set) \to \\
+           & (\inn_F : F(A, B) \to A) \\
+           & (\overline{\inn_F} : (x : F(A, B) \to \square_F(A, B, P, Q, x) \to P(\inn_F(x))) \to \\
+           & (f : (x : A) \to P(x)) \to \\ 
+           & (g : (x : A) \to (y : B(x)) \to Q(x, y, f(x))) \to \\
+           & (x : F(A, B)) \to (y : G(A, B, \inn_F, x) \\ 
+           & \quad \to \square_G(A, B, P, Q, \inn_F, \overline{\inn_F}, x, y, \dmap_F(A, B, P, Q, f, g, x))
+\end{align*}
+which of course are the components of $\dmap_{\widehat{G}}$ which is
+the interpretation of $\dmap$ in $\Bialg(F, U)$. Thus, we should
+define
+\[
+\dmap_F(A, B, P, Q, f, g, x) = F(\widehat{f}, \widehat{g})(x)
+\]
+which works since $F(\widehat{f}, \widehat{g}) : F(A, B) \to
+F(\Sigma_{\Fam(\Set)}\ (A, B)\ (P, Q))$, $(\pi_0, \overline{\pi_0})
+\circ (\widehat{f}, \widehat{g}) = \id$ and 
+\[
+\square_F(A, B, P, Q, x)
+= \{ y : F(\Sigma_{\Fam(\Set)}\ (A, B)\ (P, Q))\ |\ F(\pi_0,\overline{\pi_0})(y) = x\}.
+\]
+Note that 
+
+Similarly, we should define
+\[
+\dmap_G(A, B, P, Q, \inn_F, \overline{\inn_F}, f, g, x, y) = G(\widehat{(f, g)})(x, y)
+\]
+
+\section{The eliminator}
+
+The eliminator should have type the interpretation of 
+\begin{multline*}
+  \elim_{F} : (A : \Set)(\inn_{F} : F(A)
+  \to A)(P : A \to \Set) \to \\
+  \big( (x : F(A)) \to \square_{F}(A, P, x) \to P(\inn_{F}(x))\big)
+  \to (x : A) \to P(x)
+\end{multline*}
+in our current category, which becomes
+\begin{multline*}
+  \elim_{F} : (A : \Set)(B : A \to \Set) \to \\
+   (\inn_{F} : F(A, B) \to A)(\inn_G : (x : F(A, B)) \to G(A, B, \inn_F, x) \to B(\inn_F(x))) \to \\
+(P : A \to \Set)(Q : (x : A) \to B(x) \to P(x) \to \Set) \to \\
+ \big(\overline{\inn_F} : (x : F(A, B)) \to \square_{F}(A, B, P, Q, x) \to P(\inn_F(x))\big) \\
+ \begin{multlined}
+   \big( \overline{\inn_G} : (x : F(A, B)) \to (y : G(A, B, \inn_F, x)) \to
+   (\overline{x} : \square_F(A, B, P, Q, x)) \\ \to
+   \square_{G}(A, B, P, Q, \inn_F, \overline{\inn_F}, x, y,
+   \overline{x}) \to Q(\inn_F(x), \inn_{G}(x, y), \overline{\inn_F}(x, \overline{x}))\big)
+ \end{multlined} \\
+  \to (x : A) \to P(x)
+\end{multline*}
+
+\begin{multline*}
+  \elim_{G} : (A : \Set)(B : A \to \Set) \to \\
+   (\inn_{F} : F(A, B) \to A)(\inn_G : (x : F(A, B)) \to G(A, B, \inn_F, x) \to B(\inn_F(x))) \to \\
+(P : A \to \Set)(Q : (x : A) \to B(x) \to P(x) \to \Set) \to \\
+ \big(\overline{\inn_F} : (x : F(A, B)) \to \square_{F}(A, B, P, Q, x) \to P(\inn_F(x))\big) \\
+ \begin{multlined}
+   \big( \overline{\inn_G} : (x : F(A, B)) \to (y : G(A, B, \inn_F, x)) \to
+   (\overline{x} : \square_F(A, B, P, Q, x)) \\ \to
+   \square_{G}(A, B, P, Q, \inn_F, \overline{\inn_F}, x, y,
+   \overline{x}) \to Q(\inn_F(x), \inn_{G}(x, y), \overline{\inn_F}(x, \overline{x}))\big)
+ \end{multlined} \\
+  \to (x : A) \to (y : B(x)) \to Q(x, y, \elim_F(A, B, \inn_F, \inn_G, P, Q, \overline{\inn_F}, \overline{\inn_G}, x))
+\end{multline*}
+
+\subsection{Elim $\implies$ init}
+
+The proof seems to be the interpretation of the standard proof.
+
+Assume that we have the eliminator for $(A, B), (\inn_F, \inn_G)$. Need to define
+\begin{multline*}
+  \fold_F : (X : \Set)(Y : X \to \Set) \to \\
+  (c : F(X, Y) \to X)(d : (x : F(X, Y)) \to G(X, Y, c, x) \to Y(c(x))) \to \\
+  A \to X
+\end{multline*}
+\begin{multline*}
+  \fold_G : (X : \Set)(Y : X \to \Set) \to \\
+  (c : F(X, Y) \to X)(d : (x : F(X, Y)) \to G(X, Y, c, x) \to Y(c(x))) \to \\
+  (x : A) \to B(x) \to Y(\fold_F(X, Y, c, d, x))
+\end{multline*}
+
+Choose $P(x) \coloneqq X$, $Q(x, y, \overline{x}) \coloneqq
+Y(\overline{x})$. If we can define
+\[
+\overline{\inn_F} : (x : F(A, B)) \to \square_{F}(A, B, P, Q, x) \to X
+\]
+and
+\[
+ \begin{multlined}
+  \overline{\inn_G} : (x : F(A, B)) \to (y : G(A, B, \inn_F, x)) \to
+   (\overline{x} : \square_F(A, B, P, Q, x)) \\ \to
+   \square_{G}(A, B, P, Q, \inn_F, \overline{\inn_F}, x, y,
+   \overline{x}) \to Y(\overline{\inn_F}(x, \overline{x})),
+ \end{multlined}
+\]
+we are in business, as we then can define $\fold_F(X, Y, c, d)
+\coloneqq \elim_F(\ldots, \overline{\inn_F}, \overline{\inn_G}) : A
+\to X$ and $\fold_G(X, Y, c, d) \coloneqq \elim_G(\ldots,
+\overline{\inn_F}, \overline{\inn_G}) : (x : A) \to B(x) \to
+Y(\fold_F(X, Y, c, d, x))$.
+
+But now, notice that the non-dependence of $P$ and $Q$ turns $\Sigma\
+A\ P$ and $\Sigma b\!:\!B(a).\ Q(a, b, p)$ into non-dependent products
+$A \times X$ and $B(a) \times Y(x)$ so that $\pi_1 : A \times X \to X$
+and $\overline{\pi_1} : (\langle a, x\rangle : A \times X) \to B(a)
+\times Y(x) \to Y(x)$ make up an ordinary morphism in
+$\Fam(\Set)$. Thus, we get $F(\pi_1, \overline{\pi_1}) : F(A \times X,
+B \times Y) \to F(X , Y)$ and $G(\pi_1, \overline{\pi_1}) : (x : F$
+
+
+\subsection{Init $\implies$ elim}
 
 
 \end{document}
-
