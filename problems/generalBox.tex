@@ -589,12 +589,17 @@ F(\Sigma_{\Fam(\Set)}\ (A, B)\ (P, Q))$, $(\pi_0, \overline{\pi_0})
 \square_F(A, B, P, Q, x)
 = \{ y : F(\Sigma_{\Fam(\Set)}\ (A, B)\ (P, Q))\ |\ F(\pi_0,\overline{\pi_0})(y) = x\}.
 \]
-Note that 
 
 Similarly, we should define
 \[
 \dmap_G(A, B, P, Q, \inn_F, \overline{\inn_F}, f, g, x, y) = G(\widehat{(f, g)})(x, y)
 \]
+but this requires $\overline{\inn_F}(x, F(\widehat{f},
+\widehat{g})(x)) = f(\inn_F(x))$ -- why is this true? The fact that
+$(f, g)$ is a dependent morphism probably means that this should hold?
+It will hold for $f = \elim_F(\ldots)$, right, since $\elim_F(\ldots,
+\inn_F(x)) = \overline{\inn_F}(x, \dmap_F(\ldots))$, but this
+condition should be recorded and explained somehow\ldots
 
 \section{The eliminator}
 
@@ -619,7 +624,6 @@ in our current category, which becomes
  \end{multlined} \\
   \to (x : A) \to P(x)
 \end{multline*}
-
 \begin{multline*}
   \elim_{G} : (A : \Set)(B : A \to \Set) \to \\
    (\inn_{F} : F(A, B) \to A)(\inn_G : (x : F(A, B)) \to G(A, B, \inn_F, x) \to B(\inn_F(x))) \to \\
@@ -632,6 +636,16 @@ in our current category, which becomes
    \overline{x}) \to Q(\inn_F(x), \inn_{G}(x, y), \overline{\inn_F}(x, \overline{x}))\big)
  \end{multlined} \\
   \to (x : A) \to (y : B(x)) \to Q(x, y, \elim_F(A, B, \inn_F, \inn_G, P, Q, \overline{\inn_F}, \overline{\inn_G}, x))
+\end{multline*}
+
+The computation rules should be
+\begin{multline*}
+\elim_F(A, B, \inn_F, \inn_G, P, Q, \overline{\inn_F}, \overline{\inn_G}, \inn_F(x)) = \\
+\overline{\inn_F}(x, \dmap_F(\elim_F(\ldots), \elim_G(\ldots), x))
+\end{multline*}
+\begin{multline*}
+\elim_G(A, B, \inn_F, \inn_G, P, Q, \overline{\inn_F}, \overline{\inn_G}, \inn_F(x), \inn_G(x, y)) = \\
+\overline{\inn_G}(x, y, \dmap_F(\elim_F(\ldots), \elim_G(\ldots), x),  \\ \dmap_G(\elim_F(\ldots), \elim_G(\ldots), \overline{\inn_F}, x, y))
 \end{multline*}
 
 \subsection{Elim $\implies$ init}
@@ -675,11 +689,241 @@ A\ P$ and $\Sigma b\!:\!B(a).\ Q(a, b, p)$ into non-dependent products
 $A \times X$ and $B(a) \times Y(x)$ so that $\pi_1 : A \times X \to X$
 and $\overline{\pi_1} : (\langle a, x\rangle : A \times X) \to B(a)
 \times Y(x) \to Y(x)$ make up an ordinary morphism in
-$\Fam(\Set)$. Thus, we get $F(\pi_1, \overline{\pi_1}) : F(A \times X,
-B \times Y) \to F(X , Y)$ and $G(\pi_1, \overline{\pi_1}) : (x : F$
+$\Fam(\Set)$. Thus, we get 
+\[
+F(\pi_1, \overline{\pi_1}) : F(A \times X, B \times Y) \to F(X , Y)
+\]
+ and 
+\begin{multline*}
+G(\pi_1, \overline{\pi_1}) : (x : F(A \times X, B \times Y) \to G(A \times X, B \times Y, [\inn_F, c] \circ \varphi_F, x) \\
+\to G(X, Y, c, F(\pi_1, \overline{\pi_1})(x))
+\end{multline*}
+and we can define $\overline{\inn_F}(x, y) = c(F(\pi_1,
+\overline{\pi_1})(\varphi_F^{-1}\langle x , y\rangle))$ and
+$\overline{\inn_G}(x, y, \overline{x}, \overline{y}) = d(F(\pi_1,
+\overline{\pi_1})\varphi_F^{-1}(\langle x , \overline{x}\rangle) ,
+G(\pi_1, \overline{\pi_1})(\varphi_F^{-1}(\langle x ,
+\overline{x}\rangle), \varphi_G^{-1}(\langle y ,
+\overline{y}\rangle))$. Then 
+\[
+\elim_F(A, B, X, Y, \overline{\inn_F},
+\overline{\inn_G}) : A \to X
+\]
+\[\elim_G(A, B, X, Y,
+\overline{\inn_F}, \overline{\inn_G}) : (x : A) \to B(x) \to
+Y(\elim_F(A, B, X, Y, \overline{\inn_F},
+\overline{\inn_G}, x))
+\]
+as required, and we can define $\fold_F(X, Y, c, d) = \elim_F(A, B, X,
+Y, \overline{\inn_F}, \overline{\inn_G})$ and $\fold_G(X, Y, c, d) =
+\elim_G(A, B, X, Y, \overline{\inn_F}, \overline{\inn_G})$.
 
+Let us write simply $\fold_F$ and $\fold_G$ for $\fold_F(X, Y, c, d)$
+and $\fold_G(X, Y, c, d)$. We have to check that $\fold_F \circ \inn_F
+= c \circ F(\fold_F, \fold_G)$ and $\fold_G(\inn_F(x)) \circ \inn_G(x)
+= d(F(\fold_F, \fold_G)) \circ G(\fold_F, \fold_G)$.
+
+We have
+\begin{align*}
+  \fold_F(\inn_F(x))
+  &= \elim_F(X, Y, \overline{\inn_F}, \overline{\inn_G}, \inn_F(x)) \\
+  &= \overline{\inn_F}(x, \dmap_F(\elim_F(\ldots), \elim_G(\ldots), x)) \\
+  &= c(F(\pi_1,\overline{\pi_1})(\varphi_F^{-1}(\langle x , \dmap_F(\elim_F(\ldots), \elim_G(\ldots), x)\rangle))) \\
+  &= c(F(\pi_1,\overline{\pi_1})(\varphi_F^{-1}(\widehat{\dmap_F(\fold_F, \fold_G)}(x)))) \\
+  &= c(F(\pi_1,\overline{\pi_1})(\varphi_F^{-1}(\varphi_F(F(\widehat{\fold_F}, \widehat{\fold_G})(x))))) \\
+  &= c(F((\pi_1,\overline{\pi_1}) \circ (\widehat{\fold_F}, \widehat{\fold_G}))(x) \\
+  &= c(F(\fold_F, \fold_G)(x)) \\
+\end{align*}
+and similarly
+\begin{align*}
+  \fold_G(\inn_F(x), \inn_G(x, y))
+  &= \elim_G(X, Y, \overline{\inn_F}, \overline{\inn_G}, \inn_F(x), \inn_G(x, y)) \\
+  &= \overline{\inn_G}(x, y, \dmap_F(\elim_F(\ldots), \elim_G(\ldots), x), \dmap_G(\elim_F(\ldots), \elim_G(\ldots), x, y)) \\
+  &= d(F(\fold_F, \fold_G)x,  G(\pi_1,\overline{\pi_1})(\varphi_G^{-1}(\langle y , \dmap_G(\elim_F(\ldots), \elim_G(\ldots), x, y)\rangle))) \\
+  &= d(F(\fold_F, \fold_G)x,  G(\pi_1,\overline{\pi_1})(\varphi_G^{-1}(\widehat{\dmap_G(\elim_F(\ldots), \elim_G(\ldots))}(x, y)))) \\
+  &= d(F(\fold_F, \fold_G)x,  G(\pi_1,\overline{\pi_1})(\varphi_G^{-1}(\varphi_G(G(\widehat{\fold_F}, \widehat{\fold_G})(x, y))))) \\
+  &= d(F(\fold_F, \fold_G)x,  G((\pi_1,\overline{\pi_1}) \circ (\widehat{\fold_F}, \widehat{\fold_G}))(x, y)) \\
+  &= d(F(\fold_F, \fold_G)x,  G(\fold_F, \fold_G)(x, y)) \\
+\end{align*}
+
+\begin{question}
+  Uniqueness? How for arbitrary $F$, $G$? (For functors arising from
+  axiomatisation of ind.-ind. by induction on the code.)
+\end{question}
 
 \subsection{Init $\implies$ elim}
 
+Yet another proof to interpret. Assume that $(A, B)$, $(\inn_F,
+\inn_G)$ is the initial object in our category $E$. In other words, we
+have
+\begin{multline*}
+  \fold_F : (X : \Set)(Y : X \to \Set) \to \\
+  (c : F(X, Y) \to X)(d : (x : F(X, Y)) \to G(X, Y, c, x) \to Y(c(x))) \to \\
+  A \to X
+\end{multline*}
+\begin{multline*}
+  \fold_G : (X : \Set)(Y : X \to \Set) \to \\
+  (c : F(X, Y) \to X)(d : (x : F(X, Y)) \to G(X, Y, c, x) \to Y(c(x))) \to \\
+  (x : A) \to B(x) \to Y(\fold_F(X, Y, c, d, x))
+\end{multline*}
+such that
+\[
+\xymatrix{
+F(A, B) \ar^-{\inn_F}[r] \ar_-{F(\fold_F, \fold_G)}[d] & A \ar^-{\fold_F(X, Y, c, d)}[d] \\
+F(X, Y) \ar^-{c}[r]  & X \ar@{}|{(p)}[ul]
+}
+\]
+and
+\[
+\xymatrix{
+G(A, B, \inn_F, x) \ar^-{\inn_G(x)}[rrr] \ar_-{G(\fold_F, \fold_G, (p), x)}[d]&&& B(\inn_F(x)) \ar^-{\fold_G(X, Y, c, d, \inn_F(x))}[d] \\
+G(X, Y, c, F(\fold_F, \fold_G)(x)) \ar_-{d(F(\fold_F, \fold_G)(x)}[rrr]&&& *\txt{$Y(\fold_F(\inn_F(x)))$ \\ $\shortparallel$ {\tiny ($p$)} \\ $Y(c(F(\fold_F, \fold_G)(x)))$}
+}
+\]
+
+We must construct
+\begin{multline*}
+  \elim_{F} : (P : A \to \Set)(Q : (x : A) \to B(x) \to P(x) \to \Set) \to \\
+ \big(\overline{\inn_F} : (x : F(A, B)) \to \square_{F}(A, B, P, Q, x) \to P(\inn_F(x))\big) \\
+ \begin{multlined}
+   \big( \overline{\inn_G} : (x : F(A, B)) \to (y : G(A, B, \inn_F, x)) \to
+   (\overline{x} : \square_F(A, B, P, Q, x)) \\ \to
+   \square_{G}(A, B, P, Q, \inn_F, \overline{\inn_F}, x, y,
+   \overline{x}) \to Q(\inn_F(x), \inn_{G}(x, y), \overline{\inn_F}(x, \overline{x}))\big)
+ \end{multlined} \\
+  \to (x : A) \to P(x)
+\end{multline*}
+\begin{multline*}
+  \elim_{G} : (P : A \to \Set)(Q : (x : A) \to B(x) \to P(x) \to \Set) \to \\
+ \big(\overline{\inn_F} : (x : F(A, B)) \to \square_{F}(A, B, P, Q, x) \to P(\inn_F(x))\big) \\
+ \begin{multlined}
+   \big( \overline{\inn_G} : (x : F(A, B)) \to (y : G(A, B, \inn_F, x)) \to
+   (\overline{x} : \square_F(A, B, P, Q, x)) \\ \to
+   \square_{G}(A, B, P, Q, \inn_F, \overline{\inn_F}, x, y,
+   \overline{x}) \to Q(\inn_F(x), \inn_{G}(x, y), \overline{\inn_F}(x, \overline{x}))\big)
+ \end{multlined} \\
+  \to (x : A) \to (y : B(x)) \to Q(x, y, \elim_F(A, B, \inn_F, \inn_G, P, Q, \overline{\inn_F}, \overline{\inn_G}, x))
+\end{multline*}
+such that
+\[
+\elim_F(P, Q, \overline{\inn_F}, \overline{\inn_G}, \inn_F(x)) = 
+\overline{\inn_F}(x, \dmap_F(\elim_F(\ldots), \elim_G(\ldots), x))
+\]
+\begin{multline*}
+\elim_G(P, Q, \overline{\inn_F}, \overline{\inn_G}, \inn_F(x), \inn_G(x, y)) = \\
+\overline{\inn_G}(x, y, \dmap_F(\elim_F(\ldots), \elim_G(\ldots), x),  \\ \dmap_G(\elim_F(\ldots), \elim_G(\ldots), \overline{\inn_F}, x, y)).
+\end{multline*}
+
+Recall that $\Sigma_{\Fam(\Set)}(A, B)\ (P, Q) = (\langle a, p\rangle
+: \Sigma\ A\ P, \Sigma b\!:\!B(a).\ Q(a, b, p)$.
+
+Define $h_F : F(\Sigma_{\Fam(\Set)}(A, B)\ (P, Q)) \to \Sigma\ A\ P$ and
+\begin{multline*}
+h_G : (x :  F(\Sigma_{\Fam(\Set)}(A, B)\ (P, Q))) \to \\ G(\Sigma_{\Fam(\Set)}(A, B)\ (P, Q), h_F, x) \to \Sigma b\!:\!B(a).Q(a, b, p)
+\end{multline*}
+(where $a = \pi_0(h_F(x))$, $p = \pi_1(h_F(x))$) by
+\[
+h_F(x) = [\inn_F, \overline{\inn_F}](\varphi_F(x))
+\]
+\[
+h_G(x, y) = [\inn_G(\pi_0(\varphi_F(x))) , \overline{\inn_G}(\pi_0(\varphi_F(x))),\pi_1(\varphi_F(x))  ](\varphi_G(x, y)).
+\]
+
+\begin{remark}
+  The order of $\overline{\inn_G}$s arguments is wrong, so that the
+  above technically is a lie -- you need to move the $\square_G$
+  argument earlier with a lambda.
+\end{remark}
+
+This is nothing but the two parts of a composition $\Sigma((\inn_F, \inn_G), (\overline{\inn_F}, \overline{\inn_G})) \circ (\varphi_F, \varphi_G)$ in $\Fam(\Set)$, of course.
+
+Consider the diagrams
+\[
+\xymatrix{
+  F(A, B) \ar^-{\inn_F}[r] \ar_-{F(\fold(h))}[d] & A \ar^-{\fold_F(h)}[d] \\
+  F(\Sigma\ (A, B)\ (P, Q)) \ar^-{h_F}[r] \ar_-{F(\pi_0, \overline{\pi_0})}[d] & \Sigma\ A\ P \ar^-{\pi_0}[d] \\
+    F(A, B) \ar^-{\inn_F}[r] & A }
+\]
+\[
+\xymatrix{
+G(A, B, \inn_F, x) \ar^-{\inn_G(x)}[rrr] \ar_-{G(\fold(h), x)}[d]&&& B(\inn_F(x)) \ar^-{\fold_G(h)(\inn_F(x))}[d] \\
+G(\Sigma\ (A, B)\ (P, Q), h_F, F(\fold(h))(x)) \ar_-{h_G(F(\fold(h))(x)}[rrr] \ar_-{G(\pi_0, \overline{\pi_0}, F(\fold(h)(x))}[d] &&& *\txt{$Y(\fold_F(\inn_F(x)))$ \\ $\shortparallel$ \\ $Y(c(F(\fold_F, \fold_G)(x)))$} \ar^-{\overline{\pi_0}(\fold_F(h)(\inn_F(x))}[d] \\
+G(A, B, \inn_F, x) \ar^-{\inn_G(x)}[rrr] &&& B(\inn_F(x))  \\
+}
+\]
+
+The topmost squares commutes because $(\fold_F, \fold_G)$ is a
+morphism in $E$, and the lower squares commute by calculation, using
+that $\pi_0 \circ \varphi_F = F(\pi_0, \overline{\pi_0})$ and
+$\overline{\pi_0}(\_) \circ \varphi_G(x) = G(\pi_0, \overline{\pi_0},
+x)$.  Thus $(\pi_0, \overline{\pi_0}) \circ (\fold_F(h), \fold_G(h)) :
+(A, B) \to (A, B)$ is a morphism, but so is $(\id, \overline{\id})$ so
+that $\pi_0, \circ \fold_F = \id$ and $\overline{\pi_0} \circ \fold_G
+= \overline{\id}$ by initiality. Hence we can define $\elim_F(\ldots)
+: (x : A) \to P(x)$ and $\elim_G(\ldots) : (x : A) \to B(x) \to Q(x,
+y, \elim_F(x))$ by $\elim_F(\ldots,x) = \pi_1(\fold_F(h)(x))$ and
+$\elim_G(\ldots, x, y) = \pi_1(\fold_G(h)(x, y))$.
+
+Finally, we must check that the computation rules hold:
+\[
+\elim_F(P, Q, \overline{\inn_F}, \overline{\inn_G}, \inn_F(x)) = 
+\overline{\inn_F}(x, \dmap_F(\elim_F(\ldots), \elim_G(\ldots), x))
+\]
+\begin{multline*}
+\elim_G(P, Q, \overline{\inn_F}, \overline{\inn_G}, \inn_F(x), \inn_G(x, y)) = \\
+\overline{\inn_G}(x, y, \dmap_F(\elim_F(\ldots), \elim_G(\ldots), x),  \\ \dmap_G(\elim_F(\ldots), \elim_G(\ldots), \overline{\inn_F}, x, y)).
+\end{multline*}
+For $\elim_F$, this is exactly like the usual initial algebra case. We use
+\begin{lemma}
+  \begin{enumerate}[(i)]
+  \item $\pi_0 \circ \varphi_F \circ F(\fold(h)) = \id$ \label{comprule1}
+  \item $\pi_1 \circ \varphi_F \circ F(\fold(h)) =
+    \dmap_F(\pi_1\circ\fold_F(h), \overline{\pi_1} \circ
+    \fold_G(h))$. \label{comprule2}
+  \end{enumerate}
+\end{lemma}
+\begin{proof}
+  (\ref{comprule1}) has already been taken care of. For
+  (\ref{comprule2}), notice that $\fold_\cdot(h) =
+  \widehat{\pi_1 \circ \fold_\cdot(h)}$ since $\fold_\cdot(h)(x) = \langle
+  \pi_0(\fold_\cdot(h)(x), \pi_1(\fold_\cdot(h)(x)\rangle = \langle x,
+  \pi_1(\fold_\cdot(h)(x)\rangle =
+  \widehat{\pi_1(\fold_\cdot(h)}(x)$. Thus we have
+  \begin{align*}
+    \pi_1 \circ \varphi \circ F(\fold_F(h), \fold_G(h))
+      &= \pi_1 \circ \varphi \circ F(\widehat{\pi_1 \circ \fold_F(h)},\widehat{\overline{\pi_1} \circ \fold_G(h)}) \\
+      &= \pi_1 \circ \widehat{\dmap_F(\pi_1 \circ \fold_F(h), \overline{\pi_1} \circ \fold_G(h))} \\
+      &= \dmap(\pi_1 \circ \fold_F(h), \overline{\pi_1} \circ \fold_G(h))
+  \end{align*}
+\end{proof}
+
+\begin{align*}
+\elim_F(P, Q, \overline{\inn_F}, \overline{\inn_G}, \inn_F(x))
+& = \pi_1(\fold_F(h)(\inn_F(x))) \\
+& = \pi_1(h_F(F(\fold(h))x)) \\
+&= \overline{\inn_F}(\pi_0(\varphi_F(F(\fold(h))(x))), \pi_1(\varphi_F(F(\fold(h))(x)))) \\
+&= \overline{\inn_F}(x, \dmap_F(\pi_1\circ\fold_F(h), \overline{\pi_1} \circ \fold_G(h), x)) \\
+&= \overline{\inn_F}(x, \dmap_F(\elim_F(\ldots), \elim_G(\ldots), x))
+\end{align*}
+
+For $\elim_G$, we analogously need that
+\begin{enumerate}[(i)]
+\setcounter{enumi}{2}
+  \item $\overline{\pi_0} \circ \varphi_G \circ G(\fold(h)) = \overline{\id}$ \label{comprule3}
+  \item $\overline{\pi_1} \circ \varphi_G \circ G(\fold(h)) =
+    \dmap_G(\pi_1\circ\fold_F(h), \overline{\pi_1} \circ
+    \fold_G(h))$. \label{comprule4}
+\end{enumerate}
+and then the proof goes through in the same way:
+\begin{align*}
+  \elim_G(P, Q, \overline{\inn_F}, \overline{\inn_G}, \inn_F(x), \inn_G(x, y))
+  &= \pi_1(\fold_G(h)(\inn_F(x), \inn_G(x, y))) \\
+  &= \pi_1(h_G(F(\fold(h))(x), G(\fold(h)))(x, y))) \\
+  &= \overline{\inn_G}(\pi_0(\odot_F), \pi_0(\odot_G),\pi_1(\odot_F), \pi_1(\odot_G)) \\
+  &= \overline{\inn_G}(x, y, \dmap_F(\elim_F(\ldots), \elim_G(\ldots), x), \\
+  & \qquad\qquad\quad\  \dmap_G(\elim_F(\ldots), \elim_G(\ldots), x, y))
+\end{align*}
+(where $\odot_F = \varphi_F(F(\fold(h))(x))$ and $\odot_G =
+\varphi_G(F(\fold(h))(x), G(\fold(h)(x, y))$.)
 
 \end{document}

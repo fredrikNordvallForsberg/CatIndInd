@@ -19,3 +19,13 @@ Plan
 
 8. Establish laws for □ so we can derive the adhoc eliminators
 
+TODO
+====
+
+B. Understand equality constraint on G(f, g) better -- how does it appear in def. of dmap_G?
+
+C. Uniqueness for elim => init
+
+D. Naturality of \phi : FΣ -> Σ□ from inverse image construction?
+
+8. Establish laws for □

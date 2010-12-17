@@ -44,9 +44,9 @@ foldF X Y c d = elimF (λ _ → X) (λ _ _ x → Y x) (λ x y → c (trala x y))
 foldG : (X : Set)(Y : X -> Set)
         (c : F (X , Y) -> X)(d : (x : F (X , Y)) -> G ((X , Y) , c) x -> Y(c(x))) ->
         (x : A) -> B(x) -> Y (foldF X Y c d x)
-foldG X Y c d = elimG (λ _ → X) (λ _ _ x → Y x) (λ x y → c (trala x y)) (λ x y xbar ybar → d (trala x xbar) (Gmor ((π₁ {A , λ _ → X} , λ x → π₁ { B (π₀ x) , λ _ → Y (π₁ x)}) , refl) (π₀ xbar) (π₀ ybar)))
+foldG X Y c d = elimG (λ _ → X) (λ _ _ x → Y x) (λ x y → c (trala x y)) (λ x y xbar ybar → d (trala x xbar) (Gmor ((π₁ {A , λ _ → X} , λ x → π₁ { B (π₀ x) , λ _ → Y (π₁ x)}) , refl) (π₀ xbar) {!!}))
   where trala : (x : F (A , B)) -> boxF A B (λ _ → X) (λ _ _ x → Y x) x -> F (X , Y)
-        trala x y = Fmor (π₁ {A , λ _ → X} , λ x → π₁ { B (π₀ x) , λ _ → Y (π₁ x)}) (π₀ y)
+        trala _ y = Fmor (π₁ {A , λ _ → X} , λ x → π₁ { B (π₀ x) , λ _ → Y (π₁ x)}) ((π₀ y))
 
 cong2 : {A B C : Set} -> (f : A -> B -> C) -> {x y : A}{x' y' : B} -> x == y -> x' == y'
             -> f x x' == f y y'
