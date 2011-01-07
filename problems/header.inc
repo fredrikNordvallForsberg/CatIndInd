@@ -39,6 +39,12 @@
 \newcommand{\Bialg}{\ensuremath{\text{BiAlg}}}
 \newcommand{\ALG}{\ensuremath{\overline{\text{Alg}}}}
 
+%CwF
+\newcommand{\Ty}{\ensuremath{\text{Ty}}}
+\newcommand{\Tm}{\ensuremath{\text{Tm}}}
+\newcommand{\p}[1]{\ensuremath{\textbf{p}(#1)}}
+\newcommand{\vv}[1]{\ensuremath{\textbf{v}_{#1}}}
+
 % For convenience
 \newcommand{\muF}{\ensuremath{\mu F}}
 \newcommand{\C}{\ensuremath{\mathbb{C}}}

@@ -1,0 +1,134 @@
+\documentclass{article}
+
+\usepackage{amssymb}
+\usepackage{amsthm}
+\usepackage{amsmath}
+\usepackage{amstext}
+
+\usepackage[all]{xypic}
+\usepackage{stmaryrd}
+\usepackage{enumerate}
+\usepackage{mathtools}
+
+\input header.inc
+
+\title{Extending some categories to categories with families}
+
+
+\author{Fredrik Nordvall Forsberg}
+
+\begin{document}
+\maketitle
+
+\section{Categories with families}
+
+\begin{definition}
+  A \emph{category with families} is given by
+  \begin{itemize}
+  \item A category $\C$ with a terminal object $[]$,
+  \item A functor $F = (\Ty, \Tm) : \C^{\text{op}} \to
+    \Fam(\Set)$. For the morphism part, we introduce the notation
+    $\_\{\cdot\}$ for both types and terms, i.e.\ if $f : \Delta \to
+    \Gamma$ then $\_\{f\} : \Ty(\Gamma) \to \Ty(\Delta)$ and for every
+    $\sigma \in \Ty(\Delta)$ we have $\_\{f\} : \Tm(\Delta, \sigma)
+    \to \Tm(\Gamma, \sigma\{f\})$.
+  \item For each object $\Gamma$ in $\C$ and $\sigma \in \Ty(\Gamma)$
+    an object $\Gamma.\sigma$ together with a morphism $\p{\sigma} :
+    \Gamma.\sigma \to \Gamma$ (the \emph{first projection}) and a term
+    $\vv{\sigma} \in \Tm(\Gamma.\sigma, \sigma\{\p{\sigma}\})$ (the
+    \emph{second projection}) with the following universal property:
+    for each $f : \Delta \to \Gamma$ and $M \in \Tm(\Delta, \sigma\{f\})$
+    there exists a unique morphism $\theta = \langle f,
+    M\rangle_{\sigma} : \Delta \to \Gamma.\sigma$ such that
+    $\p{\sigma} \circ \theta = f$ and
+    $\vv{\sigma}\{\theta\} = M$.
+  \end{itemize}
+\end{definition}
+
+\section{$\Set$}
+\label{cwfSet}
+
+Directly from Dybjer \cite{dybjer1996internalTT} , Hofmann
+\cite{hofmann1997syntaxsemantics}, Buisse and Dybjer \cite{buisseDybjer2008cwflccc}, \ldots
+
+Choose $\C = \Set$ (with $[] = \one$ any singleton), and define
+\begin{align*}
+  \Ty(\Gamma) &= \{ \sigma\ |\ \sigma : \Gamma \to \Set\} \\
+  \Tm(\Gamma, \sigma) &= \prod_{\gamma \in \Gamma}\sigma(\gamma)
+\end{align*}
+(this should really be $\sigma : \Gamma \to U$ for some universe $(U,
+T)$  for size considerations, and accordingly $\Tm(\Gamma, \sigma) = \prod_{\gamma \in
+  \Gamma}T(\sigma(\gamma))$).  For $f : \Delta \to \Gamma$, $\sigma :
+\Ty(\Gamma)$, $h : \Tm(\Gamma, \sigma)$, define
+\begin{align*}
+  \sigma\{f\} &: \Ty(\Delta) = \{ \sigma\ |\ \sigma : \Delta \to \Set\} \\
+  \sigma\{f\} &= \sigma \circ f \\
+  h\{f\} &: \Tm(\Delta, \sigma\{f\}) = \prod_{\delta \in \Delta}\sigma(f(\delta)) \\
+  h\{f\} &= h \circ f
+\end{align*}
+For the context comprehension, define
+\begin{align*}
+  \Gamma.\sigma &= \sum_{\gamma \in \Gamma}\sigma(\gamma) \\
+  \p{\sigma} &: \sum_{\gamma \in \Gamma}\sigma(\gamma) \to \Gamma \\
+  \p{\sigma}&(\langle \gamma, s\rangle ) = \gamma \\
+  \vv{\sigma} &\in \Tm(\Gamma.\sigma, \sigma\{\p{\sigma}\}) = \prod_{\langle \gamma, s \rangle \in \Gamma.\sigma} \sigma(\gamma) \\
+  \vv{\sigma}&(\langle \gamma, s\rangle ) = s
+\end{align*}
+Given $f : \Delta \to \Gamma$ and $M \in \Tm(\Delta, \sigma\{f\}) =
+\prod_{\delta \in \Delta}\sigma(f(\delta))$, we define
+\[
+\theta = \langle f, M\rangle_{\sigma} : \Delta \to \underbrace{\Gamma.\sigma}_{\displaystyle\sum_{\gamma \in \Gamma}\sigma(\gamma)}
+\]
+by $\theta(\delta) = \langle f(\delta), M(\delta)\rangle$. We then have
+$\p{\sigma} \circ \theta = f$ and $\vv{\sigma}\{\theta\} = M$, and any
+other function satisfying these equations must be extensionally equal
+to $\theta$, hence $\theta$ is unique.
+
+
+\section{$\Fam(\Set)$}
+\label{cwfFamSet}
+
+$\Fam(\Set)$ can also be extended to a category with families. We
+start with $\C = \Fam(\Set)$ (and $[] = (\one, \lambda x.\one)$), and define
+\begin{align*}
+  \Ty(X, Y) &= \{ (A, B)\ |\ A : X \to \Set, B : (x : X) \to Y(x) \to A(x) \to \Set\} \\
+  \Tm((X, Y), (A, B)) &=  \{ (h, k)\ |\ h : \prod_{x \in X}A(x), k : \prod_{x \in X, y \in Y(x)}B(x, y, h(x))\}
+\end{align*}
+%\text{``}\prod_{\gamma \in (X, Y)}(A, B)(\gamma)\text{''}
+(similar size considerations apply as for $\Set$).
+  For $(f, g) : (X, Y) \to (X', Y')$, $(A, B) :
+\Ty(X', Y')$, $(h, k) : \Tm((X', Y'), (A, B))$, define
+\begin{align*}
+  (A, B)\{f, g\} &: \Ty(X, Y) = \{ (A, B)\ |\ A : X \to \Set, B : (x : X) \to Y(x) \to A(x) \to \Set\} \\
+  (A, B)\{f, g\} &= (A, B) \circ (f, g) = (A \circ f, \lambda x, y\ .\ B(f(x), g(x, y)) \\
+  (h, k)\{f, g\} &: \Tm(\Delta, \sigma\{f\}) \\
+  (h, k)\{f, g\} &= (h, k) \circ (f, g) = (h \circ f, \lambda x, y\ .\ k(f(x), g(x, y)))
+\end{align*}
+For the context comprehension, define
+\begin{align*}
+  (X, Y).(A, B) &= (\sum_{x \in X}A(x), \lambda \langle x, a\rangle\ .\sum_{y \in Y(x)}B(x, y, a) ) \\
+%  \p{A, B} &: (X, Y).(A, B) \to (X, Y) \\
+  \p{A, B} &= (\fst, \lambda x . \fst) \\
+%  \vv{A, B} &\in \Tm((X, Y).(A, B), (A, B)\{\p{A, B}\})
+  \vv{A, B}&= (\snd, \lambda x . \snd)
+\end{align*}
+Given $(f, g) : (X', Y') \to (X, Y)$ and $(h, k) \in \Tm((X', Y'), (A, B)\{f, g\})$, we define
+\[
+(\theta, \psi) = \langle (f, g), (h, k)\rangle_{(A, B)} : (X', Y') \to (X, Y).(A, B)
+\]
+by $\theta(x) = \langle f(x), h(x)\rangle$, $\psi(x, y) = \langle g(x,
+y), k(x, y)\rangle$. It is clear that $\p{\sigma} \circ \theta = f$
+and $\vv{\sigma}\{\theta\} = M$ and that these conditions force
+$(\theta, \psi)$ to be unique.
+
+
+
+
+
+\section{$\Bialg(F, G)$ for $F, G : \C \to \D$}
+\label{cwfDialg}
+
+\bibliographystyle{alpha}
+\bibliography{../../../references/biblio}
+
+\end{document}
