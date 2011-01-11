@@ -12,6 +12,10 @@
 
 \input header.inc
 
+\newcommand{\isoGR}{\ensuremath{\phi_{G\rightarrow}}}
+\newcommand{\isoGL}{\ensuremath{\phi_{G\leftarrow}}}
+\newcommand{\isoFL}{\ensuremath{\phi_{F}}} %{\phi_{F\leftarrow}}}
+
 \title{Extending some categories to categories with families}
 
 
@@ -122,11 +126,183 @@ and $\vv{\sigma}\{\theta\} = M$ and that these conditions force
 $(\theta, \psi)$ to be unique.
 
 
-
-
-
 \section{$\Bialg(F, G)$ for $F, G : \C \to \D$}
 \label{cwfDialg}
+
+\begin{lemma}
+  $\Bialg(F, G)$ has a terminal object if $\C$ and $\D$ does, and $G$
+  preserves terminal objects (i.e.\ $G(\one_\C) \cong \one_\D$).
+\end{lemma}
+\begin{proof}
+  Define $\one_{\Bialg(F, G)} \coloneqq (\one_\C, !_{F(\one_\C)})$
+  where $!_{F(\one_\C)}$ is the unique map $F(\one_\C) \to
+  \one_D$. For any object $(X, f)$, the unique morphism $(X, f) \to
+  (\one_\C, !_{F(\one_\C)})$ is given by the unique arrow $!_{X}$ from
+  $X$ to $\one_C$ in $\C$, and the diagram
+\[
+\xymatrix{
+FX \ar^-{f}[r] \ar_-{F(!_{X})}[d] & GX \ar^-{G(!_{X})}[d] \\
+F(\one_C) \ar_-{!_{F(\one_C)}}[r] & G(\one_\C) = \one_\D
+}
+\]
+commutes since both paths are arrows into $\one_\D$, hence equal.
+\end{proof}
+
+\subsection{Some CwF preliminaries}
+
+Clairambault \cite[4.1]{clairambault2006cwf} defines a category
+$\Type_\C(\Gamma)$ of types in context $\Gamma$ from the base category
+$\C$. The morphisms between $A, B \in \Ty_\C(\Gamma)$ are defined to
+be the terms $f \in \Tm_\C(\Gamma.A, B\{\p{A}\})$, with identity given
+by $\vv{A}$. We will be mostly interested in the composition of two
+terms $f \in \Tm_\C(\Gamma.A, B\{\p{A}\})$ and $g \in \Tm_\C(\Gamma.B,
+C\{\p{B}\})$, which is defined to be
+\[
+g \bullet f \coloneqq g\{\langle \p{A}, f\rangle_{B}\}.
+\]
+
+The following proposition says that comprehension is a functor from
+``families in $\C$'' to $\C$, which is quite convenient.
+\begin{lemma}
+\label{compfunctor}
+  Given $g : \Gamma' \to \Gamma$ and $M \in \Tm(\Gamma'.\sigma',
+  \sigma\{g \circ \p{\sigma'}\})$, one can construct $\psi :
+  \Gamma'.\sigma' \to \Gamma.\sigma$.
+\end{lemma}
+\begin{proof}
+Take $\psi \coloneqq \langle g \circ \p{\sigma'}, M\rangle_{\sigma}$.
+\end{proof}
+
+\begin{lemma}
+  Let $f : \Delta \to \Gamma$, $M \in \Tm(\Delta, \sigma\{f\})$, $h :
+  \Theta \to \Delta$. Then $\langle f, M\rangle_\sigma \circ h = \langle f \circ h, M\{h\}\rangle_{\sigma\{f\}}$.
+\end{lemma}
+\begin{proof}
+  $\langle f, M\rangle_\sigma \circ h$ satisfies the universal
+  property for $f \circ h$ and $M\{h\}$.
+\end{proof}
+
+\subsection{The construction}
+
+Assume that $\C$ and $\D$ are CwFs (with boxes, or can this be defined for all CwFs?).
+
+ Assume further that for $f : \Delta \to \Gamma$, we have
+ \[
+ \square_G(\Gamma, \sigma)\{G(f)\} = \square_G(\Delta, \sigma\{f\})
+% \square_G(\Gamma, \sigma)\{G(f)\} \cong \square_G(\Delta, \sigma\{f\})
+ \]
+% in $\Type_{\Bialg(F, G)}(G(\Delta))$, i.e.\ there are terms 
+% \begin{align*}
+% \isoGR &\in \Tm(G(\Delta).\square_G(\Gamma, \sigma)\{G(f)\}, \square_G(\Delta, \sigma\{f\})\{\p{\square_G(\Gamma, \sigma)\{G(f)\}}\}) \\
+% \isoGL &\in \Tm(G(\Delta).\square_G(\Delta, \sigma\{f\}), \square_G(\Gamma, \sigma)\{G(f) \circ \p{\square_G(\Delta, \sigma\{f\})}\})
+% \end{align*}
+% such that $\isoGR \bullet \isoGL = \id = \isoGL \bullet \isoGR$.
+\begin{remark}
+  Demanding equality on the nose instead of isomorphism simplifies
+  matters -- we are spared transporting terms hidden inside
+  substitutions along the isomorphisms. I guess it should be possible
+  in principle though.
+
+  However, with the ususal definition of $\square_G$, one (almost)
+  never has equality. (In $\Set$, for example, the left hand side is
+  $\{ y : G(\Sigma\ \Gamma\ \sigma)\ |\ldots\}$ and the right hand
+  side $\{ y : G(\Sigma\ \Delta\ (\sigma \circ f))\ |\ldots\}$.)  If
+  $G = U$ is a forgetful functor, though, then the usual definition of
+  $\square_U(\Gamma, \sigma)$ is isomorphic to a $X(\Gamma, \sigma)$
+  such that $X(\Gamma, \sigma)\{U(f)\} = X(\Delta, \sigma\{f\})$. I
+  see no harm in replacing $\square_U(\Gamma, \sigma)$ with $X(\Gamma,
+  \sigma)$ for $U$, so that we get an actual equality? The properties
+  we need $\square_U$ to have are of course preserved by isomorphism
+  anyway.
+\end{remark}
+%
+For $F$, we only require the existence of
+\[
+\isoFL(f) \in \Tm(F(\Delta).\square_F(\Delta, \sigma\{f\}),
+\square_F(\Gamma, \sigma)\{F(f) \circ \p{\square_F(\Delta,
+  \sigma\{f\})}\})
+\]
+which should be functorial in $f$, i.e. $\isoFL(\id) = \vv{\sigma}$
+and 
+\[
+\isoFL(f \circ g) = \isoFL(f)\{\langle F(g) \circ \ps, \isoFL(g)\rangle\}.
+\]
+
+\begin{remark}
+  $\isoFL(f)$ and $\isoFL(g)$ are not composable in
+  $\Type(F(\Gamma))$, as their types depend on $f$ and $g$, but the
+  ``composition'' above should be composition in some more liberal
+  category (where $\vv{\sigma}$ still is the identity)? It is in any
+  case exactly what we need, and holds e.g. in $\Set$ (I
+  have not checked $\Fam(\Set)$, but would be very surprised if it did
+  not hold).
+\end{remark}
+
+
+
+\subsubsection{Types}
+
+Define
+\[
+\Ty_{\Bialg(F, G)}(\Gamma, h) = \{ (\sigma, M)\ |\ \sigma \in \Ty_{\C}(\Gamma),
+ M \in \Tm_\D(F(\Gamma).\square_F(\Gamma, \sigma),\square_G(\Gamma, \sigma)\{h \circ \ps\})\}
+\]
+For substitutions, assume $f : (\Delta, h') \to (\Gamma, h)$, i.e.\ $f
+: \Delta \to \Gamma$ and $G(f) \circ h' = h \circ F(f)$. Define for $(\sigma, M) \in \Ty_{\Bialg(F, G)}(\Gamma, h)$
+\[
+(\sigma, M)\{f\} = (\sigma\{f\}, M\{\langle F(f) \circ \ps, \isoFL(f)\rangle\}) \in \Ty_{\Bialg(F, G)}(\Delta, h')
+\]
+%
+We should check that this makes sense. Since $\sigma \in
+\Ty_{\C}(\Gamma)$, we have $\sigma\{f\} \in \Ty_{\C}(\Delta)$. We now
+need a term in $\Tm_\D(F(\Delta).\square_F(\Delta,
+\sigma\{f\}),\square_G(\Delta, \sigma\{f\})\{h \circ \ps\})$.  Since
+$F(f) : F(\Delta) \to F(\Gamma)$ and
+\[
+\isoFL \in \Tm(F(\Delta).\square_F(\Delta, \sigma\{f\}),
+\square_F(\Gamma, \sigma)\{F(f) \circ \ps\}),
+\]
+Lemma \ref{compfunctor} applies and we get $g \coloneqq \langle F(f) \circ \ps,
+\isoFL\rangle : F(\Delta).\square_F(\Delta, \sigma\{f\}) \to
+F(\Gamma).\square_F(\Gamma, \sigma)$, so that
+\[
+M\{g\} \in
+\Tm_\D(F(\Delta).\square_F(\Delta, \sigma\{f\}),\square_G(\Gamma,
+\sigma)\{h \circ \ps \circ g\})
+\]
+and since
+\[
+h \circ \ps \circ g = h \circ \ps \circ \langle F(f) \circ \ps,
+\isoFL\rangle = h \circ F(f) \circ \ps = G(f) \circ h' \circ \ps
+\]
+and $\square_G(\Gamma, \sigma)\{G(f)\} = \square_G(\Delta,
+\sigma\{f\})$, we in fact have
+\[
+M\{g\} \in \Tm_\D(F(\Delta).\square_F(\Delta,
+\sigma\{f\}),\square_G(\Delta, \sigma\{f\})\{h' \circ \ps\})
+\]
+as needed.
+Functoriality follows from functoriality of $\isoFL(f)$ and functoriality one level down:
+\begin{align*}
+(\sigma, M)\{\id\} &= (\sigma\{\id\}, M\{\langle F(\id) \circ \ps, \isoFL(\id)\rangle\}) \\ &=
+  (\sigma, M\{\langle p, \vv{\sigma}\rangle\}) = (\sigma, M\{\id\}) = (\sigma, M)
+\end{align*}
+\begin{align*}
+  (\sigma, M)\{f\}\{g\} 
+  &= (\sigma\{f\}\{g\}, M\{\langle F(f) \circ \ps, \isoFL(f)\rangle\}\{\langle F(g) \circ \ps, \isoFL(g)\rangle\}) \\
+  &= (\sigma\{f \circ g\}, M\{\langle F(f) \circ \ps, \isoFL(f)\rangle \circ \langle F(g) \circ \ps, \isoFL(g)\rangle\}) \\
+  &= (\sigma\{f \circ g\}, M\{\langle F(f) \circ \ps \circ \langle F(g) \circ \ps, \isoFL(g)\rangle, \isoFL(f)\{\langle F(g) \circ \ps, \isoFL(g)\rangle\}) \\
+  &= (\sigma\{f \circ g\}, M\{\langle F(f) \circ F(g) \circ \ps, \isoFL(f \circ g)) \\
+  &= (\sigma\{f \circ g\}, M\{\langle F(f \circ g) \circ \ps, \isoFL(f \circ g)) \\
+  &= (\sigma, M)\{f \circ g\}
+\end{align*}
+
+
+\subsubsection{Terms}
+
+
+\subsubsection{Context comprehension}
+
 
 \bibliographystyle{alpha}
 \bibliography{../../../references/biblio}

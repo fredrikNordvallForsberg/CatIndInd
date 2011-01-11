@@ -43,6 +43,7 @@
 \newcommand{\Ty}{\ensuremath{\text{Ty}}}
 \newcommand{\Tm}{\ensuremath{\text{Tm}}}
 \newcommand{\p}[1]{\ensuremath{\textbf{p}(#1)}}
+\newcommand{\ps}{\ensuremath{\textbf{p}}}
 \newcommand{\vv}[1]{\ensuremath{\textbf{v}_{#1}}}
 
 % For convenience

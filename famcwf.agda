@@ -9,6 +9,7 @@ fst (a , b) = a
 snd : {A : Set}{B : A -> Set} -> (x : Σ A B) -> B (fst x)
 snd (a , b) = b
 
+record ⊤ : Set where
 
 data _==_ {A : Set1} (x : A) : A -> Set where
   refl : x == x
@@ -52,6 +53,18 @@ assoc : {X Y Z W : FamSet} ->
 assoc f g h = refl
 ------
 
+one : FamSet
+one = ⊤ , λ _ → ⊤
+
+! : {X : FamSet} -> X ⇒ one
+! = (λ x → _) , (λ x y → _)
+
+-----
+!-unique : {X : FamSet} -> (f : X ⇒ one) -> f == !
+!-unique f = refl
+-- (isn't eta for one wonderful?)
+-----
+
 ---------------------------------------------------
 -- The functor (Ty, Tm) : Fam(Set) -> Fam(Set)
 
@@ -94,10 +107,10 @@ q = snd , λ x → snd
 
 -----
 eqfst : {XY XY' : FamSet}{AB : Ty XY} -> {f : XY' ⇒ XY} -> {M : Tm XY' (AB [ f ]Ty)} ->
-               (p {XY} {AB} ∘ (θ {XY} {XY'} {AB} f M)) == f
+               (p {σ = AB} ∘ (θ {AB = AB} f M)) == f
 eqfst = refl
 
 eqsnd : {XY XY' : FamSet}{AB : Ty XY} -> {f : XY' ⇒ XY} -> {M : Tm XY' (AB [ f ]Ty)} ->
-               (q {XY} {AB} [ θ {XY} {XY'} {AB} f M ]Tm) == M
+               (q {σ = AB} [ θ {AB = AB} f M ]Tm) == M
 eqsnd = refl
 -----
