@@ -182,28 +182,67 @@ Take $\psi \coloneqq \langle g \circ \p{\sigma'}, M\rangle_{\sigma}$.
   property for $f \circ h$ and $M\{h\}$.
 \end{proof}
 
-\subsection{The construction}
+\begin{lemma}
+  For every $M \in \Tm(\Gamma, \sigma)$, there is $\overline{M} :
+  \Gamma \to \Gamma.\sigma$ such that $\p{\sigma} \circ \overline{M} =
+  \id$ and $\vv{\sigma}\{\overline{M}\} = M$.
+\end{lemma}
+\begin{proof}
+  There is no choice but to define $\overline{M} \coloneqq \langle \id, M\rangle_{\sigma}$.
+\end{proof}
 
-Assume that $\C$ and $\D$ are CwFs (with boxes, or can this be defined for all CwFs?).
+\subsection{Some box preliminaries}
 
- Assume further that for $f : \Delta \to \Gamma$, we have
- \[
+In order to extend $\Bialg(F, G)$ to a CwF (with $F, G : \C \to \D$),
+we assume that $\C$ and $\D$ are CwFs, and that $\square_F$ and
+$\square_G$ exist and satisfy certain requirements. We collect these here.
+
+\begin{definition}
+  Assume that $\C$ and $\D$ are CwFs. They \emph{has boxes}, if for
+  each $F : \C \to \D$, $\Gamma \in \C$ and $\sigma \in \Ty(\Gamma)$,
+  there exists $\square_F(\Gamma, \sigma) \in \Ty(F(\Gamma))$ and an
+  isomorphism $\varphi_F : F(\Gamma.\sigma) \to F(\Gamma).\square_F(\Gamma, \sigma)$
+  such that $\ps \circ \varphi = F(\ps)$.
+
+  For every $f \in \Tm(\Gamma, \sigma)$, we also demand the existence of
+  $\dmap_F(\Gamma, \sigma, f) \in \Tm(F(\Gamma), \square_F(\Gamma, \sigma))$
+  such that $\varphi_F \circ F(\overline{f}) = \overline{\dmap_F(\Gamma, \sigma, f)}$.
+
+  Finally, we also require a morphism part of $\square_F$, namely that
+  for $f : \Delta \to \Gamma$, $M \in \Tm(\Delta, \sigma\{f\})$ we
+  have $\square_F(f, M) \in \Tm(F(\Delta), \square_F(\Gamma,
+  \sigma)\{F(f)\})$ with ``naturality condition'' $\varphi_F \circ
+  F(\langle f , M\rangle) = \langle F(f), \square_F(f, M)\rangle$.
+\end{definition}
+
+
+Assume that $\C$ and $\D$ are CwFs with boxes. We assume that for $f :
+\Delta \to \Gamma$, we have
+ \begin{equation} \label{square_G_eq}
  \square_G(\Gamma, \sigma)\{G(f)\} = \square_G(\Delta, \sigma\{f\})
 % \square_G(\Gamma, \sigma)\{G(f)\} \cong \square_G(\Delta, \sigma\{f\})
- \]
+ \end{equation}
 % in $\Type_{\Bialg(F, G)}(G(\Delta))$, i.e.\ there are terms 
 % \begin{align*}
 % \isoGR &\in \Tm(G(\Delta).\square_G(\Gamma, \sigma)\{G(f)\}, \square_G(\Delta, \sigma\{f\})\{\p{\square_G(\Gamma, \sigma)\{G(f)\}}\}) \\
 % \isoGL &\in \Tm(G(\Delta).\square_G(\Delta, \sigma\{f\}), \square_G(\Gamma, \sigma)\{G(f) \circ \p{\square_G(\Delta, \sigma\{f\})}\})
 % \end{align*}
 % such that $\isoGR \bullet \isoGL = \id = \isoGL \bullet \isoGR$.
+ and similarly $\square_G(\id_{\Gamma}, N)\{G(f)\} =
+ \square_G(\id_{\Delta}, N\{f\})$ for all $N \in \Tm(\Gamma, \sigma)$
+ and $f : \Delta \to \Gamma$. Here, $\square_G(\id_{\Gamma},
+ N)\{G(f)\} \in \Tm(G(\Delta), \square_G(\Gamma, \sigma)\{G(f)\})$ and
+ $\square_G(\id_{\Delta}, N\{f\}) \in \Tm(G(\Delta), \square_G(\Delta,
+ \sigma\{f\}))$, so both sides of the equation have the same type by
+ (\ref{square_G_eq}).
+
 \begin{remark}
   Demanding equality on the nose instead of isomorphism simplifies
   matters -- we are spared transporting terms hidden inside
   substitutions along the isomorphisms. I guess it should be possible
   in principle though.
 
-  However, with the ususal definition of $\square_G$, one (almost)
+  However, with the usual definition of $\square_G$, one (almost)
   never has equality. (In $\Set$, for example, the left hand side is
   $\{ y : G(\Sigma\ \Gamma\ \sigma)\ |\ldots\}$ and the right hand
   side $\{ y : G(\Sigma\ \Delta\ (\sigma \circ f))\ |\ldots\}$.)  If
@@ -238,7 +277,16 @@ and
   not hold).
 \end{remark}
 
+We assume that $\square_F$, $\isoFL(f)$ and substitution relate in the
+following ways: for every $f : \Delta \to \Gamma$, $M \in \Tm(\Gamma,
+\sigma\{f\})$ and $g : \Theta \to \Delta$, we have
+\begin{itemize}
+\item $\square_F(f, M)\{F(g)\} = \square_F(f \circ g, M\{g\})$  \quad(``$\square_F(f \circ g) = \square_F(f) \circ \square_F(g)$''),
+\item $\square_F(\ps, \vv{\sigma}) = \vv{\square_F(\Gamma, \sigma)}\{\varphi_F\}$ \quad\qquad\qquad(``$\square_F(\id) = \id$''),
+\item $\isoFL(f)\{\overline{\square_F(\id, M)}\} = \square_F(f, M)$.
+\end{itemize}
 
+\subsection{The construction}
 
 \subsubsection{Types}
 
@@ -297,12 +345,148 @@ Functoriality follows from functoriality of $\isoFL(f)$ and functoriality one le
   &= (\sigma, M)\{f \circ g\}
 \end{align*}
 
-
 \subsubsection{Terms}
 
+Define
+\[
+\Tm((\Gamma, h), (\sigma, M)) = \{ N \in \Tm_{\C}(\Gamma, \sigma) \ |\
+   \square_G(\id_\Gamma, N)\{h\} = M\{\overline{\square_F(\id_{\Gamma}, N)}\}\}
+                                 %M\{\langle \id_{F(\Gamma)}, \square_F(\id_{\Gamma}, N)\rangle\}\}
+\]
+
+If $f : (\Delta, h') \to (\Gamma, h)$, we define $N\{f\}$ for $N \in
+\Tm((\Gamma, h), (\sigma, M))$ to be $N\{f\}$ inherited from $\C$. We
+have to check that $N\{f\} \in \Tm((\Delta, h'), (\sigma, M)\{f\})$
+$=$ $\Tm((\Delta, h'), (\sigma\{f\}, M\{\langle F(f) \circ \ps,
+\isoFL(f)\rangle\}))$, i.e.\ that
+\[
+\square_G(\id_\Delta, N\{f\})\{h'\} = M\{\langle F(f) \circ \ps,
+\isoFL(f)\rangle\}\{\overline{\square_F(\id_{\Delta}, N\{f\})}\}
+\]
+given that $\square_G(\id_\Gamma, N)\{h\} =
+M\{\overline{\square_F(\id_{\Gamma}, N)}\}$. 
+We calculate
+%The right hand side can
+%be simplified to $M\{\langle F(f), \isoFL (f)\{\langle\id_{F(\Delta)},
+%\square_F(\id_{\Delta}, N\{f\})\rangle\}$. The left hand side can now
+%be rewritten
+\begin{align*}
+  \square_G(\id_\Delta, N\{f\})\{h'\}
+&= \square_G(\id_\Gamma, N)\{G(f)\}\{h'\} \\
+&= \square_G(\id_\Gamma, N)\{h\}\{F(f)\} \\
+&= M\{\langle\id_{F(\Gamma)}, \square_F(\id_{\Gamma}, N)\rangle\}\{F(f)\} \\
+&= M\{\langle F(f), \square_F(\id_{\Gamma}, N)\{F(f)\}\rangle\} \\
+&= M\{\langle F(f), \square_F(f, N\{f\})\rangle\} \\
+&= M\{\langle F(f), \isoFL(f)\{\overline{\square_F(\id, N\{f\})}\rangle\} \\
+&= M\{\langle F(f) \circ \ps, \isoFL(f)\rangle\}\{\overline{\square_F(\id, N\{f\})}\} .
+\end{align*}
 
 \subsubsection{Context comprehension}
 
+Given $(\Gamma, h) \in \Bialg(F, G)$ and $(\sigma, M) \in \Ty(\Gamma,
+h)$, we define
+\begin{align*}
+(\Gamma, h).(\sigma, M) &\coloneqq
+  (\Gamma.\sigma, \varphi_G^{-1} \circ \langle h \circ \ps, M \rangle \circ \varphi_F) \\
+\p{(\sigma, M)} &\coloneqq \p{\sigma} \\
+\vv{(\sigma, M)} &\coloneqq \vv{\sigma} \\
+\langle f , N\rangle_{(\sigma, M)} &\coloneqq \langle f , N\rangle_{\sigma}
+\end{align*}
+We have to check that (i) $\p{(\sigma, M)} : (\Gamma, h).(\sigma, M)
+\to (\Gamma, h)$, (ii) $\vv{(\sigma, M)} \in \Tm((\Gamma, h).(\sigma,
+M), (\sigma, M)\{\p{(\sigma, M)}\})$ and that (iii) $\langle f ,
+N\rangle_{\sigma} : (\Delta, h') \to (\Gamma, h).(\sigma, M)$ when $f
+: (\Delta, h') \to (\Gamma, h)$ and $N \in \Tm((\Gamma, h).(\sigma, M), (\sigma, M)\{p\})$.
+
+For (i), we need that $G(\ps) \circ \varphi_G^{-1} \circ \langle h
+\circ \ps, M\rangle \circ \varphi_F = h \circ F(\ps)$. But $G(\ps) = \ps \circ \varphi_G$, so
+\begin{align*}
+   G(\ps) \circ \varphi_G^{-1} \circ \langle h \circ \ps, M\rangle \circ \varphi_F
+&= \ps \circ \varphi_G \circ \varphi_G^{-1} \circ \langle h \circ \ps, M\rangle \circ \varphi_F \\
+&= \ps \circ \langle h \circ \ps, M\rangle \circ \varphi_F \\
+&= h \circ \ps \circ \varphi_F \\
+&= h \circ F(\ps).
+\end{align*}
+Hence $\p{(\sigma, M)} : (\Gamma, h).(\sigma, M) \to (\Gamma, h)$.
+For (ii), we need to show that $\vv{\sigma} \in
+\Tm((\Gamma.\sigma, \varphi_G^{-1} \circ \langle h \circ \ps, M
+\rangle \circ \varphi_F), (\sigma\{\ps\}, M\{\langle F(\ps) \circ \ps,
+\isoFL(\ps)\})$, i.e.\ that
+$\square_G(\id_\Gamma, \vv{\sigma})\{\varphi_G^{-1} \circ \langle h \circ \ps, M
+\rangle \circ \varphi_F\} = M\{\langle F(\ps) \circ \ps,
+\isoFL(\ps)\rangle\}\{\overline{\square_F(\id_{\Gamma}, \vv{\sigma})}\}$. First, note that
+$\square_G(\id_\Gamma, \vv{\sigma}) = \square_G(\p{\sigma}, \vv{\sigma})$ because
+\begin{align*}
+\square_G(\id, \vv{}) &= \square_G(\ps \circ \overline{\vv{}}, \vv{}\{\overline{\vv{}}\})
+                      = \square_G(\ps, \vv{})\{G(\overline{\vv{}})\} \\
+                      &= \square_G(\ps, \vv{}{\{\overline{\vv{}}\}})
+                      = \square_G(\ps, \vv{})
+\end{align*}
+Now
+\begin{align*}
+  \square_G(\id_\Gamma, \vv{\sigma})\{\varphi_G^{-1} \circ \langle h \circ \ps, M
+\rangle \circ \varphi_F\}
+ &= \square_G(\ps, \vv{\sigma})\{\varphi_G^{-1} \circ \langle h \circ \ps, M
+\rangle \circ \varphi_F\} \\
+ &= \vv{\sigma}\{\varphi_G \circ \varphi_G^{-1} \circ \langle h \circ \ps, M
+\rangle \circ \varphi_F\} \\
+ &= \vv{\sigma}\{\langle h \circ \ps, M \rangle \circ \varphi_F\} \\
+ &= M\{\varphi_F\}
+\end{align*}
+but also
+\begin{align*}
+  M\{\langle F(\ps) \circ \ps,
+\isoFL(\ps)\rangle\}\{\overline{\square_F(\id_{\Gamma}, \vv{\sigma})}\}
+ &= M\{\langle F(\ps),\isoFL(\ps)\{\overline{\square_F(\id_{\Gamma}, \vv{\sigma})}\}\rangle\} \\
+ &= M\{\langle F(\ps),\square_F(\ps, \vv{\sigma})\rangle\} \\
+ &= M\{\varphi_F \circ F(\langle \ps, \vv{\sigma}\rangle)\} \\
+ &= M\{\varphi_F \circ F(\id)\} \\
+ &= M\{\varphi_F\} .
+\end{align*}
+
+Finally, we have to check that $\langle f, N \rangle$ really is a
+morphism. (Uniqueness of $\langle f, N\rangle$ is of course inherited
+from $\C$.)  We are given $f : (\Delta, h') \to (\Gamma, h)$ and $N
+\in \Tm((\Gamma, h).(\sigma, M), (\sigma, M)\{p\})$, that is we have
+$G(f) \circ h' = h \circ F(f)$ and
+\[
+\square_G(\id_{\Delta}, N)\{h'\} = M\{\langle F(f) \circ \ps, \isoFL(f)\rangle\}\{\overline{\square_F(\id_{\Delta}, N)}\}
+\]
+which simplifies to
+\[
+\square_G(\id_{\Delta}, N)\{h'\} = M\{\langle F(f), \square_F(f, N)\rangle\}
+\]
+We also need that $\square_G(\id_{\Delta}, N) = \square_G(f, N)$ (they
+have the same type thanks to our assumption $\square_G(\Gamma,
+\sigma)\{G(f)\} = \square_G(\Delta, \sigma\{f\})$) -- can this be
+proven from the facts we have or should it be added to our global list
+of assumptions? Thus, we have
+\[
+\square_G(f, N)\{h'\} = \square_G(\id, N)\{h'\} = M\{\langle F(f), \square_F(f, N)\rangle\}
+\]
+
+We have to show that
+\[
+G(\langle f, N\rangle) \circ h' = \varphi_G^{-1} \circ \langle h \circ \ps, M\rangle \circ \varphi_F \circ F(\langle f, N\rangle)
+\]
+or equivalently
+\[
+\varphi_G \circ G(\langle f, N\rangle) \circ h' = \langle h \circ \ps, M\rangle \circ \varphi_F \circ F(\langle f, N\rangle)
+\]
+We have
+\begin{align*}
+  \varphi_G \circ G(\langle f, N\rangle) \circ h'
+ &= \langle G(f), \square_G(f, N)\rangle \circ h' \\
+ &= \langle G(f) \circ h', \square_G(f, N)\{h'\}\rangle \\
+ &= \langle h \circ F(f), M\{\langle F(f), \square_F(f, N)\rangle\}\rangle \\
+\end{align*}
+and also
+\begin{align*}
+  \langle h \circ \ps, M\rangle \circ \varphi_F \circ F(\langle f, N\rangle)
+ &= \langle h \circ \ps, M\rangle \circ \langle F(f), \square_F(f, N)\rangle \\
+ &= \langle h \circ F(f), M\{\langle F(f), \square_F(f, N)\rangle\}\rangle \\
+\end{align*}
+and we are done.
 
 \bibliographystyle{alpha}
 \bibliography{../../../references/biblio}
