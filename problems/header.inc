@@ -17,6 +17,7 @@
 
 \newtheorem{theorem}{Theorem}
 \newtheorem{lemma}[theorem]{Lemma}
+\newtheorem{corollary}[theorem]{Corollary}
 \newtheorem{proposition}[theorem]{Proposition}
 
 \theoremstyle{definition}
@@ -36,6 +37,8 @@
 \newcommand{\fold}{\ensuremath{\text{fold}}}
 \newcommand{\inn}{\ensuremath{\text{in}}}
 
+\newcommand{\ID}{\ensuremath{\text{ID}}}
+
 \newcommand{\Bialg}{\ensuremath{\text{BiAlg}}}
 \newcommand{\ALG}{\ensuremath{\overline{\text{Alg}}}}
 
@@ -50,6 +53,7 @@
 \newcommand{\muF}{\ensuremath{\mu F}}
 \newcommand{\C}{\ensuremath{\mathbb{C}}}
 \newcommand{\D}{\ensuremath{\mathbb{D}}}
+\newcommand{\E}{\ensuremath{\mathbb{E}}}
 
 \newcommand{\Set}{\ensuremath{\text{Set}}}
 \newcommand{\Type}{\ensuremath{\text{Type}}}

@@ -204,11 +204,7 @@ $\square_G$ exist and satisfy certain requirements. We collect these here.
   isomorphism $\varphi_F : F(\Gamma.\sigma) \to F(\Gamma).\square_F(\Gamma, \sigma)$
   such that $\ps \circ \varphi = F(\ps)$.
 
-  For every $f \in \Tm(\Gamma, \sigma)$, we also demand the existence of
-  $\dmap_F(\Gamma, \sigma, f) \in \Tm(F(\Gamma), \square_F(\Gamma, \sigma))$
-  such that $\varphi_F \circ F(\overline{f}) = \overline{\dmap_F(\Gamma, \sigma, f)}$.
-
-  Finally, we also require a morphism part of $\square_F$, namely that
+  We also require a morphism part of $\square_F$, namely that
   for $f : \Delta \to \Gamma$, $M \in \Tm(\Delta, \sigma\{f\})$ we
   have $\square_F(f, M) \in \Tm(F(\Delta), \square_F(\Gamma,
   \sigma)\{F(f)\})$ with ``naturality condition'' $\varphi_F \circ
@@ -487,6 +483,122 @@ and also
  &= \langle h \circ F(f), M\{\langle F(f), \square_F(f, N)\rangle\}\rangle \\
 \end{align*}
 and we are done.
+
+\begin{question}
+  Can we recover the inverse image type (and hence $\square_F$) from
+  $\C$ as well?
+\end{question}
+
+\section{The equivalence of elim and init in the CwF formulation}
+
+Since our constructor now has type $\inn : F(A) \to G(A)$, we need to
+change the type of $\elim$ accordingly. This means that the type and
+specification of $\dmap_F$ has to be changed as well; in particular,
+it depends on both $F$ and $G$, and should more accurately be called $\dmap_{F,G}$.
+
+\begin{definition}
+For every $g \in \Tm(G(\Gamma), \square_G(\Gamma, \sigma))$, we demand the existence of
+$\dmap_{F,G}(\Gamma, \sigma, g) \in \Tm(F(\Gamma), \square_F(\Gamma, \sigma))$
+such that if $f \in \Tm(\Gamma, \sigma)$ then
+\[
+\varphi_F \circ F(\overline{f}) = \overline{\dmap_F(\Gamma, \sigma,
+  \vv{}\{\varphi_G \circ G(\overline{f})\})}.
+\]
+\end{definition}
+
+Note that if $G = \ID$, then $\square_G(A, P) = P$ and $\varphi_G =
+\id$, and the above equation collapses to $\varphi_F \circ
+F(\overline{f}) = \overline{\dmap_F(\Gamma, \sigma, f)}$, since $\vv{}\{\overline{f}\} = f$.
+
+
+Let $F, G : \C \to \D$ with $\C$ and $\D$ CwFs. The elimination
+principle for $A \in \C$, $\inn : F(A) \to G(A)$ says that if $P \in
+\Ty(A)$ and $g \in \Tm(F(A).\square_F(A, P), \square_G(A, P)\{\inn
+\circ \ps\})$ then there exist $\elim(P, g) \in \Tm(G(A), \square_G(A,
+P))$. The computation rule says
+\[
+\elim(P, g)\{\inn\} = g\{\overline{\dmap(A, P, \elim(P, g))}\}.
+\]
+
+For $G = \ID$ the identity functor, we can choose $\square_{\ID}(A, P)
+= P$, and this reduces to $\elim(P, g) \in \Tm(A, P)$ if $g \in
+\Tm(F(A).\square_F(A, P), P\{\inn \circ \ps\})$. In $\Set$, this means
+that $\elim(P, g) : (x : A) \to P(x)$ if $g : (x : F(A)) \to
+\square_F(A, P, x) \to P(\inn(x))$.
+
+
+\subsection{Init $\implies$ elim}
+
+\begin{theorem}
+  Let $F, G : \C \to \D$ with $\C$ and $\D$ CwFs. If $(A, \inn)$ is
+  initial in $\Bialg(F, G)$ then the elimination principle holds for
+  $(A, \inn)$.
+\end{theorem}
+\begin{proof}
+  Let $P \in \Ty(A)$ and $g \in \Tm(F(A).\square_F(A, P), \square_G(A,
+  P)\{\inn \circ \ps\})$ be given. Then $h \coloneqq \varphi_G^{-1}
+  \circ \langle \inn \circ p, g\rangle \circ \varphi_F : F(A.P) \to
+  G(A.P)$, so by initiality, we get $\fold(h) : A \to A.P$ such that
+  $h \circ F(\fold(h)) = G(\fold(h)) \circ \inn$. Hence the following
+  diagram commutes:
+\[
+\xymatrix@-1pc{
+F(A) \ar^-{\inn}[rrr] \ar_-{F(\fold(h))}[d] & & & G(A) \ar^-{G(\fold(h))}[d] \\
+F(A.P) \ar_{\varphi_F}[dr] \ar_-{F(\ps)}[dd] & & & G(A.P) \ar@<-1ex>_-{\varphi_G}[dl] \ar^-{G(\ps)}[dd]\\
+ & F(A).\square_F(A,P) \ar^{\langle \inn \circ p, g\rangle}[r] \ar^{\ps}[dl]& G(A).\square_G(A,P) \ar@<-1ex>_-{\varphi_G^{-1}}[ur] \ar^{\ps}[dr] & \\
+F(A) \ar_-{\inn}[rrr] & & & G(A)
+}
+\]
+This means that $\ps \circ \fold(h)$ is a morphism in $\Bialg(F, G)$,
+so by initiality, we must have $\ps \circ \fold(h) = \id$. We now
+define $\elim(P, g) \coloneqq \vv{}\{\varphi_G \circ G(\fold(h))\}$.
+We then have
+\begin{align*}
+  \elim(p, G) &\in \Tm(G(A), \square_G(A, P)\{ \ps \circ \varphi_G \circ U(\fold(h))\}) \\
+              &=  \Tm(G(A), \square_G(A, P)\{ U(\ps) \circ U(\fold(h))\}) \\
+              &=  \Tm(G(A), \square_G(A, P)\{ U(\ps \circ \fold(h))\}) \\
+              &=  \Tm(G(A), \square_G(A, P)\{ U(\id)\}) \\
+              &=  \Tm(G(A), \square_G(A, P))
+\end{align*}
+as required.
+
+We must check that the computation rule $\elim(P, g)\{\inn\} =
+g\{\overline{\dmap(A, P, \elim(P, g))}\}$ holds. Note first that since
+$\ps \circ \fold(h) = \id$, we have
+\[
+\fold(h) = \langle \ps \circ \fold(h), \vv{}\{\fold(h)\}\rangle
+         = \langle \id , \vv{}\{\fold(h)\}\rangle
+         = \overline{\vv{}\{\fold(h)\}}
+\]
+Using this, we have
+\begin{align*}
+  \elim(P, g)\{\inn\} &=  \vv{}\{\varphi_G \circ G(\fold(h)) \circ \inn\} \\
+                      &=  \vv{}\{\varphi_G \circ \varphi_G^{-1} \circ \langle \inn \circ \ps, g\rangle \circ \varphi_F \circ F(\fold(h))\} \\
+                      &=  g\{\varphi_F \circ F(\fold(h))\} \\
+                      &=  g\{\varphi_F \circ F(\overline{\vv{}\{\fold(h)\}})\} \\
+                      &=  g\{\overline{\dmap(A, P, \vv{}\{\varphi_G \circ G(\overline{\vv{}\{\fold(h)\}})\})}\} \\
+                      &=  g\{\overline{\dmap(A, P, \vv{}\{\varphi_G \circ G(\fold(h))\})}\} \\
+                      &=  g\{\overline{\dmap(A, P, \elim(P, g))}\}
+\end{align*}
+as required.
+\end{proof}
+
+Let $\E$ be the equaliser category which we intend to interpret
+inductive-inductive definitions in. It inherits a CwF structure from
+$\Bialg(\widehat{G}, U)$.
+
+\begin{lemma}
+  $\E$ preserves $\Gamma.\sigma$, i.e.\ if $\Gamma \in \E$ then $\Gamma.\sigma \in \E$.
+\end{lemma}
+
+\begin{corollary}
+    Let $F, G : \C \to \D$ with $\C$ and $\D$ CwFs. If $(A, \inn)$ is
+  initial in $\E$ then the elimination principle holds for
+  $(A, \inn)$.
+\end{corollary}
+
+\subsection{Elim $\implies$ weak init}
+
 
 \bibliographystyle{alpha}
 \bibliography{../../../references/biblio}
