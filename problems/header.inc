@@ -15,6 +15,8 @@
 
 \newcommand{\oneelt}{\ensuremath{\star}}
 
+\newcommand{\BOX}{\ensuremath{\boxvoid}}
+
 \newtheorem{theorem}{Theorem}
 \newtheorem{lemma}[theorem]{Lemma}
 \newtheorem{corollary}[theorem]{Corollary}
@@ -48,7 +50,9 @@
 \newcommand{\p}[1]{\ensuremath{\textbf{p}(#1)}}
 \newcommand{\ps}{\ensuremath{\textbf{p}}}
 \newcommand{\vv}[1]{\ensuremath{\textbf{v}_{#1}}}
+\newcommand{\vvs}{\ensuremath{\textbf{v}}}
 
+\newcommand{\Hom}{\ensuremath{\text{Hom}}}
 % For convenience
 \newcommand{\muF}{\ensuremath{\mu F}}
 \newcommand{\C}{\ensuremath{\mathbb{C}}}
@@ -62,3 +66,9 @@
 \newcommand{\Pow}{\ensuremath{\text{Pow}}}
 
 \newcommand{\invIm}[1]{\ensuremath{#1^{*}}}
+
+\newcommand{\constFam}[1]{\ensuremath{\widecheck{#1}}}
+\newcommand{\cFhat}[1]{\ensuremath{\widehat{#1}}}
+\newcommand{\cFcheck}[1]{\ensuremath{\widecheck{#1}}}
+%\newcommand{\Glift}[1]{\ensuremath{\ulcorner #1 \urcorner}}
+\newcommand{\Glift}[1]{\ensuremath{\wideparen{#1}}}
