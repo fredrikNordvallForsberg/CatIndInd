@@ -1,4 +1,12 @@
 module famcwf where
+{-
+record Σ (A : Set)(B : A -> Set) : Set where
+  constructor _,_
+  field
+    fst : A
+    snd : B fst
+open Σ
+-}
 
 data Σ (A : Set)(B : A -> Set) : Set where
   _,_ : (x : A) -> B x -> Σ A B
@@ -8,6 +16,7 @@ fst (a , b) = a
 
 snd : {A : Set}{B : A -> Set} -> (x : Σ A B) -> B (fst x)
 snd (a , b) = b
+
 
 record ⊤ : Set where
 
@@ -93,6 +102,7 @@ _[_]Tm : {XY XY' : FamSet} -> {AB : Ty XY'} -> (hk : Tm XY' AB) -> (fg : XY ⇒ 
 ---------------------------------------------------
 -- Comprehension
 
+
 _∙_ : (Γ : FamSet) -> Ty Γ -> FamSet
 (X , Y) ∙ (A , B) = Σ X A , λ x → Σ (Y (fst x)) (λ y → B (fst x) y (snd x))
 
@@ -114,3 +124,4 @@ eqsnd : {XY XY' : FamSet}{AB : Ty XY} -> {f : XY' ⇒ XY} -> {M : Tm XY' (AB [ f
                (q {σ = AB} [ θ {AB = AB} f M ]Tm) == M
 eqsnd = refl
 -----
+
