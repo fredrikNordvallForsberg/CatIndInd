@@ -1,0 +1,202 @@
+\documentclass{article}
+
+\usepackage{amssymb}
+\usepackage{amsthm}
+\usepackage{amsmath}
+\usepackage{amstext}
+
+\usepackage{mathabx}
+
+\usepackage[all]{xy}
+\usepackage{stmaryrd}
+\usepackage{enumerate}
+\usepackage{mathtools}
+
+\input header.inc
+
+
+\newcommand{\isoGL}{\ensuremath{\phi_{G}}}
+\newcommand{\isoFL}{\ensuremath{\phi_{F}}}
+
+\title{All is well if $G$ preserves pullbacks}
+
+
+\author{Fredrik Nordvall Forsberg}
+
+\begin{document}
+\maketitle
+
+\begin{abstract}
+  Using too many diagrams, which makes the text a lot longer than it
+  could be, we derive the special properties needed of $G$ from the
+  assumption that $G$ preserves pullbacks.
+\end{abstract}
+
+\section{General assumptions}
+
+For every $\Gamma \in \C$ and $\sigma \in \Ty(\Gamma)$, there exists a
+unique $\BOX_F(\Gamma, \sigma) \in \Ty(F(\Gamma))$ and an isomorphism
+$\varphi_F : F(\Gamma.\sigma) \to F(\Gamma).\BOX_F(\Gamma, \sigma)$
+such that $\ps \circ \varphi = F(\ps)$. [Up to iso etc.]
+
+We have a morphism part: for $f : \Delta \to \Gamma$, $M \in
+\Tm(\Delta, \sigma\{f\})$ there exists $\BOX_F(f, M) \in \Tm(F(\Delta),
+\BOX_F(\Gamma, \sigma)\{F(f)\})$.
+
+Finally, we have for every
+$f : \Delta \to \Gamma$, $\sigma \in
+\Ty(\Gamma)$ a term
+\[\isoFL(f) \in \Tm(F(\Delta).\BOX_F(\Delta,
+\sigma\{f\}), \BOX_F(\Gamma, \sigma)\{F(f) \circ \ps\}).\]
+
+We use the following global assumptions, which we expect to hold for
+every $F : \C \to \D$:
+
+\begin{itemize}
+\item $\varphi_F \circ F(\langle f , M\rangle) = \langle F(f), \BOX_F(f, M)\rangle$.
+%\item $\isoFL(\id) = \vvs$.
+\item $\isoFL(f \circ g) = \isoFL(f)\{\langle F(g) \circ \ps, \isoFL(g)\rangle\}$.
+%\item $\BOX_F(f, M)\{F(g)\} = \BOX_F(f \circ g, M\{g\})$
+%\item $\BOX_F(\ps, \vv{\sigma}) = \vv{\BOX_F(\Gamma, \sigma)}\{\varphi_F\}$
+\item $\isoFL(f)\{\overline{\BOX_F(\id, M)}\} = \BOX_F(f, M)$.
+\end{itemize}
+
+The only assumption on $G$ is that it preserves pullbacks.
+
+\section{$\BOX_G(\Gamma, \sigma)\{G(f)\} = \BOX_G(\Delta, \sigma\{f\})$}
+\begin{theorem}
+  if $G$ preserves pullbacks, then $\BOX_G(\Gamma, \sigma)\{G(f)\} = \BOX_G(\Delta, \sigma\{f\})$.
+\end{theorem}
+\begin{proof}
+We show that there is an isomorphism $\gamma : G(\Delta.\sigma\{f\})
+\to G(\Delta).\BOX_G(\Gamma, \sigma)\{G(f)\}$ satisfying $\ps \circ
+\gamma = G(\ps)$. By the uniqueness of $\BOX_G(\Delta, \sigma\{f\})$,
+we must thus have $\BOX_G(\Gamma, \sigma)\{G(f)\} = \BOX_G(\Delta,
+\sigma\{f\})$.
+
+The following diagram is always a pullback in every CwF:
+\[
+\xymatrix{
+\Delta.\sigma\{f\} \ar^-{\langle f \circ \ps, \vvs\rangle}[r] \ar_-{\ps}[d] & \Gamma.\sigma \ar^-{\ps}[d]\\
+\Delta \ar^-{f}[r] & \Gamma\\
+}
+\]
+Since $G$ preserves pullbacks, also
+\[
+\xymatrix{
+G(\Delta.\sigma\{f\}) \ar^-{G(\langle f \circ \ps, \vvs\rangle)}[r] \ar_-{G(\ps)}[d] & G(\Gamma.\sigma) \ar^-{G(\ps)}[d]\\
+G(\Delta) \ar^-{G(f)}[r] & G(\Gamma)\\
+}
+\]
+is a pullback square. But now note that
+\[
+G(\ps) \circ \varphi_G \circ \langle G(f) \circ \ps , \vvs\rangle = \ps \circ \langle G(f) \circ \ps , \vvs\rangle = G(f) \circ \ps
+\]
+so that we get a mediating arrow $h$ in the following pullback diagram:
+\[
+\xymatrix{
+G(\Delta).\BOX_G(\Gamma, \sigma)\{G(f)\} \ar@/_1pc/^-{\ps}[ddr] \ar@/^/^-{\langle G(f) \circ \ps , \vvs\rangle}[rr] \ar@{-->}^{h}[dr] & & G(\Gamma).\BOX_G(\Gamma, \sigma) \ar@/^/^{\varphi_G^{-1}}[d]\\
+& G(\Delta.\sigma\{f\}) \ar^-{G(\langle f \circ \ps, \vvs\rangle)}[r] \ar_-{G(\ps)}[d] & G(\Gamma.\sigma) \ar^-{G(\ps)}[d]\\
+& G(\Delta) \ar^-{G(f)}[r] & G(\Gamma)\\
+}
+\]
+This $h$ will be our $\gamma^{-1}$. We can construct $\gamma$
+explicitly by $\gamma \coloneqq \langle \ps , \isoGL(f)\rangle \circ
+\varphi_G$. By the uniqueness of the mediating arrow in the following
+diagram, we get $h \circ \gamma = \id$ for free, at least after we
+have checked that the outer triangles commute.
+\[
+\xymatrix{
+G(\Delta.\sigma\{f\}) \ar@{-->}^-{\varphi_G}[r] \ar@/_2pc/_-{G(\ps)}[dddrr] 
+\ar@/^5pc/^-{G(\langle f \circ \ps, \vvs\rangle)}[ddrrr] 
+& G(\Delta).\BOX_G(\Gamma, \sigma\{f\}) \ar@{-->}^-{\langle \ps , \isoGL(f)\rangle}[d] & \\
+& G(\Delta).\BOX_G(\Gamma, \sigma)\{G(f)\} \ar@/_1pc/^-{\ps}[ddr] \ar@/^2.5pc/^<<<<<<<{\varphi_G^{-1} \circ  \langle G(f) \circ \ps , \vvs\rangle}[drr] \ar@{-->}^{h}[dr] & &\\
+& & G(\Delta.\sigma\{f\}) \ar^-{G(\langle f \circ \ps, \vvs\rangle)}[r] \ar_-{G(\ps)}[d] & G(\Gamma.\sigma) \ar^-{G(\ps)}[d]\\
+& & G(\Delta) \ar^-{G(f)}[r] & G(\Gamma)\\
+}
+\]
+The bottom one is straightforward; it can be split up into two commuting triangles:
+\[
+\xymatrix{
+G(\Delta.\sigma\{f\}) \ar@{-->}^-{\varphi_G}[r] \ar_-{G(\ps)}[dr] 
+& G(\Delta).\BOX_G(\Gamma, \sigma\{f\}) \ar@{-->}^-{\langle \ps , \isoGL(f)\rangle}[r] \ar^-{\ps}[d] & G(\Delta).\BOX_G(\Gamma, \sigma)\{G(f)\} \ar^-{\ps}[dl] \\
+& G(\Delta) &
+}
+\]
+For the top triangle, we need the following identity:
+
+\begin{lemma}
+  $\isoGL(f)\{\varphi_G\} = \BOX_G(f \circ p, \vvs)$
+\end{lemma}
+\begin{proof}
+First, write $\varphi_G$ in a complicated way:
+\begin{align*}
+  \varphi_G &= \varphi_G \circ \id \\
+            &= \varphi_G \circ G(\langle \ps, \vvs\rangle) \\
+            &= \langle G(\ps), \BOX_G(\ps, \vvs)\rangle \\
+            &= \langle G(\ps), \isoGL(\ps)\{\overline{\BOX_G(\id, \vvs)}\}\rangle \\
+            &= \langle G(\ps) \circ \ps, \isoGL(\ps)\rangle \circ \overline{\BOX_G(\id, \vvs)}
+\end{align*}
+Then note that $\isoGL(f)\{\langle G(\ps) \circ \ps,
+\isoGL(\ps)\rangle\} = \isoGL(f \circ \ps)$. Thus, we have
+\begin{align*}
+  \isoGL(f)\{\varphi_G\} &= \isoGL(f)\{\langle G(\ps) \circ \ps, \isoGL(\ps)\rangle \circ \overline{\BOX_G(\id, \vvs)}\} \\
+  &= \isoGL(f \circ \ps)\{\overline{\BOX_G(\id, \vvs)}\} \\
+  &= \BOX_G(f \circ \ps, \vvs).
+\end{align*}
+\end{proof}
+
+Now, we can just calculate: we want
+\[
+\varphi_G^{-1} \circ \langle G(f) \circ \ps, \isoGL(f)\rangle \circ \varphi_G = G(\langle f \circ \ps, \vvs\rangle)
+\]
+or equivalently
+\[
+\langle G(f) \circ \ps, \isoGL(f)\rangle \circ \varphi_G = \varphi_G \circ G(\langle f \circ \ps, \vvs\rangle).
+\]
+We have
+\begin{align*}
+  \langle G(f) \circ \ps, \isoGL(f)\rangle \circ \varphi_G &= \langle \ps \circ \varphi_G, \isoGL(f)\{\varphi_G\}\rangle \\
+&= \langle G(f) \circ \ps \circ \varphi_G, \isoGL(f)\{\varphi_G\}\rangle \\
+&= \langle G(f) \circ G(\ps), \isoGL(f)\{\varphi_G\}\rangle \\
+&= \langle G(f) \circ G(\ps), \BOX_G(f \circ \ps, \vvs)\rangle \\
+&= \langle G(f \circ \ps), \BOX_G(f \circ \ps, \vvs)\rangle \\
+&=  \varphi_G \circ G(\langle f \circ \ps, \vvs\rangle).
+\end{align*}
+
+Hence, we have $h \circ \gamma = \id$. To prove $\gamma \circ h =
+\id$, consider the commuting square 
+\[
+\xymatrix{
+G(\Delta).\BOX_G(\Gamma, \sigma)\{G(f)\} \ar@/^/^-{\langle G(f) \circ \ps , \vvs\rangle}[rr] \ar@{-->}^{h}[dr] & & G(\Gamma).\BOX_G(\Gamma, \sigma) \ar@/^/^{\varphi_G^{-1}}[d]\\
+& G(\Delta.\sigma\{f\}) \ar^-{G(\langle f \circ \ps, \vvs\rangle)}[r]  & G(\Gamma.\sigma) 
+}
+\]
+Since
+\begin{align*}
+G(\langle f \circ \ps, \vvs\rangle) \circ h
+ &= \varphi^{-1} \circ \langle G(f \circ \ps), \BOX_G(f \circ \ps, \vvs)\rangle \circ h\\
+ &= \varphi^{-1} \circ \langle G(f) \circ G(\ps) \circ h, \BOX_G(f \circ \ps, \vvs)\{h\}\rangle \\
+ &= \varphi^{-1} \circ \langle G(f) \circ \ps, \BOX_G(f \circ \ps, \vvs)\{h\}\rangle,
+\end{align*}
+the square tells us that $\BOX_G(f \circ \ps, \vvs)\{h\} = \vvs$. Now we can show that $\gamma \circ h = \id$:
+\begin{align*}
+  \gamma \circ h
+ &= \langle \ps , \isoGL(f)\rangle \circ \varphi_G \circ h \\
+ &= \langle \ps \circ \varphi_G \circ h , \isoGL(f)\{\varphi_G \circ h\}\rangle \\
+ &= \langle G(\ps) \circ h , \BOX_G(f \circ \ps, \vvs)\{h\}\rangle \\
+ &= \langle \ps , \vvs\rangle = \id
+\end{align*}
+Thus we have found our isomorphism and have $\gamma^{-1} =
+h$. Furthermore, we see that $G(\ps) \circ \gamma^{-1} = \ps$ or
+equivalently $\ps \circ \gamma = G(\ps)$, so by the uniqueness of
+$\BOX_G$, we must have $\BOX_G(\Gamma, \sigma)\{G(f)\} =
+\BOX_G(\Delta, \sigma\{f\})$.
+\end{proof}
+
+
+
+%\bibliographystyle{alpha}
+%\bibliography{../../../references/biblio}
+
+\end{document}
