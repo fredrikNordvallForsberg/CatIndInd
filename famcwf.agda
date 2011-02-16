@@ -125,6 +125,7 @@ eqsnd : {XY XY' : FamSet}{AB : Ty XY} -> {f : XY' ⇒ XY} -> {M : Tm XY' (AB [ f
 eqsnd = refl
 -----
 
+<<<<<<< HEAD
 
 -----
 ΣMor : {XY XY' : FamSet}{AB : Ty XY}{AB' : Ty XY'} -> (fg : XY ⇒ XY') ->
@@ -133,3 +134,5 @@ eqsnd = refl
 
 sect : {XY : FamSet}{AB : Ty XY} -> (σ : Tm XY AB) -> XY ⇒ (XY ∙ AB)
 sect x = θ id x
+=======
+>>>>>>> 88863748f6566d801851ce35e7b0ed8ffd788e44
