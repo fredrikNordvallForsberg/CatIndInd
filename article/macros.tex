@@ -1,0 +1,138 @@
+
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+% Bits and pieces
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+\newcommand{\Nat}{\ensuremath{\mathbb{N}}}
+\newcommand{\suc}{\ensuremath{\text{suc}}}
+
+\newcommand{\id}{\ensuremath{\text{id}}}
+
+\newcommand{\refl}{\ensuremath{\text{refl}}}
+
+\newcommand{\one}{\ensuremath{\mathbf{1}}}
+\newcommand{\oneelt}{\ensuremath{\star}}
+\newcommand{\two}{\ensuremath{\mathbf{2}}}
+
+\newcommand{\inn}{\ensuremath{\text{in}}}
+
+\newcommand{\inr}{\ensuremath{\text{inr}}}
+\newcommand{\inl}{\ensuremath{\text{inl}}}
+\newcommand{\coprodmorph}[2]{\ensuremath{[#1, #2]}} %todo: better name
+
+\newcommand{\etal}{\ensuremath{\text{et. al.}}}
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+% Notation from CSL article
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+\newcommand{\CSLArgA}{\ensuremath{\ArgA'}}
+\newcommand{\CSLArgB}{\ensuremath{\ArgB'}}
+\newcommand{\CSLIndex}{\ensuremath{\text{Index}'_{\text{B}}}}
+
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+% Different categories
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\newcommand{\C}{\ensuremath{\mathbb{C}}}
+\newcommand{\D}{\ensuremath{\mathbb{D}}}
+
+\newcommand{\Eind}[2]{\ensuremath{\mathbb{E}_{#1, #2}}}
+\newcommand{\E}{\ensuremath{\mathbb{E}}}
+
+\newcommand{\Set}{\ensuremath{\text{Set}}}
+\newcommand{\FamSet}{\ensuremath{\text{Fam}(\Set)}}
+\newcommand{\Dialg}[2]{\ensuremath{\text{Dialg}(#1, #2)}}
+
+\newcommand{\FAM}{\ensuremath{\text{FAM}}}
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+% Different functors
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\newcommand{\ArgA}{\ensuremath{\text{Arg}_{\text{A}}}}
+\newcommand{\ArgB}{\ensuremath{\text{Arg}_{\text{B}}}}
+
+\newcommand{\ArgC}{\ensuremath{\text{Arg}_{\text{C}}}}
+
+\newcommand{\ArggammaA}{\ensuremath{\text{Arg}_{\gamma_\text{A}}}}
+\newcommand{\ArggammaB}{\ensuremath{\text{Arg}_{\gamma_\text{B}}}}
+
+\newcommand{\UFamSet}{\ensuremath{U}} %{\ensuremath{U_{\FamSet}}} 
+\newcommand{\UDialgFG}{\ensuremath{V}} %{\ensuremath{U_{\Dialg{\ArgA}{\UFamSet}}}}
+\newcommand{\UDialgArgAU}{\ensuremath{V}} %{\ensuremath{U_{\Dialg{\ArgA}{\UFamSet}}}}
+\newcommand{\UDialgArgBV}{\ensuremath{W}} %{\ensuremath{U_{\Dialg{(\ArgA, \ArgB)}{\UDialgArgAU}}}}
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+% Contexts and types
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\newcommand{\Ctxt}{\ensuremath{\text{Ctxt}}}
+\newcommand{\Type}{\ensuremath{\text{Type}}}
+
+\newcommand{\emptyCtxt}{\ensuremath{\varepsilon}}
+\newcommand{\consCtxtbare}{\ensuremath{\triangleright}}
+\newcommand{\consCtxt}[2]{\ensuremath{#1 \consCtxtbare #2}}
+
+
+\newcommand{\baseTybare}{\ensuremath{\iota}}
+\newcommand{\baseTy}[1]{\ensuremath{\baseTybare_{#1}}}
+\newcommand{\piTybare}{\ensuremath{\Pi}}
+\newcommand{\piTy}[3]{\ensuremath{\piTybare_{#1}(#2, #3)}}
+
+\newcommand{\ArgCtxt}{\ensuremath{\text{Arg}_{\Ctxt}}}
+\newcommand{\ArgType}{\ensuremath{\text{Arg}_{\Type}}}
+
+%stolen from http://tex.stackexchange.com/questions/4194/how-to-typeset-haskell-operator-and-friends
+\newcommand{\concatCtxt}{\ensuremath{\mathbin{+\mkern-6mu+}}}
+\newcommand{\wk}{\ensuremath{\text{wk}}}
+\newcommand{\wkapp}[3]{\ensuremath{\wk_{#1}(#3, #2)}}
+
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+% Sorted lists
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\newcommand{\SortedList}{\ensuremath{\text{SortedList}}}
+\newcommand{\lessList}{\ensuremath{\leq_{\text{L}}}}
+
+\newcommand{\nilList}{\ensuremath{\text{nil}}}
+\newcommand{\consListbare}{\ensuremath{\text{cons}}}
+\newcommand{\consList}[3]{\ensuremath{\consListbare(#1, #2, #3)}}
+
+\newcommand{\nilLess}[1]{\ensuremath{\text{triv}_{#1}}}
+\newcommand{\consLess}[6]{\ensuremath{\ll #5, #6\gg_{#4, #1, #2, #3}}}
+\newcommand{\consLessbare}{\ensuremath{\ll \cdot \gg}}
+
+\newcommand{\ArgSList}{\ensuremath{\text{Arg}_{\text{SList}}}}
+\newcommand{\ArglessList}{\ensuremath{\text{Arg}_{\lessList}}}
+
+
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+% Theorem environments
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\spnewtheorem{fact}{Fact}{\itshape}{\rmfamily}
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+% Eliminators
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\newcommand{\elim}{\ensuremath{\text{elim}}}
+\newcommand{\Prop}{\ensuremath{\text{Prop}}}
+\newcommand{\BOX}{\ensuremath{\Box}}
+\newcommand{\dmap}{\ensuremath{\text{dmap}}}
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+% Sigmas / comprehension
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\newcommand{\SigmaFAM}{\ensuremath{\Sigma_{\FamSet}}}
+\newcommand{\SigmaDialg}{\ensuremath{\Sigma_{\text{Dialg}}}}
+
+\newcommand{\sigmamorph}[2]{\ensuremath{[#1, #2]}}
+\newcommand{\CwFmorph}[2]{\ensuremath{\langle#1, #2\rangle}}
+\newcommand{\CwFsect}[1]{\ensuremath{\widehat{#1}}}
+
+
+%%% Local Variables: 
+%%% mode: latex
+%%% TeX-master: "calco"
+%%% End: 

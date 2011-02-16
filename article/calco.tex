@@ -1,0 +1,1112 @@
+\documentclass[orivec,envcountsame, ,envcountsect]{llncs}
+
+\usepackage{etex} %needed because todonotes loads tikz
+
+\usepackage{amssymb}
+\usepackage{amsmath}
+
+\usepackage{mathabx} %for \bigplus %TODO: makes \langle \rangle look stupid
+
+\usepackage{mathtools}
+\usepackage{multirow}
+
+\usepackage{enumerate}
+
+\usepackage{hyperref}
+
+\usepackage{microtype}
+
+\usepackage[matrix, arrow, curve]{xy}
+
+\usepackage{proof} %natural deduction rules
+
+\usepackage{graphics} %resixebox
+
+\pagestyle{plain} %temporary page numbers
+
+\input{macros.tex}
+
+
+\title{A categorical semantics for inductive-inductive definitions}
+
+\author{ Thorsten Altenkirch\inst{1}\thanks{Supported by EPSRC grant EP/G033374/1.}\fnmsep
+                                    \thanks{Supported by EPSRC grant EP/G034109/1.}
+\and Peter Morris\inst{1}$^{\star\star}$ %
+\and Fredrik Nordvall Forsberg\inst{2}$^{\star}$
+\and Anton Setzer\inst{2}$^{\star}$}
+%TODO: \thanks{}
+
+\institute{School of Computer Science, University of Nottingham
+      \and Department of Computer Science, Swansea University}
+
+
+\begin{document}
+\maketitle
+
+\begin{abstract}
+  Induction-induction is a principle for defining datatypes in
+  Martin-L\"of Type Theory. An inductive-inductive definition consists
+  of a set $A$, together with an $A$-indexed family $B : A \to \Set$,
+  where both $A$ and $B$ are inductively defined in such a way that
+  the constructors for $A$ can refer to $B$ and vice versa. In
+  addition, the constructors for $B$ can refer to the constructors for
+  $A$.
+%
+  We extend the usual initial algebra semantics for ordinary
+  inductive datatypes to the inductive-inductive setting by
+  considering dialgebras instead of ordinary algebras. This gives a
+  new and compact formalisation of inductive-inductive definitions,
+  which we prove is equivalent to the usual formulation with
+  elimination and computation rules.
+\end{abstract}
+
+\section{Introduction}
+
+Induction is an important principle of definition and reasoning,
+especially so in constructive mathematics and computer science, where
+the concept of inductively defined set and datatype coincide. There
+are two well-established approaches to model the semantics of such
+datatypes: In Martin-L\"of Type Theory
+\cite{martinlof1984bibliopolis}, each set $A$ comes equipped with an
+eliminator which at the same time represents reasoning by induction
+over $A$ and the definition of recursive functions out of $A$.  A more
+categorical approach %todo: \ref{?}
+models datatypes as initial $T$-algebras for a suitable endofunctor
+$T$.
+
+At first, it would seem that the eliminator approach is stronger, as
+it allows us to define dependent functions $(x : A) \to P(x)$, in
+contrast with the non-dependent arrows $A \to B$ given by the
+initiality of the algebra. However, Hermida and Jacobs
+\cite{hermidaJacobs1998initInduction} and Ghani \etal\
+\cite{ghaniJohannFumex2010fibind} %todo: reword citation -- what's new with Ghani et al?
+showed that an eliminator can be defined for every initial
+$T$-algebra, where $T$ is an endofunctor.
+This covers many forms of
+induction and datatype definitions such as indexed inductive
+definitions \cite{dybjer1994indfam} and induction-recursion
+\cite{dybjersetzer1999finax}.
+
+There are, however, other meaningful forms of datatypes which are not
+covered by these results. One such example are inductive-inductive
+definitions \cite{nordvallforsbergSetzer2010indind}, where a set $A$
+and a function $B : A \to \Set$ are simultaneously inductively defined
+(compare with induction-recursion, where $A$ is defined inductively
+and $B$ recursively). In addition, the constructors for $B$ can refer
+to the constructors for $A$.
+
+
+In earlier work \cite{nordvallforsbergSetzer2010indind}, a subset of
+the authors gave an eliminator-based axiomatisation of a type theory
+with inductive-inductive definitions and showed it to be
+consistent. In this article, we describe a generalised initial algebra
+semantics for induction-induction, and prove that it is equivalent to
+the original axiomatisation.
+
+One could imagine that that inductive-inductive definitions could be
+described by functors mapping families of sets to families of sets
+(similar to the situation for induction-recursion
+\cite{dybjersetzer2003inalg}), but this fails to take into account
+that the constructors for $B$ should be able to refer to the
+constructors for $A$. Thus, the constructor for $B$ is described by a
+non-endofunctor
+\[
+\ArgB : (A : \Set)(B : A \to \Set)(c : \ArgA(A, B) \to A) \to \ArgA(A, B) \to \Set
+\]
+and we are forced to move to the more general setting of dialgebras
+\cite{hagino1987phdthesis,fokkinga1996datatypeLaws,pollZwanenburg2001dialgebra}
+in order to accommodate our functors. This is explored in Section \ref{sec:indind-as-dialg}.
+
+In Section \ref{sec:eliminator}, we then relate the new approach with
+the old. Our development is actually an instance of a generic
+principle for categories that are models of Type Theory (i.e.\
+Categories with Families \cite{dybjer1996internalTT}). Due to space
+constraints, we have however instantiated the theory to our current
+setting and are only treating the case of inductive-inductive
+definitions.
+
+%TODO: sound better
+
+\subsection{Examples of inductive-inductive definitions}
+\label{sec:ex-indind}
+
+Danielsson \cite{danielsson2007formalisation} and Chapman
+\cite{chapman2009eatitself} define the syntax of dependent type theory
+in the theory itself by inductively defining contexts, types in a
+given context and terms of a given type. Let us concentrate on
+contexts and types only for simplicity. There should be an empty
+context $\emptyCtxt$, and if we have any context $\Gamma$ and a valid
+type $\sigma$ in that context, then we should be able to extend the
+context with a fresh variable of that type. We end up with the
+following inductive definition of the set of contexts:
+\[
+\infer{\emptyCtxt : \Ctxt}{} \qquad
+\infer{\consCtxt{\Gamma}{\sigma} : \Ctxt}{\Gamma : \Ctxt & \sigma : \Type(\Gamma)}
+\]
+
+For types, let us have a base type $\baseTy{}$ (valid in any context)
+and a dependent function type: if $\sigma$ is a type in context $\Gamma$,
+and $\tau$ is a type in $\Gamma$ extended with a fresh variable of type
+$\sigma$ (the variable from the domain), then $\Pi(\sigma, \tau)$ is a
+type in the original context. This leads us to the following inductive
+definition of $\Type : \Ctxt \to \Set$:
+\[
+\infer{\baseTy{\Gamma} : \Type(\Gamma)}{\Gamma : \Ctxt} \qquad
+\infer{\piTy{\Gamma}{\sigma}{\tau} : \Type(\Gamma)}{\Gamma : \Ctxt
+                    & \sigma : \Type(\Gamma)
+                    & \tau : \Type(\consCtxt{\Gamma}{\sigma})}
+\]
+
+Note that the definition of $\Ctxt$ refers to $\Type$, so both sets
+have to be defined simultaneously. Another peculiarity is how the
+introduction rule for $\Pi$ explicitly focuses on a specific constructor
+in the index of the type of $B$.
+
+For an example with more of a programming flavour, consider defining a
+datatype consisting of sorted lists (of natural numbers, say). With
+induction-induction, we can simultaneously define the set
+$\SortedList$ of sorted lists and the predicate $\lessList : (\Nat
+\times \SortedList) \to \Set$ with $n \lessList \ell$ true if $n$ is
+less than or equal to every element of $\ell$.
+
+The empty list is certainly sorted, and if we have a proof $p$ that
+$n$ is less than or equal to every element of the list $\ell$, we can
+stick $n$ in front of $\ell$ to get a new sorted list
+$\consList{n}{\ell}{p}$. Translated into introduction rules, this becomes:
+\[
+\infer{\nilList : \SortedList}{} \qquad
+\infer{\consList{n}{\ell}{p} : \SortedList}{n : \Nat \quad & \ell : \SortedList \quad & p : n \lessList \ell}
+\]
+For $\lessList$, we have that every $m : \Nat$ is trivially smaller
+than every element of the empty list, and if $m \leq n$ and
+inductively $m \lessList \ell$, then $m \lessList \consList{n}{\ell}{p}$:
+\[
+\infer{\nilLess{m} : m \lessList \nilList}
+%{m : \Nat}
+{} \qquad
+\infer{\consLess{n}{\ell}{p}{m}{q}{p_{m, \ell}}\ : m \lessList \consList{n}{\ell}{p}}
+%      {m, n : \Nat \quad & \ell : \SortedList \quad & p : n \lessList \ell \quad &
+       {q : m \leq n \quad & p_{m, \ell} : m \lessList \ell}
+\]
+
+Of course, there are many alternative ways to define such a datatype
+using ordinary induction, but the inductive-inductive one seems
+natural and might be more convenient for some purposes. It is
+certainly more pleasant to work with in the %proof assistant/
+programming language Agda \cite{norell2007thesis}, for
+example, which allows inductive-inductive definitions with the
+\texttt{mutual} keyword. One aim of our investigation into
+inductive-inductive definitions is to justify their existence in Agda.
+
+\subsection{Preliminaries and notation}
+
+We work in an extensional type theory \cite{NPS1990book} with the
+following ingredients:
+\begin{description}
+\item[$\Set$] We use $\Set$ to denote our universe of small types, and
+  we write $B : A \to \Set$ for an $A$-indexed family of sets.
+\item[$\Pi$-types] Given $A : \Set$ and $B : A \to \Set$, then $\big((x :
+  A) \to B(x)\big) : \Set$.  Elements of $(x : A) \to B(x)$ are
+  functions $f$ that map $a : A$ to $f(a) : B(a)$.
+\item[$\Sigma$-types] Given $A : \Set$ and $B : A \to \Set$, then
+  $\Sigma x\!:\!A.\, B(x) : \Set$. Elements of $\Sigma x\!:\!A.\,
+  B(x)$ are pairs $\langle a, b\rangle$ where $a : A$ and $b : B(a)$.
+  If the family $B : A \to \Set$ is propositional, i.e.\ there is at
+  most one inhabitant in $B(a)$ for every $a : A$, we write $\{\ a :
+  A\ |\ B(a)\}$ for $\Sigma x\!:\!A.\, B(x)$. We write $\pi_0 : \Sigma
+  x\!:\!A.\, B(x) \to A$ and $\pi_1 : (y : \Sigma x\!:\!A.\, B(x)) \to
+  B(\pi_0(y))$ for the projections.
+\item[$+$] Given $A, B : \Set$, we denote their coproduct $A + B$ with
+  coprojections $\inl : A \to A + B$ and $\inr : B \to A + B$. We
+  write $\coprodmorph{f}{g}$ for cotupling.
+\item[Equality and unit types] Given $a, b : A$ we write $a = b :
+  \Set$ for the equality type, inhabitated by $\refl$ if and only if
+  $a = b$. In contrast, the unit type $\one$ always has unique element
+  $\oneelt : \one$.
+\end{description}
+\section{Inductive-inductive definitions as dialgebras}
+%initial [fancy name for objects in $\mathbb{E}$]
+\label{sec:indind-as-dialg}
+
+In this section, our goal is to describe each inductive-inductively
+defined set as the initial object in a category constructed from a
+description of the set. Just as for ordinary induction and initial
+algebras, this description will be a functor of sorts, but because of
+the more complicated structure involved, this will no longer be an
+endofunctor.
+The interesting complication is the fact that the
+constructor for the second set $B$ can refer to the constructor for
+the first set $A$ (as for example the argument $\tau :
+\Type(\consCtxt{\Gamma}{\sigma})$ referring to
+$\consCtxt{\cdot}{\cdot}$ in the introduction rule for the
+$\Pi$-type). 
+
+Thus we will model the constructor for $B$ as (the second component
+of) a morphism $(c, d) : \ArgB(A, B, c) \to (A, B)$ where $c :
+\ArgA(A, B) \to A$ is the constructor for $A$. Here, $(c, d)$ is a
+morphism in the category of families of sets:
+
+\begin{definition}
+  The category $\FamSet$ of families of sets has as objects pairs $(A,
+  B)$, where $A$ is a set and $B : A \to \Set$ is an $A$-indexed family
+  of sets. A morphism from $(A, B)$ to $(A', B')$ is a pair $(f, g)$
+  where $f : A \to A'$ and ${g : (x : A) \to B(x) \to B'(f(x))}$.
+\end{definition}
+Note that there is a forgetful functor $\UFamSet : \FamSet \to \Set$
+sending $(A, B)$ to $A$ and $(f, g)$ to $f$.
+Now, $c : \ArgA(A, B) \to A$ is not an $\ArgA$-algebra,
+since $\ArgA : \FamSet \to \Set$ is not an endofunctor. However, we have $c :
+\ArgA(A, B) \to \UFamSet(A, B)$. This means that $c$ is a $(\ArgA,
+\UFamSet)$-dialgebra, as introduced by Hagino in his thesis
+\cite{hagino1987phdthesis}:
+
+\begin{definition}
+  Let $F, G : \C \to \D$ be functors. The category $\Dialg{F}{G}$ has
+  as objects pairs $(A, f)$ where $A \in \C$ and $f : F(A) \to
+  G(A)$. A morphism from $(A, f)$ to $(A', f')$ is a morphism $h : A
+  \to A'$ in $\C$ such that $G(h) \circ f = f' \circ F(h)$.
+\end{definition}
+Note that there always is a forgetful functor $\UDialgFG : \Dialg{F}{G} \to \C$
+defined by $\UDialgFG(A, f) = A$.
+
+Putting things together, we will model the constructor for $A$ as a
+morphism $c : \ArgA(A, B) \to A$ in $\Set$ and the constructor for $B$
+as the second component of a morphism $(c, d) : \ArgB(A, B, c) \to (A,
+B)$ in $\FamSet$. Thus, we see that the data needed to describe $(A,
+B)$ as inductively generated with constructors $c, d$ are
+the functors $\ArgA$ and $\ArgB$. However, we must also make sure that
+the first component of $\ArgB$ coincides with $\ArgA$, i.e.\ that
+$\UFamSet \circ \ArgB = \ArgA \circ \UDialgArgAU$. %todo: last explanation bit weak?
+\begin{definition} \label{def:indind-functors}
+  An inductive-inductive definition is given by two functors
+  \begin{align*}
+    \ArgA &: \FamSet \to \Set \\
+    \ArgB &: \Dialg{\ArgA}{\UFamSet} \to \FamSet
+  \end{align*}
+  such that $\UFamSet \circ \ArgB = \ArgA \circ \UDialgArgAU$.
+\end{definition}
+
+\begin{lemma}
+Equivalently, $\ArgB$ can be replaced by an operation
+\[
+\ArgB'' : (A : \Set)(B : A \to \Set)(c : \ArgA(A, B) \to A) \to \ArgA(A, B) \to \Set
+\]
+that is functorial in the sense that if if we have a
+$\Dialg{\ArgA}{\UFamSet}$-morphism $(f, g) : (A, B, c) \to (A', B',
+c')$ then this can be lifted to an action on morphisms
+ \[\ArgB''(f, g) : (x : \ArgA(A, B)) \to \ArgB''(A, B,
+   c, x) \to \ArgB''(A', B', c', \ArgA(f, g)(x))
+\]
+such that $\ArgB''(\id)(x, y) = y$ and
+\[
+\ArgB''((f, g) \circ (f', g'))(x, y) =\ArgB''(f, g)(\ArgA(f', g')(x), \ArgB''(f',g')(x, y)) \enspace .
+\]
+\end{lemma}
+%\begin{proof}
+%  We can define $\ArgB(A, B, c) = (\ArgA(A, B), \ArgB''(A, B, c))$ in both directions. \qed
+%\end{proof}
+
+
+\begin{example}[Contexts and types]
+\label{ex:ctxtTy-functor}
+The inductive-inductive definition of $\Ctxt : \Set$ and $\Type :
+\Ctxt \to \Set$ from the introduction is given by
+\begin{align*}
+  \ArgCtxt(A, B) &= \one + \Sigma\, \Gamma\!:\!A .\, B(\Gamma)\\
+  \ArgType''(A, B, c, x) &= \one + (\Sigma\,  \sigma\!:\! B(c(x)).\, \tau\!:\!B(c(\inr(c(x), \sigma))) ) \enspace .
+\end{align*}
+For $\ArgCtxt$, the left summand $\one$ corresponds to the constructor
+$\emptyCtxt$ taking no arguments, and the right summand $\Sigma\,
+\Gamma\!:\!A .\, B(\Gamma)$ corresponds to $\consCtxt{}{}$'s two
+arguments $\Gamma : \Ctxt$ and $\sigma : \Type(\Gamma)$. Similar
+considerations apply to $\ArgType''$.
+
+\end{example}
+
+\begin{example}[Sorted lists]
+\label{ex:SList-functor}
+The sorted list example does not fit into our framework, since
+$\lessList : (\Nat \times \SortedList) \to \Set$ is indexed by $\Nat
+\times \SortedList$ and not simply $\SortedList$. It is however
+straightforward to generalise the construction to include this example
+as well: instead of considering ordinary families, consider
+``${\Nat\!\times\!A }$-indexed'' families $(A, B)$ where $A$ is a set
+and $B : (\Nat \times A) \to \Set$.  The inductive-inductive
+definition of $\SortedList : \Set$ and $\lessList : (\Nat \times
+\SortedList) \to \Set$ is then given by
+\begin{align*}
+  \ArgSList(A, B) &= \one + (\Sigma\, n\!:\!\Nat .\,\Sigma\,\ell\!:\!A.\, B(n,\ell))\\
+  \ArglessList''(A, B, c, m, \inl(\oneelt)) &= \one \\
+  \ArglessList''(A, B, c, m, \inr(\langle n, \ell, p\rangle)) &= \Sigma\,m \leq n.\, B(m, \ell) \enspace .
+\end{align*}
+For ease of presentation, we will only consider ordinary families of
+sets.
+
+\end{example}
+
+
+\subsection{A category for inductive-inductive definitions}
+
+Given $\ArgA$ and $\ArgB$ representing an inductive-inductive
+definition, we will now construct a category $\Eind{\ArgA}{\ArgB}$
+whose initial object (if it exists) is the intended interpretation of
+the inductive-inductive definition. Figure \ref{fig:map-of-functors}
+summarises the functors and categories involved ($\UFamSet$,
+$\UDialgArgAU$ and $\UDialgArgBV$ are all forgetful functors).
+
+\begin{figure}
+  \centering
+  \resizebox{1\textwidth}{!}{%
+    $\xymatrix{
+      \Set & \ar@/_1pc/_-{\ArgA}[l] \ar@/^1pc/^-{\UFamSet}[l]  \FamSet
+      & \Dialg{\ArgA}{\UFamSet} \ar@/_1pc/_-{\ArgB}[l] \ar@/^1pc/^-{\UDialgArgAU}[l]
+      & \Dialg{\ArgB}{\UDialgArgAU} \ar@/_1pc/_-{(\UDialgArgAU, \UFamSet)}[l] \ar@/^1pc/^-{\UDialgArgBV}[l]
+      &\ \Eind{\ArgA}{\ArgB} \ar@{_{(}->}@<0.5ex>[l]
+    }$
+  }
+  \caption{The functors and categories involved}
+  \label{fig:map-of-functors}
+\end{figure}
+
+One might think that the category we are looking for is
+$\Dialg{\ArgB}{\UDialgArgAU}$, where $\UDialgArgAU :
+\Dialg{\ArgA}{\UFamSet} \to \FamSet$ is the forgetful functor. $\Dialg{\ArgB}{\UDialgArgAU}$ has
+objects $(A, B, c, (d_0, d_1))$, where $A : \Set$, $B : A \to \Set$,
+$c : \ArgA(A, B) \to A$ and $(d_0, d_1) : \ArgB(A, B, c) \to (A, B)$.
+The function $d_0 : \ArgA(A, B) \to A$ looks like the constructor for
+$A$ that we want, but
+\[
+d_1 : (x : \ArgA(A, B)) \to \ArgB''(A, B, c,x) \to B(d_0(x))
+\]
+does not look quite right -- we need $c$ and $d_0$
+to be the same! 
+
+To this end, we will consider the equalizer of the forgetful functor
+$\UDialgArgBV : \Dialg{\ArgB}{\UDialgArgAU} \to
+\Dialg{\ArgA}{\UFamSet}$, $\UDialgArgBV(A, B, c, (d_0, d_1)) = (A, B, c)$, and the functor $(V, U)$ defined by 
+\begin{align*}
+  (\UDialgArgAU, \UFamSet)(A, B, c, (d_0, d_1))
+     &\coloneqq (\UDialgArgAU(A, B, c), \UFamSet(d_0, d_1)) = (A, B, d_0) \\
+  (\UDialgArgAU, \UFamSet)(f, g)
+     &\coloneqq (f, g)
+\end{align*}
+Note that $\UFamSet(d_0, d_1) : \UFamSet(\ArgB(A, B, c)) \to
+\UFamSet(\UDialgArgAU(A, B, c))$ but $\UFamSet \circ \ArgB = \ArgA
+\circ \UDialgArgAU$, so that $\UFamSet(d_0, d_1) :
+\ArgA(\UDialgArgAU(A, B, c)) \to \UFamSet(\UDialgArgAU(A, B, c))$. In
+other words, $(\UDialgArgAU(A, B, c), \UFamSet(d_0, d_1))$ is an
+object in $\Dialg{\ArgA}{\UFamSet}$, so $(\UDialgArgAU, \UFamSet)$
+really is a functor from $\Dialg{\ArgB}{\UDialgArgAU}$ to
+$\Dialg{\ArgA}{\UFamSet}$.
+
+% Since $(f,g) \circ (d_0, d_1) = (d'_0, d'_1) \circ \ArgB(f, g)$ and
+% $\UFamSet \circ \ArgB = \ArgA \circ \UDialgArgAU$ in
+% particular means that $f \circ d_0 = d'_0 \circ \ArgA(f, g)$, every
+% morphism $(f, g) : (A, B, c, d_0, d_1) \to (A', B', c', d'_0, d'_1)$
+% in $\Dialg{\ArgB}{\UDialgArgAU}$ is also a morphism $(f, g) : (A, B,
+% d_0) \to (A', B', d'_0)$ in $\Dialg{\ArgA}{\UFamSet}$.
+
+\begin{definition}
+  For $\ArgA$ and $\ArgB$ representing an inductive-inductive
+  definition, let $\Eind{\ArgA}{\ArgB}$ be the underlying category of
+  the equaliser of $(V, U)$ and the forgetful functor ${W :
+    \Dialg{\ArgB}{\UDialgArgAU} \to \Dialg{\ArgA}{\UFamSet}}$.
+\end{definition}
+Explicitly, the category $\Eind{\ArgA}{\ArgB}$ has
+\begin{itemize}
+\item Objects $(A, B, c, d)$, where $A : \Set$, $B : A \to \Set$, $c : \ArgA(A, B) \to A$, $d : (x : \ArgA(A, B)) \to \ArgB''(A, B, c, x) \to B(c(x))$.
+\item Morphisms from $(A, B, c, d)$ to $(A', B', c', d')$ are morphisms \\ $(f, g) :
+  (A, B, c) \Rightarrow_{\Dialg{\ArgA}{\UFamSet}} (A', B', c')$ such that in addition
+  \[
+  g(c(x), d(x, y)) = d'(\ArgA(f,g)(x), \ArgB''(f,g)(x, y)) \enspace .
+  \]
+% [This equation is only well-typed since $(f,g)$ is an
+%  $\Dialg{\ArgA}{\UFamSet}$ morphism -- the LHS has type $B(f(c(x))$,
+%  the RHS $B(c'(\ArgA(f,g)(x)))$, but $f(c(x)) = c'(\ArgA(f,g)(x)$ for
+%  $\Dialg{\ArgA}{\UFamSet}$ morphisms.]
+\end{itemize}
+
+
+\begin{example}
+  Consider the functors $\ArgCtxt$, $\ArgType$ from Example \ref{ex:ctxtTy-functor}:
+\begin{align*}
+  \ArgCtxt(A, B) &= \one + \Sigma\, \Gamma\!:\!A .\, B(\Gamma)\\
+  \ArgType''(A, B, c, x) &= \one + (\Sigma\,  \sigma\!:\! B(c(x)).\, \tau\!:\!B(c(\inr(c(x), \sigma))) ) \enspace .
+\end{align*}
+An object in $\Eind{\ArgCtxt}{\ArgType}$ consists of $A : \Set$, $B :
+A \to \Set$ and morphisms which can be split up into %todo: fix
+\begin{align*}
+  \emptyCtxt_{A,B} &: \one \to A \enspace , \\
+  \consCtxtbare_{A,B} &: ((\Gamma : A) \times B(\Gamma)) \to A  \enspace , \\
+\baseTybare_{A,B} &: (\Gamma : A) \to B(\Gamma) \enspace , \\
+\piTybare_{A,B} &: ((\Gamma : A) \times  (\sigma : B(\Gamma)) \times (\tau : B(\consCtxtbare_{A,B}(\Gamma, \sigma)))) \to B(\Gamma) \enspace.
+\end{align*}
+\end{example}
+
+\begin{remark}
+  The intended interpretation of the inductive-inductive definition
+  given by $(\ArgA, \ArgB)$ is the initial object in
+  $\Eind{\ArgA}{\ArgB}$. Depending on the metatheory, this might of
+  course not exist. However, we will show that it does if and only if
+  an eliminator for the inductive-inductive definition exists.
+\end{remark}
+
+\begin{remark} %todo: keep, remove or expand? [aka cliff, shag or marry?]
+  From Figure \ref{fig:map-of-functors}, it should be clear how to
+  generalise the current construction to the simultaneous definition
+  of $A : \Set$, $B : A \to \Set$, $C : {(x : A)} \to B(x) \to \Set$,
+  etc.: for a definition of $n$ sets, replace $\FamSet$ with the category $\FAM_n$ of families $(A_1, A_2, A_3, \ldots, A_n)$ and
+  consider $\ArgA : \FAM_n \to \Set$, $\ArgB : \Dialg{\ArgA}{U} \to
+  \FamSet$, $\ArgC : \Eind{\ArgA}{\ArgB} \to \FAM_3$, \ldots taking an
+  equalizer where neccessary to make the constructors in different
+  positions equal.
+\end{remark}
+
+\subsection{Example: exploiting initiality}
+\label{sec:exploit-init}
+
+Let us consider an example of how to use initiality to
+derive %TODO: Right word?
+a program dealing with the contexts and types from the introduction.
+Suppose that we want to define a concatenation $\concatCtxt : \Ctxt
+\to \Ctxt \to \Ctxt$ of contexts -- such an operation could be useful
+to formulate more general
+% (admissible) % since the def of Type : Ctxt -> Set is done
+formation rules, such as e.g.\
+\[
+\infer{\sigma \times \tau : \Type(\Gamma \concatCtxt \Delta)}{\sigma : \Type(\Gamma) \quad & \tau : \Type(\Delta)}
+\]
+Such an operation should satisfy the equations
+\[
+\begin{tabular}{lcccl}
+  $\Delta$ & $\concatCtxt$ & $\emptyCtxt$ & $=$ & $\Delta$ \\
+  $\Delta$ & $\concatCtxt$ & $(\consCtxt{\Gamma}{\sigma})$ & $=$ & $\consCtxt{(\Delta \concatCtxt \Gamma)}{$(\wkapp{\Gamma}{\Delta}{\sigma})$}$ \enspace ,
+\end{tabular}
+\]
+where $\wk : (\Gamma : \Ctxt) \to (\sigma : \Type(\Gamma)) \to (\Delta
+: \Ctxt) \to \Type(\Delta \concatCtxt \Gamma)$ is a weakening
+operation, i.e.\ if $\sigma : \Type(\Gamma)$, then
+$\wkapp{\Gamma}{\Delta}{\sigma} : \Type(\Delta \concatCtxt \Gamma)$. A
+moment's thought should convince us that we want $\wk$ to satisfy
+\begin{align*}
+  \wkapp{\Gamma}{\Delta}{\baseTy{\Gamma}} &= \baseTy{\Delta \concatCtxt \Gamma} \\
+  \wkapp{\Gamma}{\Delta}{\piTy{\Gamma}{\sigma}{\tau}} &= \piTy{\Delta \concatCtxt \Gamma}{\wkapp{\Gamma}{\Delta}{\sigma}}{\wkapp{\consCtxt{\Gamma}{\sigma}}{\Delta}{\tau}} \enspace .
+\end{align*}
+
+Our hope is now to exploit the initiality of $(\Ctxt, \Type)$ to get
+such operations. Recall from Example \ref{ex:ctxtTy-functor} that
+$\Ctxt$, $\Type$ are the underlying sets for the inductive-inductive
+definition given by the functors
+\begin{align*}
+  \ArgCtxt(A, B) &= \one + \Sigma\, \Gamma\!:\!A .\, B(\Gamma)\\
+  \ArgType''(A, B, c, x) &= \one + (\Sigma\,  \sigma\!:\! B(c(x)).\, \tau\!:\!B(c(\inr(c(x), \sigma))) ) \enspace .
+\end{align*} %todo: check development
+From the types of $\concatCtxt : \Ctxt \to \Ctxt \to \Ctxt$ and $\wk :
+(\Gamma : \Ctxt) \to (A : \Type(\Gamma)) \to (\Delta : \Ctxt) \to
+\Type(\Delta \concatCtxt \Gamma)$, we see that if we can equip $(A,
+B)$ where $A = \Ctxt \to \Ctxt$ and $B(f) = (\Delta : \Ctxt) \to
+\Type(f(\Delta))$ with an $(\ArgCtxt, \ArgType'')$ structure, initiality
+will give us functions of the right type. Of course, we must choose
+the right structure so that our equations will be satisfied:
+\[
+\begin{tabular}{lcl}
+  \multicolumn{3}{l}{$\inn_A : \ArgCtxt(A, B) \to A$} \\
+  $\inn_A(\inl(\oneelt))$ &$=$& $\lambda x .\, x$ \\
+  $\inn_A(\inr(\langle f , g\rangle))$ &$=$& $\lambda x .\, (\consCtxt{f(x)}{g(x)})$ \enspace ,\\
+\\
+  \multicolumn{3}{l}{$\inn_B : (x : \ArgCtxt(A, B)) \to \ArgType''(A, B, \inn_A, x) \to B(\inn_A(x))$} \\
+%  $\inn_B(x, \inl(\inn_A(x)) , refl))$ &$=$& $\lambda y . \baseTy{\inn_A(x,y)}$ \\
+  $\inn_B(x, \inl(\oneelt))$ &$=$& $\lambda y .\, \baseTy{\inn_A(x, y)}$ \\
+  $\inn_B(x, \inr(\langle g , h\rangle))$ &$=$& $\lambda y .\, \piTy{\inn_A(x, y)}{g(y)}{h(y)}$ \enspace .
+\end{tabular}
+\]
+Since $(A, B, \inn_A, \inn_B)$ is an object in
+$\Eind{\ArgA}{\ArgB}$, initiality gives us a morphism $(\concatCtxt, \wk) :
+(\Ctxt, \Type) \to (A, B)$ such that $(\concatCtxt, \wk) \circ
+(\coprodmorph{\emptyCtxt}{\consCtxtbare},
+\coprodmorph{\baseTybare}{\piTybare}) = (\inn_A, \inn_B) \circ (\ArgA,
+\ArgB'')(\concatCtxt, \wk)$.  In particular, this means that
+\begin{align*}
+\concatCtxt(\emptyCtxt) 
+ &= \inn_A(\ArgA(\concatCtxt, \wk)(\inl(\oneelt)))
+  = \inn_A(\inl(\oneelt))
+  = \lambda x.\, x \\
+\concatCtxt(\consCtxt{\Gamma}{\sigma})
+ &= \inn_A(\ArgA(\inr(\langle\Gamma, \sigma\rangle)))
+  = \inn_A(\langle \concatCtxt(\Gamma), \wk(\Gamma, \sigma)\rangle)) \\
+  &= \lambda x . \consCtxt{\concatCtxt(\Gamma, x)}{\wk(\Gamma, \sigma, x)} \enspace .
+\end{align*}
+Thus, we see that $\Delta \concatCtxt \emptyCtxt = \Delta$ and $\Delta
+\concatCtxt (\consCtxt{\Gamma}{\sigma}) = \consCtxt{(\Delta
+  \concatCtxt \Gamma)}{\wkapp{\Gamma}{\Delta}{\sigma}}$ as
+required.\footnote{Actually, the order of the arguments is reversed,
+  so we would have to define \\$\Delta \concatCtxt' \Gamma {\coloneqq}
+  \concatCtxt(\Gamma, \Delta)$.} In the same way, the equations for
+the weakening operation hold.
+
+
+\subsection{Functors from the earlier axiomatisation} %TODO: Better title
+\label{sec:functors-CSL-article}
+
+In short, our earlier
+axiomatisation\cite{nordvallforsbergSetzer2010indind} postulated the
+existence of a universe $(\text{SP}'_{\text{A}}, \text{SP}'_{\text{B}})$
+of codes for inductive-inductive sets, together with decoding
+functions 
+\begin{align*}
+\CSLArgA &: (\gamma_A : \text{SP}_{\text{A}})(A : \Set)(B : A \to \Set) \to \Set \enspace ,\\
+\CSLArgB &: (\gamma_A : \text{SP}_{\text{A}})(\gamma_B : \text{SP}_{\text{B}}(\gamma_A)) \\
+       & \quad \to (A : \Set)(B_0 : A \to \Set)(B_1 : \CSLArgA(\gamma_A, A, B_0) \to \Set) \\
+       & \qquad \to \ldots \to (B_n : \CSLArgA^n(\gamma_A, A, \vec{B}_{(n)}) \to \Set) \to \Set \enspace , \\
+\CSLIndex&(\gamma_A, \gamma_B, A, B_0, \ldots, B_n) : \\ \noalign{\vskip -4mm}
+              &  \qquad \CSLArgB(\gamma_A, \gamma_B, A, B_0, \ldots, B_n) \to \bigplus_{i = 0}^i \CSLArgA^n(\gamma_A, A, \vec{B}_{(i)}) \enspace ,
+\end{align*} 
+where $\vec{B}_{(i)} = (B_0, \ldots, B_{i - 1})$ and $\CSLArgA^i(\gamma_A, A, B_{(i)})$ is defined by
+\begin{align*}
+  \CSLArgA^0(\gamma_A, A, B_{(0)}) &\coloneqq A \\
+  \CSLArgA^{n + 1}(\gamma_A, A, \vec{B}_{(n), B_{n + 1}}) &\coloneqq \CSLArgA(\gamma_A, \bigplus_{i = 0}^n \CSLArgA^i(\gamma_A, A, \vec{B}_{(i)}), \coprodmorph{B_0}{\coprodmorph{\ldots}{B_n}}) \enspace .
+\end{align*}
+
+Intuitively, $\CSLArgA$ gives the domain of the constructor
+$\text{intro}_{\text{A}}$ for $A$, $\CSLArgB$ the domain for the
+constructor $\text{intro}_{\text{B}}$ for $B$ and $\CSLIndex(x)$ the
+index of the type of $\text{intro}_{\text{B}}(x)$.  The axiomatisation
+then state that we have introduction and elimination rules, i.e.\ that
+there for each code $\gamma = (\gamma_A, \gamma_B)$ exists is a family
+$A_\gamma : \Set$, $B_\gamma : A_\gamma \to \Set$ with constructors
+$\text{intro}_{\text{A}} : \CSLArgA(\gamma_A, A_\gamma, B_\gamma) \to
+A_\gamma$ and $\text{intro}_{\text{B}} : (x : \CSLArgB(\gamma,
+A_\gamma, B_\gamma, B_1, \ldots, B_n)) \to B_\gamma(\text{index}(x))$,
+and a suitable eliminator (see Section \ref{sec:eliminator}). Here,
+$B_i = B \circ k_i$ and $\text{index}(x) = \coprodmorph{k_0,
+  \ldots}{k_n}(\CSLIndex(\gamma, A, B_0, \ldots, B_n, x))$ where $k_0 = \id$ and $k_{i+1}
+= \text{intro}_{\text{A}} \circ \CSLArgA^i(\coprodmorph{k_0,
+  \ldots}{k_{i}}, \coprodmorph{\id', \ldots}{\id'})$.
+
+Given a code $\gamma = (\gamma_A, \gamma_B)$ and such decoding functions, one
+can construct two functors $\ArggammaA$, $\ArggammaB$ as in Definition \ref{def:indind-functors}
+by setting $\ArggammaA(A, B) {\coloneqq} \CSLArgA(\gamma_A, A, B)$ and
+$\ArggammaB(A, B, c) \coloneqq (\ArggammaA(A, B), \ArggammaB''(A, B, c))$ where
+\[
+\ArggammaB''(A, B, c, x) = \{\, y\!:\!\CSLArgB(\gamma_A, \gamma_B, A, B, B_1, \ldots, B_n)
+                                                \ |\  c(x) = \text{index}(y) \} \enspace .
+\]
+
+
+In Section \ref{sec:elim-init-equiv-CSL} (Theorem
+\ref{thm:equiv-init-elim}), we show that that the original
+introduction and elimination rules (which we will now introduce in the
+next section) hold %todo: better word?
+if and only if $\Eind{\ArgA}{\ArgB}$ has an initial object.
+
+
+\section{The elimination principle}
+\label{sec:eliminator}
+
+
+\subsection{Warm-up: a generic eliminator for an inductive definition}
+\label{sec:elim-ind-intro}
+
+The traditional type-theoretical way of defining recursive functions
+like the context concatenation $\concatCtxt$ in Section
+\ref{sec:exploit-init} is to define them in terms of eliminators.
+Roughly, the eliminator for an $F$-algebra $(A, \inn_A)$ is a term of type
+\begin{align*}
+\elim_F :\ & (P : A \to \Set) \to \\
+         & (f : (x : F(A)) \to \BOX_F(P, x) \to P(\inn_A(x))) \to \\
+         & (x : A) \to P(x) \enspace .
+\end{align*}
+with computation rule $\elim_F(P, f, \inn_A(x)) = f(x, \dmap_F(P,
+\elim(P, f), x))$. Here, $\BOX_F(P) : F(A) \to \Set$ is the type of
+inductive hypothesis for $P$; it consists of proofs that $P$ holds at
+all substructures of $x$, and $\dmap_F(P) : (x : F(A) \to P(x)) \to (x :
+F(A)) \to \BOX_F(P, x)$ takes care of recursive calls.
+
+\begin{example}
+\label{ex:natexample}
+  Let $F(X) = \one + X$, i.e.\ $F$ is the functor whose initial
+  algebra is $(\Nat, \coprodmorph{0}{\suc})$.  We then have
+\[ %begin{align*}
+  \BOX_{\one + X}(P, \inl(\oneelt)) \cong \one \qquad\quad
+  \BOX_{\one + X}(P, \inr(n) \cong P(n)
+\] %end{align*}
+so that the eliminator for $(\Nat, \coprodmorph{0}{\suc})$ becomes
+\begin{align*}
+\elim_{\one + X} :\ & (P : \Nat \to \Set) \to \\
+         & (f_0 : \one \to P(0)) \to \\
+         & (f_{\suc} : (n : \Nat) \to P(n) \to P(\suc(n))) \to \\
+         & (x : \Nat) \to P(x) \enspace .
+\end{align*}
+
+\end{example}
+
+For polynomial functors $F$, $\BOX_F$ can be defined inductively over
+the structure of $F$ as is done in e.g.\ Dybjer and Setzer
+\cite{dybjersetzer2003inalg}. However, $\BOX_F$ and $\dmap_F$ can be
+defined for any functor $F : \Set \to \Set$ by defining
+\begin{align*}
+  \BOX_F(P, x) &\coloneqq \{ y : F(\Sigma\,z\!:\!A .\,P(z)) | F(\pi_0)(y) = x\} \\
+  \dmap_F(P, f, x) &\coloneqq F(\lambda y . \langle y, f(y)\rangle)(x) \enspace .
+\end{align*}
+We see that indeed $\BOX_{\one + X}(P, \inl(\oneelt)) \cong \one$ and
+$\BOX_{\one + X}(P, \inr(n)) \cong P(n)$ as in Example \ref{ex:natexample}.
+
+
+\subsection{The generic eliminator for an inductive-inductive definition}
+\label{sec:elim-indind}
+
+Let us now generalise the preceding discussion from inductive
+definitions (i.e.\ endo\-functors on $\Set$) to inductive-inductive
+definitions (i.e.\ functors $(\ArgA, \ArgB)$ as in Definition
+\ref{def:indind-functors}). Since we replace the carrier set $A$ with
+a carrier family $(A, B)$, we should also replace the predicate $P : A
+\to \Set$ with a ``predicate family'' $(P, Q)$ where $P : A \to \Set$
+and $Q : (x : A) \to B(x) \to P(x) \to \Set$. This forces us to refine
+the step function $f : (x : F(A)) \to \BOX_F(P, x) \to P(\inn_A(x))$
+into two functions
+\begin{align*}
+f &: (x : \ArgA(A, B)) \to \BOX_{\ArgA}(P, Q, x) \to P(c(x)) \enspace ,\\
+g &: (x : \ArgA(A, B)) \to (y : \ArgB''(A, B, c, x)) \to (\overline{x} : \BOX_{\ArgA}(P, Q, x)) \\
+& \qquad\qquad\qquad \to \BOX_{\ArgB}(P, Q, c, f, x, y, \overline{x}) 
+   \to Q(c(x), d(x, y), f(x, \overline{x})) \enspace .
+\end{align*}
+%todo: think of notation; \overline{c} instead of f?
+
+%todo: yay, this part needs rewriting! [even more than other parts...]
+
+\noindent As can already be seen in the types of $f$ and $g$ above, we replace
+$\BOX_F$ with $\BOX_{\ArgA}$ and $\BOX_{\ArgB}$ of type
+\begin{align*}
+  \BOX_{\ArgA}(P, Q) :\ &\ArgA(A, B) \to \Set \enspace ,\\
+%
+  \BOX_{\ArgB}(P, Q) :\ %&(c : \ArgA(A, B) \to A) \to \\
+                     &(\overline{c} : (x : \ArgA(A, B)) \to \BOX_{\ArgA}(P, Q, x) \to P(c(x))) \to \\
+                     &(x : \ArgA(A, B)) \to (y : \ArgB''(A, B, c, x)) \to \\
+                     & (\overline{x} : \BOX_{\ArgA}(P, Q, x)) \to \Set
+\end{align*} %todo: change order to x xbar y ? YES
+%
+and we replace $\dmap_F$ with $\dmap_{\ArgA}$, $\dmap_{\ArgB}$ of type
+\begin{align*}
+  \dmap_{\ArgA}(P, Q) :\ & (f : (x : A) \to P(x)) \to \\
+                 & (g : (x : A) \to (y : B(x)) \to Q(x, y, f(x))) \to \\
+                 & (x : \ArgA(A, B)) \to \BOX_{\ArgA}(P, Q, x) \\
+%
+  \dmap_{\ArgB}(P, Q) :\ &(\overline{c} : (x : \ArgA(A, B)) \to \BOX_{\ArgA}(P, Q, x) \to P(c(x))) \to \\
+                 & (f : (x : A) \to P(x)) \to \\
+                 & (g : (x : A) \to (y : B(x)) \to Q(x, y, f(x))) \to \\
+                 & (x : \ArgA(A, B)) \to (y : \ArgB''(A, B, c, x)) \\ 
+                 & \quad \to \BOX_{\ArgB}(P, Q, \overline{c}, x, y, \dmap_{\ArgA}(P, Q, f, g, x)) \enspace .
+\end{align*}
+
+We can define $\BOX_{\ArgA}$, $\BOX_{\ArgB}$, $\dmap_{\ArgA}$ and $\dmap_{\ArgB}$ for arbitrary functors
+representing inductive-inductive definitions:
+
+\begin{definition}
+  Given $(A, B), (A', B') \in \FamSet$, $P : A \to \Set$, $Q : (x : A)
+  \to B(x) \to P(x) \to \Set$ and 
+  \begin{align*}
+(f, g) &: (A, B) \to (A', B') \\
+h &: (x : A) \to P(f(x)) \\
+k &: (x : A) \to (y : B(x)) \to Q(f(x), g(x, y), h(x)) \enspace ,
+  \end{align*}
+ define
+  \begin{enumerate}[(i)]
+  \item $\SigmaFAM (A, B)\ (P, Q) \in \FamSet$ by
+ \[
+\SigmaFAM (A, B)\ (P, Q) \coloneqq (\Sigma\ A\ P, \lambda
+    \langle a, p\rangle . \Sigma b\!:\!B(a).\ Q(a, b, p))
+ \]
+  \item $\CwFmorph{(f, g)}{(h, k)} : (A, B) \to \SigmaFAM (A', B')\ (P, Q)$ by
+\[
+\CwFmorph{(f, g)}{(h, k)} \coloneqq (\lambda x .\, \langle f(x), h(x)\rangle, \lambda x\,y .\, \langle g(x, y), k(x, y)\rangle)
+\]
+  \end{enumerate}
+\end{definition}
+  Note that we have $(\pi_0, \pi'_0) \coloneqq (\pi_0, \lambda x .\,
+  \pi_0) : \SigmaFAM (A, B)\ (P, Q) \to (A, B)$, and we can define
+$\sigmamorph{(f, g)}{(h, k)} : \SigmaFAM (A, B)\ (P, Q) \to \SigmaFAM (A', B')\ (P', Q')$
+by $\sigmamorph{(f, g)}{(h, k)} = \CwFmorph{(f, g) \circ (\pi_0, \pi'_0)}{(h, k)}$
+ and $\CwFsect{f} = \CwFmorph{\id}{f}$. %todo: still a mess
+
+  
+\begin{definition}
+Define $\BOX_{\ArgA}$ and $\dmap_{\ArgA}$ with types as above by
+\begin{align*}
+\BOX_{\ArgA}(P, Q, x) &\coloneqq %\\
+    \{ y : \ArgA(\SigmaFAM (A, B)\ (P, Q))\ | \ArgA(\pi_0, \pi'_0)(y) = x\} \enspace , \\
+\dmap_{\ArgA}(P, Q, f, g) &\coloneqq %\\
+    \ArgA(\CwFsect{f, g}) \enspace .
+\end{align*}
+\end{definition}
+
+
+\noindent Note that we have an isomorphism
+\[
+\varphi_{\ArgA} : \ArgA(\SigmaFAM (A, B)\ (P, Q)) \to \Sigma\,x\!:\! \ArgA(A, B) .\, \BOX_{\ArgA}(P, Q, x)
+\]
+defined by $\varphi_{\ArgA}(x) = \langle \ArgA(\pi_0, \pi'_0)(x), x\rangle$.
+
+\begin{definition}
+Given $P$, $Q$, $\overline{c}$, $x$, $y$, $\overline{x}$ as above, define
+  \begin{enumerate}[(i)]
+  \item $\SigmaDialg (A, B, c)\ (P, Q, \overline{c}) \coloneqq (\SigmaFAM\ (A,
+    B)\ (P, Q), \sigmamorph{c}{\overline{c}} \circ \varphi_{\ArgA})$,
+  \item $\BOX_{\ArgB}(P, Q, \overline{c}, x, y, \overline{x}) \coloneqq \\
+\{ z : \ArgB''(\SigmaFAM (A, B)\ (P, Q), \sigmamorph{c}{f} \circ \varphi_{\ArgA}, \overline{x}
+)\ |\ \ArgB''(\pi_0, \overline{\pi_0}, \overline{x}, z) = y \}$,
+\item $\dmap_{\ArgB}(P, Q, \overline{c}, f, g) \coloneqq \ArgB''(f, g)$.
+  \end{enumerate}
+\end{definition}
+
+\begin{definition}
+  
+  We say that $(A, B, c, d)$ in $\Eind{\ArgA}{\ArgA}$ has an
+  eliminator, if there exist two terms 
+\begin{align*}
+  \elim_{\ArgA} :\ & (P : A \to \Set)(Q : (x : A) \to B(x) \to P(x) \to \Set) \to \\
+  & \big(f : (x : \ArgA(A, B)) \to \BOX_{\ArgA}(P, Q, x) \to P(c(x))\big) \to \\
+  & \big( g : (x : \ArgA(A, B)) \to (y : \ArgB''(A, B, c, x)) \to
+  (\overline{x} : \BOX_{\ArgA}(P, Q, x))  \\
+  & \quad \to  \BOX_{\ArgB}(P, Q, c, f, x, y, \overline{x}) \to 
+     Q(c(x), d(x, y), f(x, \overline{x}))\big) \to \\
+  & (x : A) \to P(x) \\
+%\end{align*}
+%\begin{align*}
+  \elim_{\ArgB} :\ & (P : A \to \Set)(Q : (x : A) \to B(x) \to P(x) \to \Set) \to \\
+  & \big(f : (x : \ArgA(A, B)) \to \BOX_{\ArgA}(P, Q, x) \to P(c(x))\big) \to \\
+  & \big( g : (x : \ArgA(A, B)) \to (y : \ArgB''(A, B, c, x)) \to
+  (\overline{x} : \BOX_{\ArgA}(P, Q, x))  \\
+  & \quad \to  \BOX_{\ArgB}(P, Q, c, f, x, y, \overline{x}) \to 
+     Q(c(x), d(x, y), f(x, \overline{x}))\big) \to \\
+%  & \ldots \\
+  & (x : A) \to (y : B(x)) \to Q(x, y, \elim_{\ArgA}(P, Q, f, g, x))
+\end{align*}
+with 
+\begin{align*}
+\elim_{\ArgA}(P, Q, f, g, c(x)) &= f(x, \dmap_{\ArgA}') \\
+ \elim_G(P, Q, f, g, c(x), d(x, y)) &=
+ g(x, y, \dmap_{\ArgA}',  \dmap_{\ArgB}')
+\end{align*}
+where 
+\begin{align*}
+\dmap_{\ArgA}' &= \dmap_{\ArgA}(\elim_{\ArgA}(P, Q, f, g), \elim_{\ArgB}(P, Q, f, g), x) \\
+\dmap_{\ArgB}' &= \dmap_{\ArgB}(f, \elim_{\ArgA}(P, Q, f, g), \elim_{\ArgB}(P, Q, f, g), x, y) \enspace .
+\end{align*}
+
+
+
+
+
+\end{definition}
+
+% \begin{remark}
+%   If the definition of the eliminator for an inductive-inductive
+%   definition seems complicated, one might take comfort in knowing that
+%   it actually is an instance of a general eliminator for functors between
+%   categories with families (introduced by Dybjer
+%   \cite{dybjer1996internalTT}). Unfortunately, we have to refrain from
+%   investigating this line of research in this paper due to space
+%   constraints.
+% \end{remark}
+
+
+ \begin{example}[The eliminator for sorted lists]
+   Recall from Example \ref{ex:SList-functor} that sorted lists were given by the functor
+\[ %begin{align*}
+  \ArgSList(A, B) = \one + (\Sigma\, n\!:\!\Nat .\,\Sigma\,\ell\!:\!A.\, B(n,\ell))
+%  \ArglessList''(A, B, c, m, \inl(\oneelt)) &= \one \\
+%  \ArglessList''(A, B, c, m, \inr(\langle n, \ell, p\rangle)) &= \Sigma\,m \leq n.\, B(m, \ell) \enspace .
+\] %end{align*}
+   Thus, we see that e.g.\ 
+   \begin{align*}
+\BOX_{\ArgSList}(P, Q, \inl(\oneelt)) &=  
+\{ y : \one + \ldots \ |\ (\id + \ldots)(y) = \inl(\oneelt) \} \cong \one \\
+\BOX_{\ArgSList}(P, Q, \inr(\langle n, \ell, p\rangle)) &\cong \\
+\{ y : \Sigma\, n'\!:\!\Nat .\,\Sigma\,\langle \ell', \overline{\ell}\rangle\!:\!(\Sigma A P).\, \Sigma p'\!&:\!B(n,\ell).\,Q(n', \ell', p', \overline{\ell})\ |\ \Sigma(\id, \Sigma(\pi_0, \pi'_0))(y) = \langle n, \ell, p\rangle\} \\
+%\cong \{ y : \Sigma\, n'\!:\!\Nat .\,\Sigma\,\langle \ell', \overline{\ell}\rangle\!:\!(\Sigma A P).\, \Sigma p'\!&:\!B(n,\ell).\,Q(n', \ell', p', \overline{\ell})\ |\ \langle n', \ell', p'\rangle = \langle n, \ell, p\rangle\} \\
+ & \cong \Sigma \overline{\ell}\!:\!P(\ell).\,Q(n, \ell, p, \overline{\ell})
+   \end{align*}
+   and similarly for $\BOX_{\ArglessList}$, so that the eliminators are equivalent to
+   \begin{align*}
+  \elim_{\SortedList} :\ & (P : \SortedList \to \Set) \to \\
+                     & (Q : (n : \Nat) \to (\ell : \SortedList) \to n \lessList \ell \to P(\ell) \to \Set) \to \\
+                     & (p_{\nilList} : P(\nilList)) \to \\
+                     & (p_{\consListbare} : (n : \Nat) \to (\ell : \SortedList) \to (p : n \lessList \ell) \to (\overline{\ell} : P(\ell)) \\
+                     & \qquad \to Q(n, \ell, p, \overline{\ell}) \to P(\consList{n}{\ell}{p})) \to \\
+                     & (p_{\nilLess{}} : (n : \Nat) \to Q(n, \nilList, \nilLess{n}, p_{\nilList})) \to \\
+                     & (p_{\consLessbare} : (m : \Nat) \to (n : \Nat) \to (\ell : \SortedList) \to (p : n \lessList \ell) \\
+                     & \qquad \to (q : m \leq n) \to (p' : m \lessList \ell) \to
+                     (\overline{\ell} : P(\ell)) \\ 
+                     & \qquad \to (\overline{p} : Q(n, \ell,p, \overline{\ell}))
+                     \to (\overline{p'} : Q(m, \ell, p', \overline{\ell})) \\
+                     & \qquad \to Q(m,\consList{n}{\ell}{p}, \consLess{m}{n}{\ell}{p}{q}{p'}, p_{\consListbare}(n, \ell, p, \overline{\ell}, \overline{p}))) \to \\
+                     & (\ell : \SortedList) \to P(\ell) \enspace , \\
+%
+  \elim_{\lessList} :\ & \ldots \to \\
+% & (P : \SortedList \to \Set) \to \\
+                     % & (Q : (n : \Nat) \to (\ell : \SortedList) \to n \lessList \ell \to P(\ell) \to \Set) \to \\
+                     % & (p_{\nilList} : P(\nilList)) \to \\
+                     % & (p_{\consListbare} : (n : \Nat) \to (\ell : \SortedList) \to (p : n \lessList \ell) \to (\overline{\ell} : P(\ell)) \\
+                     % & \qquad \to Q(n, \ell, p, \overline{\ell}) \to P(\consList{n}{\ell}{p})) \to \\
+                     % & (p_{\nilLess{}} : (n : \Nat) \to Q(n, \nilList, \nilLess{n}, p_{\nilList})) \to \\
+                     % & (p_{\consLessbare} : (m : \Nat) \to (n : \Nat) \to (\ell : \SortedList) \to (p : n \lessList \ell) \\
+                     % & \qquad \to (q : m \leq n) \to (p' : m \lessList \ell) \to
+                     % (\overline{\ell} : P(\ell)) \\ 
+                     % & \qquad \to (\overline{p} : Q(n, \ell,p, \overline{\ell}))
+                     % \to (\overline{p'} : Q(m, \ell, p', \overline{\ell})) \\
+                     % & \qquad \to Q(m,\consList{n}{\ell}{p}, \consLess{m}{n}{\ell}{p}{q}{p'}, p_{\consListbare}(n, \ell, p, \overline{\ell}, \overline{p}))) \to \\
+                     & (n : \Nat) \to (\ell : \SortedList) \to (p : n \lessList \ell) \\
+                     & \qquad \to Q(n, \ell, p, \elim_{\SortedList}(P, Q, p_{\nilList}, p_{\consListbare},  p_{\nilLess{}}, p_{\consLessbare}, \ell)) \enspace .
+  \end{align*}
+ \end{example}
+
+
+
+\subsection{The equivalence between having an eliminator and being initial}
+\label{sec:elim-init-equiv}
+
+In what follows, let $(\ArgA, \ArgB)$ be functors for an
+inductive-inductive definition.
+
+\begin{lemma}
+\label{thm:isoArgAB}
+  There is an isomorphism
+\begin{multline*}
+(\varphi_{\ArgA}, \varphi_{\ArgB}) : \ArgB(\SigmaDialg (A, B, c)\ (P, Q, f)) \\
+  \to \SigmaFAM \ArgB(A, B, c)\ (\BOX_{\ArgA, \ArgB}(P, Q, c, f)) 
+\end{multline*}
+such that $(\pi_0, \pi'_0) \circ (\varphi_{\ArgA}, \varphi_{\ArgB}) =
+\ArgB(\pi_0, \pi'_0)$ and $(\varphi_{\ArgA}, \varphi_{\ArgB}) \circ
+\ArgB(\CwFsect{f, g}) = \CwFsect{(\dmap_{ArgA}(P, Q. f, g),
+  \dmap_{\ArgB}(P, Q, \overline{c}, f, g))}$ .  \qed
+\end{lemma}
+
+\begin{proposition}
+\label{thm:init-to-elim}
+Every initial object $(A, B, c, d)$ in $\Eind{\ArgA}{\ArgB}$ has an eliminator.
+\end{proposition}
+\begin{proof}
+  Let $P$, $Q$, $f$, $g$ as in the type signature for $\elim_{\ArgA}$
+  and $\elim_{\ArgB}$ be given. Define $\inn_{\Sigma} :
+  \ArgB(\SigmaDialg (A, B, c)\ (P, Q, f)) \to \UDialgArgAU(\SigmaDialg
+  (A, B, c)\ (P, Q, f))$ by $\inn_{\Sigma} = \sigmamorph{(c, d)}{(f,
+    g)} \circ (\varphi_{\ArgA}, \varphi_{\ArgB})$. This makes
+  $\SigmaDialg (A, B, c)\ (P, Q, f)$ an object of
+  $\Eind{\ArgA}{\ArgB}$.
+  % since the first component of $\sigmamorph{(c, d)}{(f, g)} \circ
+  % (\varphi_{\ArgA}, \varphi_{\ArgB})$ is $\sigmamorph{c}{f} \circ
+  % \varphi_{\ArgA}$, which coincides with the ``constructor'' in
+  % $\SigmaDialg (A, B, c)\ (P, Q, f)$.
+
+  By the initiality of $(A, B, c, d)$, we get a morphism ($h, h') :
+  (A, B) \to \SigmaFAM (A, B)\ (P, Q)$ which makes the top part of the
+  following diagram commute:
+\[
+\resizebox{1\textwidth}{!}{%
+\xymatrix{
+\ArgB(A, B, c) \ar^-{(c, d)}[rr] \ar_-{\ArgB(h, h')}[d] & & (A, B) \ar^-{(h, h')}[d] \\
+\ArgB(\Sigma (A, B, c)\ (P, Q, f)) \ar_{(\varphi_{\ArgA}, \varphi_{\ArgB})}[r] \ar_-{\ArgB(\pi_0, \pi'_0)}[d]
+ & \Sigma \ArgB(A, B, c)\ (\BOX(P, Q, c, f))  \ar^-{\sigmamorph{(c,d)}{(f,g)}}[r] \ar^{(\pi_0, \pi'_0)}[dl]
+ & \Sigma (A, B)\ (P, Q) \ar^-{(\pi_0, \pi'_0)}[d]\\
+\ArgB(A, B, c) \ar_-{(c, d)}[rr] & & (A, B)
+}
+}
+\]
+
+The bottom part commutes by Lemma \ref{thm:isoArgAB} and
+calculation. Hence $(\pi_0, \pi'_0) \circ (h, h')$ is a morphism in
+$\Eind{\ArgA}{\ArgB}$ and we must have $(\pi_0, \pi'_0) \circ (h, h')
+= \id$ by initiality. Thus $\pi_1 \circ h : (x : A) \to P(x)$ and
+$\pi_1(h'(x, y)) : Q(x, y, \pi_1(h(x)))$ for $x : A$, $y : B(x)$ and
+we can define $\elim_{\ArgA}(P, Q, f, g) = \pi_1 \circ h$ and
+$\elim_{\ArgB}(P, Q, f, g, x, y) = \pi_1(h'(x, y))$. 
+
+To verify the computation rules, note that since $(\pi_0, \pi'_0)
+\circ (h, h') = \id$, we have $(h, h') = \CwFsect{(\pi_1, \pi'_1)
+  \circ (h, h')}$ and calculate. We only show the rule for $\ArgA$:
+\begin{align*}
+  \elim_{\ArgA}(P, Q, f, g, c(x)))
+ &= \pi_1(h(c(x))) \\
+ &= f(\varphi_{\ArgA}(\ArgA(h, h')(x))) \\
+ &= f(\varphi_{\ArgA}(\ArgA(\CwFsect{(\pi_1, \pi'_1) \circ (h, h')})(x))) \\
+ &= f(x, \dmap_{\ArgA}((\pi_1, \pi'_1) \circ (h, h'))(x)) \\
+ &= f(x, \dmap_{\ArgA}(\elim_{\ArgA}(P, Q, f, g), \elim_{\ArgB}(P, Q, f, g), x))
+\end{align*}
+\mbox{} \qed %todo
+\end{proof}
+
+\begin{proposition}
+\label{thm:elim-to-weak-init}
+  Every $(A, B, c, d)$ which has an eliminator is weakly initial in $\Eind{\ArgA}{\ArgB}$.
+\end{proposition}
+\begin{proof}
+  Let $(A', B', c', d')$ be another object in
+  $\Eind{\ArgA}{\ArgB}$. Notice that for $P(x) = A'$, $Q(x, y,
+  \overline{x}) = B'(\overline{x})$, the usually dependent second
+  projections $\pi_1, \pi'_1$ becomes non-dependent and make up a
+  morphism $(\pi_1, \pi'_1) : \SigmaFAM (A, B)\ (P, Q) \to (A', B',
+  c')$. 
+  Since
+   \[
+   \pi_1 \circ \sigmamorph{c}{c' \circ \ArgA(\pi_1, \pi'_1) \circ \varphi_{\ArgA}^{-1}}
+         \circ \varphi_{\ArgA} = c' \circ \ArgA(\pi_1, \pi'_1) \enspace ,
+   \]
+   this lifts to $(\pi_1, \pi'_1) : \SigmaDialg (A, B, c)\ (P, Q, c'
+   \circ \ArgA(\pi_1, \pi'_1) \circ \varphi_{\ArgA}^{-1}) \to (A', B',
+   c')$. By currying $(f, g) \coloneqq (c', d') \circ \ArgB(\pi_1,
+   \pi'_1) \circ (\varphi_{\ArgA}, \varphi_{\ArgB})^{-1})$, we get
+   \begin{align*} %todo: same notation as \CwFsect
+     \widehat{f} &: (x : \ArgA(A, B)) \to \BOX_{\ArgA}(P, Q, x) \to A' \\ 
+     \widehat{g} &: (x : \ArgA(A, B)) \to (y : \ArgB''(A, B, c, x))
+     \to
+     (\overline{x} : \BOX_{\ArgA}(P, Q, x))  \\
+     & \qquad\qquad \to \BOX_{\ArgB}(P, Q, c, \widehat{f}, x, y,
+     \overline{x}) \to B'(\widehat{f}(x, \overline{x}))
+   \end{align*}
+   so that $(h, h') \coloneqq (\elim_{\ArgA}(P, Q, \widehat{f}, \widehat{g}),
+   \elim_{\ArgA}(P, Q, \widehat{f}, \widehat{g})) : (A, B) \to (A',
+   B')$.
+
+   We have to check that $(h, h') \circ (c, d) = (c', d') \circ \ArgB(h, h')$.
+   \begin{align*}
+     (h, h') \circ (c, d)
+     &= (\elim_{\ArgA}(P, Q, \widehat{f}, \widehat{g}),
+          \elim_{\ArgA}(P, Q, \widehat{f}, \widehat{g})) \circ (c, d) \\
+     &= (\widehat{f}, \widehat{g}) \circ \CwFsect{(\dmap_{\ArgA}(h, h'), \dmap_{\ArgB}(h, h'))} \\
+     &= (\widehat{f}, \widehat{g}) \circ (\varphi_{\ArgA}, \varphi_{\ArgB}) \circ \ArgB(\CwFsect{h, h'}) \\
+     &= (c', d') \circ \ArgB(\pi_1, \pi'_1) \circ \ArgB(\CwFsect{h, h'}) \\
+     &= (c', d') \circ \ArgB(h, h')
+   \end{align*}
+\mbox{} \qed %todo
+\end{proof}
+
+For strictly positive functors, we can say more:
+
+\label{sec:elim-init-equiv-CSL}
+\begin{theorem}
+\label{thm:equiv-init-elim}
+The functors $\ArgA$, $\ArgB$ from the original axiomatisation as
+described in Section \ref{sec:functors-CSL-article} have eliminators
+if and only if $\Eind{\ArggammaA}{\ArggammaB}$ has an initial object.
+\end{theorem}
+\begin{proof}
+%  By Lemma \ref{thm:CSL-functor-CNF}, it is enough to consider
+%  functors of the form mentioned there.
+Putting Proposition
+  \ref{thm:init-to-elim} and Proposition \ref{thm:elim-to-weak-init}
+  together, all that is left to prove is that given an eliminator, the
+  arrow $(h, h')$ we construct is actually unique. Assume that $(k,
+  k')$ is another arrow with $(k, k') \circ (c, d) = (c', d') \circ
+  \ArgB(k, k')$.
+
+  We use the eliminator (and extensionality) to prove that $(h, h') =
+  (k ,k')$; let $P(x) = (h(x) = k(x))$ and $Q(x, y, \overline{x})
+  = (h'(x, y) = k'(x, y))$. It is enough to prove $P(c(x))$ and
+  $Q(c(x), d(x, y), \_)$ for arbitrary $x : \ArgA(A, B)$, $y :
+  \ArgB(A, B, c, x)$, given the induction hypothesis $\BOX_{\ArgA}(P,
+  Q)$ and $\BOX_{\ArgB}(P, Q)$.
+%But by by Proposition \ref{thm:CSL-functor-box}, they state exactly that 
+By induction on the buildup of $\ArgA$ and $\ArgB$, we can prove that 
+$\BOX_{\ArgA}(P,  Q)$ and $\BOX_{\ArgB}(P, Q)$ state exactly that
+$\ArgB(h, h') =  \ArgB(k, k')$ , and hence
+  \[
+  (h, h') \circ (c, d) = (c', d') \circ \ArgB(h, h')
+                       = (c', d') \circ \ArgB(k, k')
+                       = (k, k') \circ (c, d) \enspace .
+  \]
+  We conclude that $(h, h') =  (k ,k')$. \qed
+\end{proof}
+\section{Conclusions and future work}
+
+We have shown how to give a categorical semantics for
+inductive-inductive definitions, a principle for defining datatypes in
+Martin-L\"of Type Theory. In order to do this, we generalised the
+usual initial algebra semantics to a dialgebra setting and showed that
+there still is an equivalence between this semantics and the more
+traditional formulation in terms of elimination and computation rules.
+
+What we have not discussed in this article is why the proof morally
+goes through: the current setting is an instance of a more general
+theorem. Let $F, G: \C \to \D$ be functors between categories that are
+models of type theory. If $\C$ and $\D$ have $\Sigma$- and equality
+types, one can define the concept of an eliminator for $F$ and $G$ and
+with some restrictions on $\C$ and $G$ (that $\C$ admits all finite
+limits and $G$ is left exact seems to be enough), one can show that
+having an eliminator and being initial in (a subcategory of)
+$\Dialg{F}{G}$ is equivalent. Working out the details of this is
+future work.
+
+\bibliographystyle{splncs03}
+\bibliography{all}
+
+% \appendix
+
+% \section{$\BOX_{ArgA}$ and $\BOX_{\ArgB}$ for functors arising from the axiomatisation}
+
+% %However, since we are working in extensional type theory, there is
+% %actually a convenient ``container-like''
+% %\cite{abbottAltenkirchGhani2005containers} description of these functors:
+% \begin{lemma} %todo: consistent with sigma / \times? %todo: fix formatting
+% \label{thm:CSL-functor-CNF}
+% For every pair $(\ArgA, \ArgB'')$ of functors arising from a code
+% $(\gamma_A, \gamma_B)$, there are $S : \Set$, $K : S \to \Set$, $L :
+% (x : S) \to K(x) \to \Set$ and $S' : \Set$, $K' : S' \to \Set$,
+% $L'_{n} : (x : S') \to \ArgA^i(K'(x), \vec{L'(x)}_{(i)} \to \Set$,
+% $a_{\text{index}} : (x : S') \to \bigplus_{i=0}^{n}\ArgA^{i}(K'(s),
+% \vec{L'_{i}(s)}_{(i)})$ such that
+% \begin{align*}
+% \ArgA(A, B) &\cong (s : S) \times (k : K(s) \to A) \times ((x : K(s)) \to
+% L(s, x) \to B (k(x))) \\
+% \ArgA(f, g)(\langle s, k, l\rangle) &= \langle s, (f, g) \circ (k, l)\rangle
+% \end{align*}
+% \begin{align*}
+%   \ArgB''(A, B, c, y) &\cong \{ (s : S') \times (k : K'(s) \to A)
+%   \times (l_0 : (x : K'(s)) \to L'_0(s, x) \to B(k(x))) \\
+%  &\times (l_1 : (x : \ArgA(K'(s), L'_0(s))) \to  L'_1(s, x) \to B(k_1(x)))) \\
+%   \times \ldots 
+%  &\times (l_n : (x : \ArgA^n(K(s), \vec{L'(s)}_{(n)})) \to L'_{n}(s, x) \to
+%   B(k_n(x)))) \\
+%  &|\ c(y) = \ \coprodmorph{k, k_1, \ldots}{k_n}(a_{\text{index}}(s)) \} \\
+%   \ArgB''(f, g)(\langle s, k, l_0, &\ldots, \l_n\rangle) = \langle s, f \circ k, \lambda x y .\, g(k(x), l_0(x, y)), \\
+%  & \qquad\qquad\qquad\qquad\ \  \lambda x y .\, g(k_1(x), l_1(x, y)), \ldots, \\
+%  & \qquad\qquad\qquad\qquad\ \  \lambda x y .\, g(k_n(x), l_n(x, y))\rangle
+% \end{align*} 
+% where $k_i = c \circ \ArgA^i(k, \vec{l}_{(i)})$.
+% \qed
+% \end{lemma}
+
+
+% %For functors arising from our earlier axiomatisation, there is a nicer description of $\BOX_{\ArgA}$ and $\BOX_{\ArgB}$:
+% \begin{proposition}
+% \label{thm:CSL-functor-box}
+% For functors $(ArgA, \ArgB'')$ as in Lemma \ref{thm:CSL-functor-CNF},
+% we have
+% \begin{multline*}
+% \BOX_{\ArgA}(P, Q)(\langle s, k, l\rangle)  \cong \\ (\overline{k} : (x : K(s)) \to P(k(s)) \times ((x : K(s)) \to (y : L(s, x)) \to Q(k(x), l(x, y), \overline{k}(x)))
+% \end{multline*}
+% \begin{align*}
+%   &\BOX{\ArgB}(P, Q, c, \overline{c}, y, \langle s, k, l_0, \ldots, l_n\rangle, \overline{y}) \cong
+% \{ (\overline{k} : K'(s) \to P(k(s))) \\
+% &  \times (\overline{l_0} : (x : K'(s)) \to (y : L'_0(s, x)) \to Q(k(x), l_0(x, y), \overline{k}(x))) \\
+% & \times (\overline{l_1} : (x : \ArgA(K'(s), L'_0(s))) \to  (y : L'_1(s, x)) \to Q(k_1(x), l_1(x, y) ,\overline{k_1}(x))) \\
+% &  \times \ldots 
+%  \times (\overline{l_n} : (x : \ArgA^n(K'(s), \vec{L'(s)}_{(n)})) \to (y : L'_{n}(s, x)) \to
+%   Q(k_n(x), l_n(x, y), \overline{k_n}(x)))) \\
+% & |\ \overline{c}(y, \overline{y}) = \ \coprodmorph{\overline{k}, \overline{k_1}, \ldots}{\overline{k_n}}(a_{\text{index}}(s)) \}
+% \end{align*}
+% where $k_i = c \circ \ArgA^i(k, \vec{l}_{(i)})$ and 
+% \[
+% \overline{k_i} : (x : \ArgA^i(K'(s) ,, \vec{L'(s)}_{(i)})) \to P(k_i(x))
+% \]
+% is defined by
+% \begin{align*}
+% \overline{k_i}(x) = \overline{c}(\ArgA^i(k, \vec{l}_{(i)})(x),
+% \ArgA(\CwFmorph{&(\coprodmorph{k, k_1, \ldots}{k_{i-1}},
+%                  \coprodmorph{l_0, l_1, \ldots}{l_{i-1}})}
+%                          {\\&(\coprodmorph{\overline{k}, \overline{k_1}, \ldots}{\overline{k_{i-1}}},
+%                  \coprodmorph{\overline{l_0}, \overline{l_1}, \ldots}{\overline{l_{i-1}}})})(x)).
+% \end{align*}
+% \qed
+% \end{proposition}
+
+\end{document}

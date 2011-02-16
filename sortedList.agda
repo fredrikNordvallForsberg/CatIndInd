@@ -1,0 +1,142 @@
+module sortedList where
+
+open import Data.Nat 
+open import Relation.Nullary
+open import Relation.Binary as RB
+open import Data.Empty
+open import Data.Unit using (⊤)
+
+-------------------------------------------------------------------------
+mutual
+  data SList : Set where
+    [] : SList
+    _::_〈_ : (x : ℕ) -> (ys : SList) -> x ≤L ys → SList
+
+  data _≤L_ (n : ℕ) : SList -> Set where
+    triv : n ≤L []
+    cons : {x : ℕ} -> {ys : SList} -> {p : x ≤L ys} -> 
+           (n ≤ x) -> n ≤L ys -> n ≤L (x :: ys 〈 p)
+-------------------------------------------------------------------------
+
+-------------------------------------------------------------------------
+ex1 : SList
+ex1 = 0 :: 1 :: 2 :: 3 :: [] 〈 triv 〈 cons (s≤s (s≤s z≤n)) triv 〈 cons (s≤s z≤n) (cons (s≤s z≤n) triv) 〈 cons z≤n (cons z≤n (cons z≤n triv)) 
+{-
+non-ex2 : SList 
+non-ex2 = 2 :: test 〈 cons {!!} (cons {!!} (cons (s≤s (s≤s z≤n)) (cons (s≤s (s≤s z≤n)) triv)))
+-}
+-------------------------------------------------------------------------
+
+-------------------------------------------------------------------------
+mutual
+  elim : (P : SList -> Set)(P' : (n : ℕ) -> (ys : SList) -> n ≤L ys -> P ys -> Set) ->
+         (g : P [])
+         (h : (x : ℕ) -> (ys : SList) -> (p : x ≤L ys) -> (pp : P ys) -> P' x ys p pp 
+             -> P (x :: ys 〈 p)) ->
+         (g' : (n : ℕ) -> P' n [] triv g)
+         (h' : (m : ℕ) -> {n : ℕ} -> {ys : SList} -> {p : n ≤L ys} -> 
+               (m<n : m ≤ n) -> (p' : m ≤L ys) ->
+               (pp : P ys) -> (qq : P' n ys p pp) -> (qqq : P' m ys p' pp)
+                 -> P' m (n :: ys 〈 p) (cons {m} {n} {ys} {{!!}} m<n p') (h n ys p pp qq))
+         (ys : SList) -> P ys
+  elim P P' g h g' h' [] = g
+  elim P P' g h g' h' (x :: ys 〈 p) = h x ys p (elim P P' g h g' h' ys) (elim' P P' g h g' h' x ys p)
+
+  elim' : (P : SList -> Set)(P' : (n : ℕ) -> (ys : SList) -> n ≤L ys -> P ys -> Set) ->
+         (g : P [])
+         (h : (x : ℕ) -> (ys : SList) -> (p : x ≤L ys) -> (pp : P ys) -> P' x ys p pp 
+             -> P (x :: ys 〈 p)) ->
+         (g' : (n : ℕ) -> P' n [] triv g)
+         (h' : (m : ℕ) -> {n : ℕ} -> {ys : SList} -> {p : n ≤L ys} -> 
+               (m<n : m ≤ n) -> (q' : m ≤L ys) ->
+               (pp : P ys) -> (qq : P' n ys p pp) -> (qqq : P' m ys q' pp)
+                 -> P' m (n :: ys 〈 p) (cons m<n q') (h n ys p pp qq))
+         (n : ℕ) -> (ys : SList) -> (p : n ≤L ys)-> P' n ys p (elim P P' g h g' h' ys)
+  elim' P P' g h g' h' n .[] triv = g' n
+  elim' P P' g h g' h' n .(x :: ys 〈 p) (cons {x} {ys} {p} n<x n<ys)
+    = h' n n<x n<ys (elim P P' g h g' h' ys) (elim' P P' g h g' h' x ys p) (elim' P P' g h g' h' n ys n<ys)
+-------------------------------------------------------------------------
+
+-------------------------------------------------------------------------
+trans : ∀ {k m n} -> k ≤ m -> m ≤ n -> k ≤ n
+trans = RB.IsDecTotalOrder.trans (RB.DecTotalOrder.isDecTotalOrder Data.Nat.decTotalOrder)
+
+≤L-trans : ∀ {x y} -> (zs : SList) -> x ≤ y -> y ≤L zs -> x ≤L zs
+≤L-trans [] x<y all = triv
+≤L-trans (y' :: ys 〈 p) x<y (cons y<y' y<ys) = cons (trans x<y y<y') (≤L-trans ys x<y y<ys)
+
+≤L-trans' : ∀ {x y} -> (zs : SList) -> x ≤ y -> y ≤L zs -> x ≤L zs
+≤L-trans' {x} {y} ys x<y y<ys = elim' (λ _ → ⊤) (λ n zs p _ → x ≤ n -> x ≤L zs) _ (λ _ _ _ _ _ → _) (λ _ _ → triv)
+                                      (λ y {y'} {ys} {p} y<y' x<ys x<y'::ys _ qqq x<y → cons (trans x<y y<y') (qqq x<y)) y ys y<ys x<y
+
+¬x<y→y<x : {x y : ℕ} -> (x ≤ y -> ⊥) -> y ≤ x
+¬x<y→y<x {zero} {suc n} p = ⊥-elim (p z≤n)
+¬x<y→y<x {y = zero} p = z≤n
+¬x<y→y<x {suc n} {suc m} p = s≤s (¬x<y→y<x (λ x → p (s≤s x)))
+-------------------------------------------------------------------------
+
+-------------------------------------------------------------------------
+mutual
+  insert : (x : ℕ) -> SList -> SList
+  insert x [] = x :: [] 〈 triv
+  insert x (y :: ys 〈 p) with x ≤? y
+  ... | yes q =  x :: y :: ys 〈 p 〈 (cons q (≤L-trans ys q p))
+  ... | no ¬q = y :: (insert x ys) 〈 lemma (¬x<y→y<x ¬q) p
+
+  lemma : ∀ {x y ys} -> y ≤ x -> y ≤L ys -> y ≤L (insert x ys)
+  lemma {x} {y} {[]} y≤x y≤ys = cons y≤x y≤ys
+  lemma {x} {y} {y' :: ys 〈 p} y≤x (cons y≤y' y≤ys) with x ≤? y'
+  ... | yes q = cons y≤x (cons y≤y' y≤ys)
+  ... | no ¬q = cons y≤y' (lemma {x} {y} {ys} y≤x y≤ys)
+-------------------------------------------------------------------------
+
+-------------------------------------------------------------------------
+P : SList -> Set
+P ys = (n : ℕ) -> SList
+
+P' : (y : ℕ) -> (ys : SList) -> y ≤L ys -> P ys -> Set
+P' y ys p insert[_,ys] = (x : ℕ) -> y ≤ x ->  y ≤L insert[_,ys] x
+
+g : P []
+g x = x :: [] 〈 triv
+
+h : (x : ℕ) -> (ys : SList) -> (p : x ≤L ys) -> (pp : P ys) -> P' x ys p pp 
+             -> P (x :: ys 〈 p)
+h y ys p insert[_,ys] lemma[_,ys,p] x with x ≤? y 
+... | yes q = x :: y :: ys 〈 p 〈 cons q (≤L-trans ys q p)
+... | no ¬q = y :: (insert[_,ys] x) 〈 lemma[_,ys,p] x (¬x<y→y<x ¬q)
+
+g' : (n : ℕ) -> P' n [] triv g
+g' y x y<x = cons y<x triv
+
+h' : (n : ℕ) -> {x : ℕ} -> {ys : SList} -> {p : x ≤L ys} -> 
+     (n<x : n ≤ x) -> (q' : n ≤L ys) -> 
+     (pp : P ys) -> (qq : P' x ys p pp) -> (qqq : P' n ys q' pp)
+        -> P' n (x :: ys 〈 p) (cons n<x q') (h x ys p pp qq)
+h' y {y'} {ys} {p} y<y' y<ys insert[_,ys] lemma[_,ys,p] lemma[_,ys,y<ys] x y<x with x ≤? y'
+... | yes q = cons y<x (cons y<y' y<ys)
+... | no ¬q = cons y<y' (lemma[_,ys,y<ys] x y<x)
+
+insert' : (x : ℕ) -> SList -> SList
+insert' x ys = elim P P' g h g' h' ys x
+
+lemma' : ∀ {x y ys} -> y ≤ x -> y ≤L ys -> y ≤L (insert' x ys)
+lemma' {x} {y} {ys} y<x y<ys = elim' P P' g h g' h' y ys y<ys x y<x
+-------------------------------------------------------------------------
+
+-------------------------------------------------------------------------
+data List : Set where
+  ε : List
+  _::_ : ℕ -> List -> List
+
+forget : SList -> List
+forget [] = ε
+forget (x :: ys 〈 y) = x :: (forget ys)
+
+forget' : SList -> List
+forget' = elim (λ _ → List) (λ _ _ _ _ → ⊤) ε (λ x ys p forget[ys] _ → x :: forget[ys]) (λ _ → _) (λ _ _ _ _ _ _ → _) 
+
+ex3 : List
+ex3 = forget' (insert' 5 (insert' 6 (insert' 2 (insert' 7 (insert' 3 [])))))
+-------------------------------------------------------------------------
+
