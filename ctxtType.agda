@@ -20,7 +20,6 @@ mutual
 open import Data.Sum
 open import Data.Product
 open import Data.Unit
-open import Relation.Binary.PropositionalEquality
 
 ArgA : (A : Set)(B : A -> Set) -> Set
 ArgA A B = ⊤ ⊎ (Σ[ Γ ∶ A ] B Γ)
@@ -96,18 +95,18 @@ mutual
 module withFold where
 
   A : Set
-  A = Ctxt -> Ctxt
+  A = Ctx -> Ctx
 
   B : A -> Set
-  B Γ++ = (x : Ctxt) -> Type (Γ++ x)
+  B Γ++ = (x : Ctx) -> Ty (Γ++ x)
 
   inA : ArgA A B -> A
-  inA (inj₁ _) x = x
-  inA (inj₂ (a , b)) x = a x ◃ b x
+  inA (inj₁ _) Δ = Δ
+  inA (inj₂ (a , b)) Δ = a Δ ◃' b Δ
 
   inB : (x : ArgA A B) -> ArgB A B inA x -> B (inA x)
-  inB Γ (inj₁ tt) y = ι (inA Γ y)
-  inB Γ (inj₂ (a , b )) y = Π (inA Γ y) (a y) (b y)
+  inB Γ (inj₁ tt) y = ι' (inA Γ y)
+  inB Γ (inj₂ (g , h )) y = Π' (inA Γ y) (g y) (h y)
 
 
 module withElim where
