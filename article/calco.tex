@@ -29,8 +29,8 @@
 
 \author{Thorsten Altenkirch\inst{1}\thanks{Supported by EPSRC grant EP/G033374/1.}\fnmsep
                                    \thanks{Supported by EPSRC grant EP/G034109/1.}
-\and Fredrik Nordvall Forsberg\inst{2}$^{\star}$
 \and Peter Morris\inst{1}$^{\star\star}$
+\and Fredrik Nordvall Forsberg\inst{2}$^{\star}$
 \and Anton Setzer\inst{2}$^{\star}$}
 
 \institute{School of Computer Science, University of Nottingham
@@ -95,24 +95,26 @@ to the constructors for $A$.
 
 In earlier work \cite{nordvallforsbergSetzer2010indind}, a subset of
 the authors gave an eliminator-based axiomatisation of a type theory
-with inductive-inductive definitions and showed it to be
-consistent. In this article, we describe a generalised initial algebra
-semantics for induction-induction, and prove that it is equivalent to
-the original axiomatisation.
+with inductive-inductive definitions and showed it to be consistent
+(i.e.\ not every type is inhabitated). In this article, we describe a
+generalised initial algebra semantics for induction-induction, and
+prove that it is equivalent to the original axiomatisation.
 
 One could imagine that that inductive-inductive definitions could be
 described by functors mapping families of sets to families of sets
 (similar to the situation for induction-recursion
 \cite{dybjersetzer2003inalg}), but this fails to take into account
 that the constructors for $B$ should be able to refer to the
-constructors for $A$. Thus, the constructor for $B$ is described by a
-non-endofunctor
+constructors for $A$. Thus, we will see that the constructor for $B$
+can be described by an operation
 \[
-\ArgB : (A : \Set)(B : A \to \Set)(c : \ArgA(A, B) \to A) \to \ArgA(A, B) \to \Set
+\ArgBpp : (A : \Set)(B : A \to \Set)(c : \ArgA(A, B) \to A) \to \ArgA(A, B) \to \Set
 \]
-and we are forced to move to the more general setting of dialgebras
-\cite{hagino1987phdthesis,pollZwanenburg2001dialgebra}
-in order to accommodate our functors. 
+where $c : \ArgA(A, B) \to A$ refers to the already defined
+constructor for $A$. However, $(\ArgA, \ArgBpp)$ is then no longer an
+endofunctor and we move to the more general setting of dialgebras
+\cite{hagino1987phdthesis,pollZwanenburg2001dialgebra} to describe
+algebras of such functors.
 
 The equivalence between initiality and having an eliminator still
 carries over to this new setting. This is because our development
@@ -209,10 +211,10 @@ following ingredients:
   $\Sigma x\!:\!A.\, B(x) : \Set$. Elements of $\Sigma x\!:\!A.\,
   B(x)$ are dependent pairs $\langle a, b\rangle$ where $a : A$ and $b : B(a)$.
   We write $\pi_0 : \Sigma x\!:\!A.\, B(x) \to A$ and $\pi_1 : (y :
-  \Sigma x\!:\!A.\, B(x)) \to B(\pi_0(y))$ for the projections.  If $B
+  \Sigma x\!:\!A.\, B(x)) \to B(\pi_0(y))$ for the projections. We write $\{\ a : A\ |\
+  B(a)\}$ for $\Sigma x\!:\!A.\, B(x)$ if $B
   : A \to \Set$ is propositional, i.e.\ there is at most one
-  inhabitant in $B(a)$ for every $a : A$, we write $\{\ a : A\ |\
-  B(a)\}$ for $\Sigma x\!:\!A.\, B(x)$.
+  inhabitant in $B(a)$ for every $a : A$.
 \item[$+$] Given $A, B : \Set$, we denote their coproduct $A + B$ with
   coprojections $\inl : A \to A + B$ and $\inr : B \to A + B$. We
   use $\coprodmorph{f}{g}$ for cotupling.
@@ -282,25 +284,31 @@ $\UFamSet \circ \ArgB = \ArgA \circ \UDialgArgAU$.
   \end{align*}
   such that $\UFamSet \circ \ArgB = \ArgA \circ \UDialgArgAU$.
 \end{definition}
+%
+Since the first functor is determined by the second, we often write
+such a pair as $\ArgB = (\ArgA, \ArgBpp)$ where
+\[
+ \ArgBpp : (A : \Set)(B : A \to \Set)(c : \ArgA(A, B) \to A) \to \ArgA(A, B) \to \Set \enspace .
+ \]
 
-\begin{lemma}
-Equivalently, $\ArgB$ can be replaced by an operation
-\[
-\ArgB'' : (A : \Set)(B : A \to \Set)(c : \ArgA(A, B) \to A) \to \ArgA(A, B) \to \Set
-\]
-that is functorial in the sense that if if we have a
-$\Dialg{\ArgA}{\UFamSet}$-morphism $(f, g) : (A, B, c) \to (A', B',
-c')$ then this can be lifted to an action on morphisms
- \[\ArgB''(f, g) : (x : \ArgA(A, B)) \to \ArgB''(A, B,
-   c, x) \to \ArgB''(A', B', c', \ArgA(f, g)(x))
-\]
-such that $\ArgB''(\id)(x, y) = y$ and
-\[
-\ArgB''((f, g) \circ (f', g'))(x, y) =\ArgB''(f, g)(\ArgA(f', g')(x), \ArgB''(f',g')(x, y)) \enspace .
-\]
-\end{lemma}
+% \begin{lemma}
+% Equivalently, $\ArgB$ can be replaced by an operation
+% \[
+% \ArgBpp : (A : \Set)(B : A \to \Set)(c : \ArgA(A, B) \to A) \to \ArgA(A, B) \to \Set
+% \]
+% that is functorial in the sense that if if we have a
+% $\Dialg{\ArgA}{\UFamSet}$-morphism $(f, g) : (A, B, c) \to (A', B',
+% c')$ then this can be lifted to an action on morphisms
+%  \[\ArgBpp(f, g) : (x : \ArgA(A, B)) \to \ArgBpp(A, B,
+%    c, x) \to \ArgBpp(A', B', c', \ArgA(f, g)(x))
+% \]
+% such that $\ArgBpp(\id)(x, y) = y$ and
+% \[
+% \ArgBpp((f, g) \circ (f', g'))(x, y) =\ArgBpp(f, g)(\ArgA(f', g')(x), \ArgBpp(f',g')(x, y)) \enspace .
+% \]
+% \end{lemma}
 %\begin{proof}
-%  We can define $\ArgB(A, B, c) = (\ArgA(A, B), \ArgB''(A, B, c))$ in both directions. \qed
+%  We can define $\ArgB(A, B, c) = (\ArgA(A, B), \ArgBpp(A, B, c))$ in both directions. \qed
 %\end{proof}
 
 
@@ -310,13 +318,13 @@ The inductive-inductive definition of $\Ctxt : \Set$ and $\Type :
 \Ctxt \to \Set$ from the introduction is given by
 \begin{align*}
   \ArgCtxt(A, B) &= \one + \Sigma\, \Gamma\!:\!A .\, B(\Gamma)\\
-  \ArgType''(A, B, c, x) &= \one + (\Sigma\,  \sigma\!:\! B(c(x)).\, \tau\!:\!B(c(\inr(c(x), \sigma))) ) \enspace .
+  \ArgType(A, B, c, x) &= \one + (\Sigma\,  \sigma\!:\! B(c(x)).\, \tau\!:\!B(c(\inr(c(x), \sigma))) ) \enspace .
 \end{align*}
 For $\ArgCtxt$, the left summand $\one$ corresponds to the constructor
 $\emptyCtxt$ taking no arguments, and the right summand $\Sigma\,
 \Gamma\!:\!A .\, B(\Gamma)$ corresponds to $\consCtxt{}{}$'s two
 arguments $\Gamma : \Ctxt$ and $\sigma : \Type(\Gamma)$. Similar
-considerations apply to $\ArgType''$.
+considerations apply to $\ArgType$.
 
 \end{example}
 
@@ -333,8 +341,8 @@ definition of $\SortedList : \Set$ and $\lessList : (\Nat \times
 \SortedList) \to \Set$ is then given by
 \begin{align*}
   \ArgSList(A, B) &= \one + (\Sigma\, n\!:\!\Nat .\,\Sigma\,\ell\!:\!A.\, B(n,\ell))\\
-  \ArglessList''(A, B, c, m, \inl(\oneelt)) &= \one \\
-  \ArglessList''(A, B, c, m, \inr(\langle n, \ell, p\rangle)) &= \Sigma\,m \leq n.\, B(m, \ell) \enspace .
+  \ArglessList(A, B, c, m, \inl(\oneelt)) &= \one \\
+  \ArglessList(A, B, c, m, \inr(\langle n, \ell, p\rangle)) &= \Sigma\,m \leq n.\, B(m, \ell) \enspace .
 \end{align*}
 For ease of presentation, we will only consider ordinary families of
 sets.
@@ -344,8 +352,8 @@ sets.
 
 \subsection{A Category for Inductive-Inductive Definitions}
 
-Given $\ArgA$ and $\ArgB$ representing an inductive-inductive
-definition, we will now construct a category $\Eind{\ArgA}{\ArgB}$
+Given $\ArgB = (\ArgA, \ArgBpp)$ representing an inductive-inductive
+definition, we will now construct a category $\Eind{\ArgB}$
 whose initial object (if it exists) is the intended interpretation of
 the inductive-inductive definition. Figure \ref{fig:map-of-functors}
 summarises the functors and categories involved ($\UFamSet$,
@@ -358,7 +366,7 @@ $\UDialgArgAU$ and $\UDialgArgBV$ are all forgetful functors).
       \Set & \ar@/_1pc/_-{\ArgA}[l] \ar@/^1pc/^-{\UFamSet}[l]  \FamSet
       & \Dialg{\ArgA}{\UFamSet} \ar@/_1pc/_-{\ArgB}[l] \ar@/^1pc/^-{\UDialgArgAU}[l]
       & \Dialg{\ArgB}{\UDialgArgAU} \ar@/_1pc/_-{(\UDialgArgAU, \UFamSet)}[l] \ar@/^1pc/^-{\UDialgArgBV}[l]
-      &\ \Eind{\ArgA}{\ArgB} \ar@{_{(}->}@<0.5ex>[l]
+      &\ \Eind{\ArgB} \ar@{_{(}->}@<0.5ex>[l]
     }$
   }
   \caption{The functors and categories involved.}
@@ -373,7 +381,7 @@ $c : \ArgA(A, B) \to A$ and $(d_0, d_1) : \ArgB(A, B, c) \to (A, B)$.
 The function $d_0 : \ArgA(A, B) \to A$ looks like the constructor for
 $A$ that we want, but
 \[
-d_1 : (x : \ArgA(A, B)) \to \ArgB''(A, B, c,x) \to B(d_0(x))
+d_1 : (x : \ArgA(A, B)) \to \ArgBpp(A, B, c,x) \to B(d_0(x))
 \]
 does not look quite right -- we need $c$ and $d_0$ to be the same!
 
@@ -403,18 +411,18 @@ $\Dialg{\ArgA}{\UFamSet}$.
 % d_0) \to (A', B', d'_0)$ in $\Dialg{\ArgA}{\UFamSet}$.
 
 \begin{definition}
-  For $\ArgA$ and $\ArgB$ representing an inductive-inductive
-  definition, let $\Eind{\ArgA}{\ArgB}$ be the underlying category of
+  For $\ArgB = (\ArgA, \ArgBpp)$ representing an inductive-inductive
+  definition, let $\Eind{\ArgB}$ be the underlying category of
   the equaliser of $(V, U)$ and the forgetful functor ${W :
     \Dialg{\ArgB}{\UDialgArgAU} \to \Dialg{\ArgA}{\UFamSet}}$.
 \end{definition}
-Explicitly, the category $\Eind{\ArgA}{\ArgB}$ has
+Explicitly, the category $\Eind{\ArgB}$ has
 \begin{itemize}
-\item Objects $(A, B, c, d)$, where $A : \Set$, $B : A \to \Set$, $c : \ArgA(A, B) \to A$, $d : (x : \ArgA(A, B)) \to \ArgB''(A, B, c, x) \to B(c(x))$.
+\item Objects $(A, B, c, d)$, where $A : \Set$, $B : A \to \Set$, $c : \ArgA(A, B) \to A$, $d : (x : \ArgA(A, B)) \to \ArgBpp(A, B, c, x) \to B(c(x))$.
 \item Morphisms from $(A, B, c, d)$ to $(A', B', c', d')$ are morphisms \\ $(f, g) :
   (A, B, c) \Rightarrow_{\Dialg{\ArgA}{\UFamSet}} (A', B', c')$ such that in addition
   \[
-  g(c(x), d(x, y)) = d'(\ArgA(f,g)(x), \ArgB''(f,g)(x, y)) \enspace .
+  g(c(x), d(x, y)) = d'(\ArgA(f,g)(x), \ArgBpp(f,g)(x, y)) \enspace .
   \]
 % [This equation is only well-typed since $(f,g)$ is an
 %  $\Dialg{\ArgA}{\UFamSet}$ morphism -- the LHS has type $B(f(c(x))$,
@@ -427,11 +435,11 @@ Explicitly, the category $\Eind{\ArgA}{\ArgB}$ has
   Consider the functors $\ArgCtxt$, $\ArgType$ from Example \ref{ex:ctxtTy-functor}:
 \begin{align*}
   \ArgCtxt(A, B) &= \one + \Sigma\, \Gamma\!:\!A .\, B(\Gamma)\\
-  \ArgType''(A, B, c, x) &= \one + (\Sigma\,  \sigma\!:\! B(c(x)).\, \tau\!:\!B(c(\inr(c(x), \sigma))) ) \enspace .
+  \ArgType(A, B, c, x) &= \one + (\Sigma\,  \sigma\!:\! B(c(x)).\, \tau\!:\!B(c(\inr(c(x), \sigma))) ) \enspace .
 \end{align*}
-An object in $\Eind{\ArgCtxt}{\ArgType}$ consists of $A : \Set$, $B :
+An object in $\Eind{(\ArgCtxt, \ArgType)}$ consists of $A : \Set$, $B :
 A \to \Set$ and morphisms $c =
-\coprodmorph{\emptyCtxt_{A,B}}{\consCtxt_{A,B}}$ and $d$ which can be
+\coprodmorph{\emptyCtxt_{A,B}}{\consCtxtbare_{A,B}}$ and $d = \lambda \Gamma . \coprodmorph{\baseTybare_{A,B}(\Gamma)}{\piTybare_{A,B}(\Gamma)}$ which can be
 split up into\footnote{Notice that $\baseTybare_{A,B} : (\Gamma :
   \ArgCtxt(A, B)) \to \ldots$ and not $\baseTybare_{A,B} : (\Gamma :
   A) \to \ldots$ as one would maybe expect. There is no difference for
@@ -439,15 +447,15 @@ split up into\footnote{Notice that $\baseTybare_{A,B} : (\Gamma :
   variant of) Lambek's Lemma.}
 \begin{align*}
   \emptyCtxt_{A,B} &: \one \to A \enspace , \qquad\qquad \consCtxtbare_{A,B} : ((\Gamma : A) \times B(\Gamma)) \to A  \enspace , \\
-\baseTybare_{A,B} &: (\Gamma : \ArgCtxt(A, B)) \to B(c(\Gamma)) \enspace , \\
+\baseTybare_{A,B} &: (\Gamma : \ArgCtxt(A, B)) \to \one \to B(c(\Gamma)) \enspace , \\
 \piTybare_{A,B} &: (\Gamma : \ArgCtxt(A, B)) \to ((\sigma : B(c(\Gamma))) \times (\tau : B(\consCtxtbare_{A,B}(c(\Gamma), \sigma)))) \to B(c(\Gamma)) \enspace.
 \end{align*}
 \end{example}
 
 \begin{remark}
   The intended interpretation of the inductive-inductive definition
-  given by $(\ArgA, \ArgB)$ is the initial object in
-  $\Eind{\ArgA}{\ArgB}$. Depending on the meta-theory, this might of
+  given by $\ArgB = (\ArgA, \ArgBpp)$ is the initial object in
+  $\Eind{\ArgB}$. Depending on the meta-theory, this might of
   course not exist. However, we will show that it does if and only if
   an eliminator for the inductive-inductive definition exists.
 \end{remark}
@@ -458,7 +466,7 @@ split up into\footnote{Notice that $\baseTybare_{A,B} : (\Gamma :
   of $A : \Set$, $B : A \to \Set$, $C : {(x : A)} \to B(x) \to \Set$,
   etc.: for a definition of $n$ sets, replace $\FamSet$ with the category $\FAM_n$ of families $(A_1, A_2, A_3, \ldots, A_n)$ and
   consider $\ArgA : \FAM_n \to \Set$, $\ArgB : \Dialg{\ArgA}{U} \to
-  \FamSet$, $\ArgC : \Eind{\ArgA}{\ArgB} \to \FAM_3$, \ldots taking an
+  \FamSet$, $\ArgC : \Eind{\ArgB} \to \FAM_3$, \ldots taking an
   equalizer where necessary to make the constructors in different
   positions equal.
 \end{remark}
@@ -499,13 +507,13 @@ $\Ctxt$, $\Type$ are the underlying sets for the inductive-inductive
 definition given by the functors
 \begin{align*}
   \ArgCtxt(A, B) &= \one + \Sigma\, \Gamma\!:\!A .\, B(\Gamma)\\
-  \ArgType''(A, B, c, x) &= \one + (\Sigma\,  \sigma\!:\! B(c(x)).\, \tau\!:\!B(c(\inr(c(x), \sigma))) ) \enspace .
+  \ArgType(A, B, c, x) &= \one + (\Sigma\,  \sigma\!:\! B(c(x)).\, \tau\!:\!B(c(\inr(c(x), \sigma))) ) \enspace .
 \end{align*} 
 From the types of $\concatCtxt : \Ctxt \to \Ctxt \to \Ctxt$ and $\wk :
 (\Gamma : \Ctxt) \to (A : \Type(\Gamma)) \to (\Delta : \Ctxt) \to
 \Type(\Delta \concatCtxt \Gamma)$, we see that if we can equip $(A,
 B)$ where $A = \Ctxt \to \Ctxt$ and $B(f) = (\Delta : \Ctxt) \to
-\Type(f(\Delta))$ with an $(\ArgCtxt, \ArgType'')$ structure, initiality
+\Type(f(\Delta))$ with an $(\ArgCtxt, \ArgType)$ structure, initiality
 will give us functions of the right type. Of course, we must choose
 the right structure so that our equations will be satisfied:
 \[
@@ -514,18 +522,18 @@ the right structure so that our equations will be satisfied:
   $\inn_A(\inl(\oneelt))$ &$=$& $\lambda \Delta .\, \Delta$ \\
   $\inn_A(\inr(\langle f , g\rangle))$ &$=$& $\lambda \Delta .\, (\consCtxt{f(\Delta)}{g(\Delta)})$ \enspace ,\\
 \\
-  \multicolumn{3}{l}{$\inn_B : (x : \ArgCtxt(A, B)) \to \ArgType''(A, B, \inn_A, x) \to B(\inn_A(x))$} \\
+  \multicolumn{3}{l}{$\inn_B : (x : \ArgCtxt(A, B)) \to \ArgType(A, B, \inn_A, x) \to B(\inn_A(x))$} \\
 %  $\inn_B(x, \inl(\inn_A(x)) , refl))$ &$=$& $\lambda y . \baseTy{\inn_A(x,y)}$ \\
   $\inn_B(\Delta, \inl(\oneelt))$ &$=$& $\lambda \Gamma .\, \baseTy{\inn_A(\Delta)(\Gamma)}$ \\
   $\inn_B(\Delta, \inr(\langle g , h\rangle))$ &$=$& $\lambda \Gamma .\, \piTy{\inn_A(\Delta)(\Gamma)}{g(\Gamma)}{h(\Gamma)}$ \enspace .
 \end{tabular}
 \]
 Since $(A, B, \inn_A, \inn_B)$ is an object in
-$\Eind{\ArgA}{\ArgB}$, initiality gives us a morphism $(\concatCtxt, \wk) :
+$\Eind{\ArgB}$, initiality gives us a morphism $(\concatCtxt, \wk) :
 (\Ctxt, \Type) \to (A, B)$ such that $(\concatCtxt, \wk) \circ
 (\coprodmorph{\emptyCtxt}{\consCtxtbare},
 \coprodmorph{\baseTybare}{\piTybare}) = (\inn_A, \inn_B) \circ (\ArgA,
-\ArgB'')(\concatCtxt, \wk)$.  In particular, this means that
+\ArgBpp)(\concatCtxt, \wk)$.  In particular, this means that
 \begin{align*}
 \concatCtxt(\emptyCtxt) 
  &= \inn_A(\ArgA(\concatCtxt, \wk)(\inl(\oneelt)))
@@ -545,11 +553,11 @@ required.\footnote{Actually, the order of the arguments is reversed,
 the weakening operation hold.
 
 
-\subsection{Functors From the Earlier Axiomatisation} %TODO: Better title
+\subsection{Relationship to induction-induction as axiomatised in \cite{nordvallforsbergSetzer2010indind}} %TODO: Better title
 \label{sec:functors-CSL-article}
 
 In short, the earlier
-axiomatisation\cite{nordvallforsbergSetzer2010indind} postulated the
+axiomatisation \cite{nordvallforsbergSetzer2010indind} postulated the
 existence of a universe $(\text{SP}'_{\text{A}},
 \text{SP}'_{\text{B}})$ of codes for inductive-inductive sets,
 together with decoding functions $\CSLArgA$, $\CSLArgB$ and
@@ -558,8 +566,8 @@ constructor $\text{intro}_{\text{A}}$ for $A$, $\CSLArgB$ the domain
 for the constructor $\text{intro}_{\text{B}}$ for $B$ and
 $\CSLIndex(x)$ the index of the type of $\text{intro}_{\text{B}}(x)$. More formally, they have types
 \begin{align*}
-\CSLArgA &: (\gamma_A : \text{SP}_{\text{A}})(A : \Set)(B : A \to \Set) \to \Set \enspace ,\\
-\CSLArgB &: (\gamma_A : \text{SP}_{\text{A}})(\gamma_B : \text{SP}_{\text{B}}(\gamma_A)) \\
+\CSLArgA &: (\gamma_A : \text{SP}'_{\text{A}})(A : \Set)(B : A \to \Set) \to \Set \enspace ,\\
+\CSLArgB &: (\gamma_A : \text{SP}'_{\text{A}})(\gamma_B : \text{SP}'_{\text{B}}(\gamma_A)) \\
        & \quad \to (A : \Set)(B_0 : A \to \Set)(B_1 : \CSLArgA(\gamma_A, A, B_0) \to \Set) \\
        & \qquad \to \ldots \to (B_n : \CSLArgA^n(\gamma_A, A, \vec{B}_{(n)}) \to \Set) \to \Set \enspace , \\
 \CSLIndex&(\gamma_A, \gamma_B, A, B_0, \ldots, B_n) : \\ \noalign{\vskip -4mm}
@@ -584,21 +592,22 @@ $B_i = B \circ k_i$ and $\text{index}(x) = \coprodmorph{k_0,
 = \text{intro}_{\text{A}} \circ \CSLArgA^i(\coprodmorph{k_0,
   \ldots}{k_{i}}, \coprodmorph{\id', \ldots}{\id'})$.
 
-Given a code $\gamma = (\gamma_A, \gamma_B)$ and such decoding functions, one
-can construct two functors $\ArggammaA$, $\ArggammaB$ as in Definition \ref{def:indind-functors}
-by setting $\ArggammaA(A, B) {\coloneqq} \CSLArgA(\gamma_A, A, B)$ and
-$\ArggammaB(A, B, c) \coloneqq (\ArggammaA(A, B), \ArggammaB''(A, B, c))$ where
-\[
-\ArggammaB''(A, B, c, x) = \{\, y\!:\!\CSLArgB(\gamma_A, \gamma_B, A, B, B_1, \ldots, B_n)
-                                                \ |\  c(x) = \text{index}(y) \} \enspace .
-\]
-
-
+The relationship between the codes from this axiomatisation and the formalisation in this article can now be summed up in the following proposition:
+\begin{proposition}
+  For each code $\gamma = (\gamma_A, \gamma_B)$, the operations $\ArggammaA : \FamSet \to \Set$ and $\Arggamma = (\ArggammaA, \ArggammaB) : \Dialg{\ArggammaA}{U} \to \FamSet$ given by
+\begin{align*}
+\ArggammaA(A, B) &\coloneqq \CSLArgA(\gamma_A, A, B) \enspace ,\\
+\ArggammaB(A, B, c, x) &\coloneqq \{\, y\!:\!\CSLArgB(\gamma_A, \gamma_B, A, B_0, \ldots, B_n)
+                                                \ |\  c(x) = \text{index}(y) \}
+\end{align*}
+are functorial. \qed %as in Definition \ref{def:indind-functors}. \qed
+\end{proposition}
+%
 In Section \ref{sec:elim-init-equiv-CSL} (Theorem
 \ref{thm:equiv-init-elim}), we show that that the original
 introduction and elimination rules hold
-if and only if $\Eind{\ArgA}{\ArgB}$ has an initial object.
-
+if and only if $\Eind{\Arggamma}$ has an initial object.
+  
 
 \section{The Elimination Principle}
 \label{sec:eliminator}
@@ -613,16 +622,21 @@ the existence of an initial object.
 The traditional type-theoretical way of defining recursive functions
 like the context concatenation $\concatCtxt$ in Section
 \ref{sec:exploit-init} is to define them in terms of eliminators.
-Roughly, the eliminator for an $F$-algebra $(A, c)$ is a term of type
-\begin{align*}
-\elim_F :\ & (P : A \to \Set) \to \\
-         & (\stepind{c} : (x : F(A)) \to \BOX_F(P, x) \to P(c(x))) \to \\
-         & (x : A) \to P(x) \enspace .
-\end{align*}
+Roughly, the eliminator for an $F$-algebra $(A, c)$ is a term %of type
+%\begin{align*}
+%\elim_F :\ & (P : A \to \Set) \to \\
+%         & (\stepind{c} : (x : F(A)) \to \BOX_F(P, x) \to P(c(x))) \to \\
+%         & (x : A) \to P(x) \enspace .
+%\end{align*}
+\[
+\infer{\elim_F(P, \stepind{c}) : (x : A) \to P(x)}
+      {P : A \to \Set & \qquad
+       \stepind{c} : (x : F(A)) \to \BOX_F(P, x) \to P(c(x))}
+\]
 with computation rule $\elim_F(P, \stepind{c}, c(x)) = \stepind{c}(x, \dmap_F(P,
 \elim(P, \stepind{c}), x))$. Here, $\BOX_F(P) : F(A) \to \Set$ is the type of
 inductive hypothesis for $P$; it consists of proofs that $P$ holds at
-all substructures of $x$, and $\dmap_F(P) : (x : F(A) \to P(x)) \to (x :
+all $F$-substructures of $x$, and $\dmap_F(P) : (x : F(A) \to P(x)) \to (x :
 F(A)) \to \BOX_F(P, x)$ takes care of recursive calls.
 
 \begin{example}
@@ -631,16 +645,20 @@ F(A)) \to \BOX_F(P, x)$ takes care of recursive calls.
   algebra is $(\Nat, \coprodmorph{0}{\suc})$.  We then have
 \[ %begin{align*}
   \BOX_{\one + X}(P, \inl(\oneelt)) \cong \one \qquad\quad
-  \BOX_{\one + X}(P, \inr(n) \cong P(n)
+  \BOX_{\one + X}(P, \inr(n)) \cong P(n)
 \] %end{align*}
 so that the eliminator for $(\Nat, \coprodmorph{0}{\suc})$ becomes
-\begin{align*}
-\elim_{\one + X} :\ & (P : \Nat \to \Set) \to \\
-         & (f_0 : \one \to P(0)) \to \\
-         & (f_{\suc} : (n : \Nat) \to P(n) \to P(\suc(n))) \to \\
-         & (x : \Nat) \to P(x) \enspace .
-\end{align*}
-
+% \begin{align*}
+% \elim_{\one + X} :\ & (P : \Nat \to \Set) \to \\
+%          & (f_0 : \one \to P(0)) \to \\
+%          & (f_{\suc} : (n : \Nat) \to P(n) \to P(\suc(n))) \to \\
+%          & (x : \Nat) \to P(x) \enspace .
+% \end{align*}
+\[
+\infer{\elim_{\one + X}(P, \stepind{0}, \stepind{\suc}) : (x : \Nat) \to P(x)}
+      {P : \Nat \to \Set & \qquad 
+       \deduce{\stepind{\suc} : (n : \Nat) \to P(n) \to P(\suc(n))}{\stepind{0} : \one \to P(0)}}
+\]
 \end{example}
 
 For polynomial functors $F$, $\BOX_F$ can be defined inductively over
@@ -660,7 +678,7 @@ $\BOX_{\one + X}(P, \inr(n)) \cong P(n)$ as in Example \ref{ex:natexample}.
 
 Let us now generalise the preceding discussion from inductive
 definitions (i.e.\ endo\-functors on $\Set$) to inductive-inductive
-definitions (i.e.\ functors $(\ArgA, \ArgB)$ as in Definition
+definitions (i.e.\ functors $\ArgB = (\ArgA, \ArgBpp)$ as in Definition
 \ref{def:indind-functors}). Since we replace the carrier set $A$ with
 a carrier family $(A, B)$, we should also replace the predicate $P : A
 \to \Set$ with a ``predicate family'' $(P, Q)$ where $P : A \to \Set$
@@ -669,36 +687,36 @@ the step function $\stepind{c} : (x : F(A)) \to \BOX_F(P, x) \to P(c(x))$
 into two functions
 \begin{align*}
   \stepind{c} &: (x : \ArgA(A, B)) \to \BOX_{\ArgA}(P, Q, x) \to P(c(x)) \enspace ,\\
-  \stepind{d} &: (x : \ArgA(A, B)) \to (y : \ArgB''(A, B, c, x)) \to
-                   (\stepind{x} : \BOX_{\ArgA}(P, Q, x)) \\
-              & \qquad\qquad\qquad \to \BOX_{\ArgB}(P, Q, c, \stepind{c}, x, y, \stepind{x}) \to Q(c(x), d(x, y), \stepind{c}(x, \stepind{x})) \enspace .
+  \stepind{d} &: (x : \ArgA(A, B)) \to (y : \ArgBpp(A, B, c, x)) \to
+                   (\stepindarg{x} : \BOX_{\ArgA}(P, Q, x)) \\
+              & \qquad\qquad\qquad \to \BOX_{\ArgBpp}(P, Q, c, \stepind{c}, x, y, \stepindarg{x}) \to Q(c(x), d(x, y), \stepind{c}(x, \stepindarg{x})) \enspace .
 \end{align*}
 %
 As can already be seen in the types of $\stepind{c}$ and $\stepind{d}$ above, we replace
-$\BOX_F$ with $\BOX_{\ArgA}$ and $\BOX_{\ArgB}$ of type
+$\BOX_F$ with $\BOX_{\ArgA}$ and $\BOX_{\ArgBpp}$ of type
 \begin{align*}
   \BOX_{\ArgA}(P, Q) :\ &\ArgA(A, B) \to \Set \enspace ,\\
 %
-  \BOX_{\ArgB}(P, Q) :\ %&(c : \ArgA(A, B) \to A) \to \\
+  \BOX_{\ArgBpp}(P, Q) :\ %&(c : \ArgA(A, B) \to A) \to \\
                      &(\stepind{c} : (x : \ArgA(A, B)) \to \BOX_{\ArgA}(P, Q, x) \to P(c(x))) \to \\
-                     &(x : \ArgA(A, B)) \to (y : \ArgB''(A, B, c, x)) \to \\
-                     & (\stepind{x} : \BOX_{\ArgA}(P, Q, x)) \to \Set
+                     &(x : \ArgA(A, B)) \to (y : \ArgBpp(A, B, c, x)) \to \\
+                     & (\stepindarg{x} : \BOX_{\ArgA}(P, Q, x)) \to \Set
 \end{align*} %todo: change order to x xbar y ? YES
 %
-and we replace $\dmap_F$ with $\dmap_{\ArgA}$, $\dmap_{\ArgB}$ of type
+and we replace $\dmap_F$ with $\dmap_{\ArgA}$, $\dmap_{\ArgBpp}$ of type
 \begin{align*}
   \dmap_{\ArgA}(P, Q) :\ & (f : (x : A) \to P(x)) \to \\
                  & (g : (x : A) \to (y : B(x)) \to Q(x, y, f(x))) \to \\
                  & (x : \ArgA(A, B)) \to \BOX_{\ArgA}(P, Q, x) \\
 %
-  \dmap_{\ArgB}(P, Q) :\ &(\stepind{c} : (x : \ArgA(A, B)) \to \BOX_{\ArgA}(P, Q, x) \to P(c(x))) \to \\
+  \dmap_{\ArgBpp}(P, Q) :\ &(\stepind{c} : (x : \ArgA(A, B)) \to \BOX_{\ArgA}(P, Q, x) \to P(c(x))) \to \\
                  & (f : (x : A) \to P(x)) \to \\
                  & (g : (x : A) \to (y : B(x)) \to Q(x, y, f(x))) \to \\
-                 & (x : \ArgA(A, B)) \to (y : \ArgB''(A, B, c, x)) \\ 
-                 & \quad \to \BOX_{\ArgB}(P, Q, \stepind{c}, x, y, \dmap_{\ArgA}(P, Q, f, g, x)) \enspace .
+                 & (x : \ArgA(A, B)) \to (y : \ArgBpp(A, B, c, x)) \\ 
+                 & \quad \to \BOX_{\ArgBpp}(P, Q, \stepind{c}, x, y, \dmap_{\ArgA}(P, Q, f, g, x)) \enspace .
 \end{align*}
 
-We can define $\BOX_{\ArgA}$, $\BOX_{\ArgB}$, $\dmap_{\ArgA}$ and $\dmap_{\ArgB}$ for arbitrary functors
+We can define $\BOX_{\ArgA}$, $\BOX_{\ArgBpp}$, $\dmap_{\ArgA}$ and $\dmap_{\ArgBpp}$ for arbitrary functors
 representing inductive-inductive definitions. First, define:
 
 \begin{definition}
@@ -753,49 +771,60 @@ Define $\BOX_{\ArgA}$ and $\dmap_{\ArgA}$ with types as above by
 defined by $\varphi_{\ArgA}(x) = \langle \ArgA(\pi_0, \pi'_0)(x), x\rangle$.
 
 \begin{definition}
-Given $P$, $Q$, $\stepind{c}$, $x$, $y$, $\stepind{x}$ as above, define
+Given $P$, $Q$, $\stepind{c}$, $x$, $y$, $\stepindarg{x}$ as above, define
   \begin{enumerate}[(i)]
   \item $\SigmaDialg (A, B, c)\ (P, Q, \stepind{c}) \coloneqq (\SigmaFAM\ (A,
     B)\ (P, Q), \sigmamorph{c}{\stepind{c}} \circ \varphi_{\ArgA})$,
-  \item $\BOX_{\ArgB}(P, Q, \stepind{c}, x, y, \stepind{x}) \coloneqq \\
-\{ z : \ArgB''((\SigmaDialg (A, B, c)\ (P, Q, \stepind{c})), \stepind{x}
-)\ |\ \ArgB''(\pi_0, \pi'_0, \stepind{x}, z) = y \}$,
-\item $\dmap_{\ArgB}(P, Q, \stepind{c}, f, g) \coloneqq \ArgB''(\CwFsect{(f, g)})$.
+  \item $\BOX_{\ArgBpp}(P, Q, \stepind{c}, x, y, \stepindarg{x}) \coloneqq \\
+\{ z : \ArgBpp((\SigmaDialg (A, B, c)\ (P, Q, \stepind{c})), \stepindarg{x}
+)\ |\ \ArgBpp(\pi_0, \pi'_0, \stepindarg{x}, z) = y \}$,
+\item $\dmap_{\ArgBpp}(P, Q, \stepind{c}, f, g) \coloneqq \ArgBpp(\CwFsect{(f, g)})$.
   \end{enumerate}
 \end{definition}
 We can now define what the eliminators for inductive-inductive definitions are:
 \begin{definition}
-  We say that $(A, B, c, d)$ in $\Eind{\ArgA}{\ArgA}$ has an
+  We say that $(A, B, c, d)$ in $\Eind{\ArgB}$ has an
   eliminator, if there exist two terms 
-\begin{align*}
-  \elim_{\ArgA} :\ & (P : A \to \Set)(Q : (x : A) \to B(x) \to P(x) \to \Set) \to \\
-  & \big(\stepind{c} : (x : \ArgA(A, B)) \to \BOX_{\ArgA}(P, Q, x) \to P(c(x))\big) \to \\
-  & \big(\stepind{d} : (x : \ArgA(A, B)) \to (y : \ArgB''(A, B, c, x)) \to
-  (\stepind{x} : \BOX_{\ArgA}(P, Q, x))  \\
-  & \quad \to  \BOX_{\ArgB}(P, Q, c, \stepind{c}, x, y, \stepind{x}) \to 
-     Q(c(x), d(x, y), \stepind{c}(x, \stepind{x}))\big) \to \\
-  & (x : A) \to P(x) \\
-%\end{align*}
-%\begin{align*}
-  \elim_{\ArgB} :\ & (P : A \to \Set)(Q : (x : A) \to B(x) \to P(x) \to \Set) \to \\
-  & \big(\stepind{c} : (x : \ArgA(A, B)) \to \BOX_{\ArgA}(P, Q, x) \to P(c(x))\big) \to \\
-  & \big(\stepind{d} : (x : \ArgA(A, B)) \to (y : \ArgB''(A, B, c, x)) \to
-  (\stepind{x} : \BOX_{\ArgA}(P, Q, x))  \\
-  & \quad \to  \BOX_{\ArgB}(P, Q, c, \stepind{c}, x, y, \stepind{x}) \to 
-     Q(c(x), d(x, y), \stepind{c}(x, \stepind{x}))\big) \to \\
-%  & \ldots \\
-  & (x : A) \to (y : B(x)) \to Q(x, y, \elim_{\ArgA}(P, Q, f, g, x))
-\end{align*}
+% \begin{align*}
+%   \elim_{\ArgA} :\ & (P : A \to \Set)(Q : (x : A) \to B(x) \to P(x) \to \Set) \to \\
+%   & \big(\stepind{c} : (x : \ArgA(A, B)) \to \BOX_{\ArgA}(P, Q, x) \to P(c(x))\big) \to \\
+%   & \big(\stepind{d} : (x : \ArgA(A, B)) \to (y : \ArgBpp(A, B, c, x)) \to
+%   (\stepindarg{x} : \BOX_{\ArgA}(P, Q, x))  \\
+%   & \quad \to  \BOX_{\ArgBpp}(P, Q, c, \stepind{c}, x, y, \stepindarg{x}) \to 
+%      Q(c(x), d(x, y), \stepind{c}(x, \stepindarg{x}))\big) \to \\
+%   & (x : A) \to P(x) \\
+% %\end{align*}
+% %\begin{align*}
+%   \elim_{\ArgBpp} :\ & (P : A \to \Set)(Q : (x : A) \to B(x) \to P(x) \to \Set) \to \\
+%   & \big(\stepind{c} : (x : \ArgA(A, B)) \to \BOX_{\ArgA}(P, Q, x) \to P(c(x))\big) \to \\
+%   & \big(\stepind{d} : (x : \ArgA(A, B)) \to (y : \ArgBpp(A, B, c, x)) \to
+%   (\stepindarg{x} : \BOX_{\ArgA}(P, Q, x))  \\
+%   & \quad \to  \BOX_{\ArgBpp}(P, Q, c, \stepind{c}, x, y, \stepindarg{x}) \to 
+%      Q(c(x), d(x, y), \stepind{c}(x, \stepindarg{x}))\big) \to \\
+% %  & \ldots \\
+%   & (x : A) \to (y : B(x)) \to Q(x, y, \elim_{\ArgA}(P, Q, \stepind{c}, \stepind{d}, x))
+% \end{align*}
+\[
+\deduce{\elim_{\ArgBpp}(P, Q, \stepind{c}, \stepind{d}) : (x : A) \to (y : B(x)) \to Q(x, y, \elim_{\ArgA}(P, Q, \stepind{c}, \stepind{d}, x))}
+       {\infer{\elim_{\ArgA}(P, Q, \stepind{c}, \stepind{d}) : (x : A) \to P(x)}
+       {\deduce{
+          \deduce{
+            \deduce{\qquad\qquad\qquad\qquad \to  \BOX_{\ArgBpp}(P, Q, c, \stepind{c}, x, y, \stepindarg{x}) \to 
+      Q(c(x), d(x, y), \stepind{c}(x, \stepindarg{x}))}{\stepind{d} : (x : \ArgA(A, B)) \to (y : \ArgBpp(A, B, c, x)) \to
+   (\stepindarg{x} : \BOX_{\ArgA}(P, Q, x))}}
+                 {\stepind{c} : (x : \ArgA(A, B)) \to \BOX_{\ArgA}(P, Q, x) \to P(c(x))}}
+          {\deduce{Q : (x : A) \to B(x) \to P(x) \to \Set}{P : A \to \Set}}}}
+\]
 with 
 \begin{align*}
 \elim_{\ArgA}(P, Q, \stepind{c}, \stepind{d}, c(x)) &= \stepind{c}(x, \dmap_{\ArgA}') \\
- \elim_{\ArgB}(P, Q, \stepind{c}, \stepind{d}, c(x), d(x, y)) &=
- \stepind{d}(x, y, \dmap_{\ArgA}',  \dmap_{\ArgB}')
+ \elim_{\ArgBpp}(P, Q, \stepind{c}, \stepind{d}, c(x), d(x, y)) &=
+ \stepind{d}(x, y, \dmap_{\ArgA}',  \dmap_{\ArgBpp}')
 \end{align*}
 where 
 \begin{align*}
-\dmap_{\ArgA}' &= \dmap_{\ArgA}(\elim_{\ArgA}(P, Q, \stepind{c}, \stepind{d}), \elim_{\ArgB}(P, Q, \stepind{c}, \stepind{d}), x) \\
-\dmap_{\ArgB}' &= \dmap_{\ArgB}(\stepind{c}, \elim_{\ArgA}(P, Q, \stepind{c}, \stepind{d}), \elim_{\ArgB}(P, Q, \stepind{c}, \stepind{d}), x, y) \enspace .
+\dmap_{\ArgA}' &= \dmap_{\ArgA}(\elim_{\ArgA}(P, Q, \stepind{c}, \stepind{d}), \elim_{\ArgBpp}(P, Q, \stepind{c}, \stepind{d}), x) \\
+\dmap_{\ArgBpp}' &= \dmap_{\ArgBpp}(\stepind{c}, \elim_{\ArgA}(P, Q, \stepind{c}, \stepind{d}), \elim_{\ArgBpp}(P, Q, \stepind{c}, \stepind{d}), x, y) \enspace .
 \end{align*}
 
 \end{definition}
@@ -804,8 +833,8 @@ where
    Recall from Example \ref{ex:SList-functor} that sorted lists were given by the functors $\ArgSList$, $\ArglessList$, where
 \[ %begin{align*}
   \ArgSList(A, B) = \one + (\Sigma\, n\!:\!\Nat .\,\Sigma\,\ell\!:\!A.\, B(n,\ell))
-%  \ArglessList''(A, B, c, m, \inl(\oneelt)) &= \one \\
-%  \ArglessList''(A, B, c, m, \inr(\langle n, \ell, p\rangle)) &= \Sigma\,m \leq n.\, B(m, \ell) \enspace .
+%  \ArglessList(A, B, c, m, \inl(\oneelt)) &= \one \\
+%  \ArglessList(A, B, c, m, \inr(\langle n, \ell, p\rangle)) &= \Sigma\,m \leq n.\, B(m, \ell) \enspace .
 \] %end{align*}
    Thus, we see that e.g.\ 
    \begin{align*}
@@ -817,36 +846,37 @@ where
  & \cong \Sigma \overline{\ell}\!:\!P(\ell).\,Q(n, \ell, p, \overline{\ell})
    \end{align*}
    and similarly for $\BOX_{\ArglessList}$, so that the eliminators are equivalent to
+%this one is hard to look good formatted as a rule -- leaving it like this for now
    \begin{align*}
   \elim_{\SortedList} :\ & (P : \SortedList \to \Set) \to \\
                      & (Q : (n : \Nat) \to (\ell : \SortedList) \to n \lessList \ell \to P(\ell) \to \Set) \to \\
-                     & (p_{\nilList} : P(\nilList)) \to \\
-                     & (p_{\consListbare} : (n : \Nat) \to (\ell : \SortedList) \to (p : n \lessList \ell) \to (\stepind{\ell} : P(\ell)) \\
-                     & \qquad \to Q(n, \ell, p, \stepind{\ell}) \to P(\consList{n}{\ell}{p})) \to \\
-                     & (p_{\nilLess{}} : (n : \Nat) \to Q(n, \nilList, \nilLess{n}, p_{\nilList})) \to \\
-                     & (p_{\consLessbare} : (m : \Nat) \to (n : \Nat) \to (\ell : \SortedList) \to (p : n \lessList \ell) \\
+                     & (\stepind{\nilList} : P(\nilList)) \to \\
+                     & (\stepind{\consListbare} : (n : \Nat) \to (\ell : \SortedList) \to (p : n \lessList \ell) \to (\stepindarg{\ell} : P(\ell)) \\
+                     & \qquad \to Q(n, \ell, p, \stepindarg{\ell}) \to P(\consList{n}{\ell}{p})) \to \\
+                     & (\stepind{\nilLess{}} : (n : \Nat) \to Q(n, \nilList, \nilLess{n}, \stepind{\nilList})) \to \\
+                     & (\stepind{\consLessbare} : (m : \Nat) \to (n : \Nat) \to (\ell : \SortedList) \to (p : n \lessList \ell) \\
                      & \qquad \to (q : m \leq n) \to (p' : m \lessList \ell) \to
-                     (\stepind{\ell} : P(\ell)) \\ 
-                     & \qquad \to (\stepind{p} : Q(n, \ell,p, \stepind{\ell}))
-                     \to (\stepind{p'} : Q(m, \ell, p', \stepind{\ell})) \\
-                     & \qquad \to Q(m,\consList{n}{\ell}{p}, \consLess{m}{n}{\ell}{p}{q}{p'}, p_{\consListbare}(n, \ell, p, \stepind{\ell}, \stepind{p}))) \to \\
+                     (\stepindarg{\ell} : P(\ell)) \\ 
+                     & \qquad \to (\stepindarg{p} : Q(n, \ell,p, \stepindarg{\ell}))
+                     \to (\stepindarg{p'} : Q(m, \ell, p', \stepindarg{\ell})) \\
+                     & \qquad \to Q(m,\consList{n}{\ell}{p}, \consLess{m}{n}{\ell}{p}{q}{p'}, \stepind{\consListbare}(n, \ell, p, \stepindarg{\ell}, \stepindarg{p}))) \to \\
                      & (\ell : \SortedList) \to P(\ell) \enspace , \\
 %
   \elim_{\lessList} :\ & \ldots \to \\
 % & (P : \SortedList \to \Set) \to \\
                      % & (Q : (n : \Nat) \to (\ell : \SortedList) \to n \lessList \ell \to P(\ell) \to \Set) \to \\
-                     % & (p_{\nilList} : P(\nilList)) \to \\
-                     % & (p_{\consListbare} : (n : \Nat) \to (\ell : \SortedList) \to (p : n \lessList \ell) \to (\stepind{\ell} : P(\ell)) \\
-                     % & \qquad \to Q(n, \ell, p, \stepind{\ell}) \to P(\consList{n}{\ell}{p})) \to \\
-                     % & (p_{\nilLess{}} : (n : \Nat) \to Q(n, \nilList, \nilLess{n}, p_{\nilList})) \to \\
-                     % & (p_{\consLessbare} : (m : \Nat) \to (n : \Nat) \to (\ell : \SortedList) \to (p : n \lessList \ell) \\
+                     % & (\stepind{\nilList} : P(\nilList)) \to \\
+                     % & (\stepind{\consListbare} : (n : \Nat) \to (\ell : \SortedList) \to (p : n \lessList \ell) \to (\stepindarg{\ell} : P(\ell)) \\
+                     % & \qquad \to Q(n, \ell, p, \stepindarg{\ell}) \to P(\consList{n}{\ell}{p})) \to \\
+                     % & (\stepind{\nilLess{}} : (n : \Nat) \to Q(n, \nilList, \nilLess{n}, \stepind{\nilList})) \to \\
+                     % & (\stepind{\consLessbare} : (m : \Nat) \to (n : \Nat) \to (\ell : \SortedList) \to (p : n \lessList \ell) \\
                      % & \qquad \to (q : m \leq n) \to (p' : m \lessList \ell) \to
-                     % (\stepind{\ell} : P(\ell)) \\ 
-                     % & \qquad \to (\stepind{p} : Q(n, \ell,p, \stepind{\ell}))
-                     % \to (\stepind{p'} : Q(m, \ell, p', \stepind{\ell})) \\
-                     % & \qquad \to Q(m,\consList{n}{\ell}{p}, \consLess{m}{n}{\ell}{p}{q}{p'}, p_{\consListbare}(n, \ell, p, \stepind{\ell}, \stepind{p}))) \to \\
+                     % (\stepindarg{\ell} : P(\ell)) \\ 
+                     % & \qquad \to (\stepindarg{p} : Q(n, \ell,p, \stepindarg{\ell}))
+                     % \to (\stepindarg{p'} : Q(m, \ell, p', \stepindarg{\ell})) \\
+                     % & \qquad \to Q(m,\consList{n}{\ell}{p}, \consLess{m}{n}{\ell}{p}{q}{p'}, \stepind{\consListbare}(n, \ell, p, \stepindarg{\ell}, \stepindarg{p}))) \to \\
                      & (n : \Nat) \to (\ell : \SortedList) \to (p : n \lessList \ell) \\
-                     & \qquad \to Q(n, \ell, p, \elim_{\SortedList}(P, Q, p_{\nilList}, p_{\consListbare},  p_{\nilLess{}}, p_{\consLessbare}, \ell)) \enspace .
+                     & \qquad \to Q(n, \ell, p, \elim_{\SortedList}(P, Q, \stepind{\nilList}, \stepind{\consListbare},  \stepind{\nilLess{}}, \stepind{\consLessbare}, \ell)) \enspace .
   \end{align*}
  \end{example}
 
@@ -855,47 +885,50 @@ where
 \subsection{The Equivalence Between Having an Eliminator and Being Initial}
 \label{sec:elim-init-equiv}
 
-We now prove the promised equivalence. In what follows, let $(\ArgA,
-\ArgB)$ be functors for an inductive-inductive definition.
+We now prove the promised equivalence. In what follows, let $\ArgB = (\ArgA,
+\ArgBpp)$ be functors for an inductive-inductive definition.
 
 \begin{lemma}
 \label{thm:isoArgAB}
   There is an isomorphism
 \begin{multline*}
-(\varphi_{\ArgA}, \varphi_{\ArgB}) : \ArgB(\SigmaDialg (A, B, c)\ (P, Q, \stepind{c})) \\
-  \to \SigmaFAM \ArgB(A, B, c)\ (\BOX_{\ArgA, \ArgB}(P, Q, \stepind{c})) 
+\varphi_{\ArgB} = (\varphi_{\ArgA}, \varphi_{\ArgBpp}) : \ArgB(\SigmaDialg (A, B, c)\ (P, Q, \stepind{c})) \\
+  \to \SigmaFAM \ArgB(A, B, c)\ (\BOX_{\ArgB}(P, Q, \stepind{c})) %Todo: \BOX_{\ArgB} not defined -- clear?
 \end{multline*}
-such that $(\pi_0, \pi'_0) \circ (\varphi_{\ArgA}, \varphi_{\ArgB}) =
-\ArgB(\pi_0, \pi'_0)$ and $(\varphi_{\ArgA}, \varphi_{\ArgB}) \circ
-\ArgB(\CwFsect{(f, g)}) = \CwFsect{(\dmap_{ArgA}(P, Q, f, g),
-  \dmap_{\ArgB}(P, Q, \overline{c}, f, g))}$ .  \qed
+such that $(\pi_0, \pi'_0) \circ \varphi_{\ArgB} =
+\ArgB(\pi_0, \pi'_0)$ and
+\[
+\varphi_{\ArgB} \circ\ArgB(\CwFsect{(f, g)})
+ = \CwFsect{(\dmap_{ArgA}(P, Q, f, g), \dmap_{\ArgBpp}(P, Q, \overline{c}, f, g))} \enspace .
+\tag*{\qed}
+\]
 \end{lemma}
 
 \begin{proposition}
 \label{thm:init-to-elim}
-Every initial object $(A, B, c, d)$ in $\Eind{\ArgA}{\ArgB}$ has an eliminator.
+Every initial object $(A, B, c, d)$ in $\Eind{\ArgB}$ has an eliminator.
 \end{proposition}
 \begin{proof}
   Let $P$, $Q$, $\stepind{c}$, $\stepind{d}$ as in the type signature for $\elim_{\ArgA}$
   and $\elim_{\ArgB}$ be given. Define $\inn_{\Sigma} :
   \ArgB(\SigmaDialg (A, B, c)\ (P, Q, \stepind{c})) \to \UDialgArgAU(\SigmaDialg
   (A, B, c)\ (P, Q, \stepind{c}))$ by $\inn_{\Sigma} = \sigmamorph{(c, d)}{(\stepind{c},
-    \stepind{d})} \circ (\varphi_{\ArgA}, \varphi_{\ArgB})$. This makes
+    \stepind{d})} \circ \varphi_{\ArgB}$. This makes
   $\SigmaDialg (A, B, c)\ (P, Q, \stepind{c})$ an object of
-  $\Eind{\ArgA}{\ArgB}$.
+  $\Eind{\ArgB}$.
   % since the first component of $\sigmamorph{(c, d)}{(\stepind{c}, \stepind{g})} \circ
   % (\varphi_{\ArgA}, \varphi_{\ArgB})$ is $\sigmamorph{c}{\stepind{c}} \circ
   % \varphi_{\ArgA}$, which coincides with the ``constructor'' in
   % $\SigmaDialg (A, B, c)\ (P, Q, \stepind{c})$.
 
-  Since $(A, B, c, d)$ is initial in $\Eind{\ArgA}{\ArgB}$, we get a morphism ($h, h') :
+  Since $(A, B, c, d)$ is initial in $\Eind{\ArgB}$, we get a morphism ($h, h') :
   (A, B) \to \SigmaFAM (A, B)\ (P, Q)$ which makes the top part of the
   following diagram commute:
 \[
 \resizebox{1\textwidth}{!}{%
 \xymatrix{
 \ArgB(A, B, c) \ar^-{(c, d)}[rr] \ar_-{\ArgB(h, h')}[d] & & (A, B) \ar^-{(h, h')}[d] \\
-\ArgB(\Sigma (A, B, c)\ (P, Q, \stepind{c})) \ar_{(\varphi_{\ArgA}, \varphi_{\ArgB})}[r] \ar_-{\ArgB(\pi_0, \pi'_0)}[d]
+\ArgB(\Sigma (A, B, c)\ (P, Q, \stepind{c})) \ar_{\varphi_{\ArgB}}[r] \ar_-{\ArgB(\pi_0, \pi'_0)}[d]
  & \Sigma \ArgB(A, B, c)\ (\BOX(P, Q, \stepind{c}))  \ar^-{\sigmamorph{(c,d)}{(\stepind{c},\stepind{d})}}[r] \ar^{(\pi_0, \pi'_0)}[dl]
  & \Sigma (A, B)\ (P, Q) \ar^-{(\pi_0, \pi'_0)}[d]\\
 \ArgB(A, B, c) \ar_-{(c, d)}[rr] & & (A, B)
@@ -905,11 +938,11 @@ Every initial object $(A, B, c, d)$ in $\Eind{\ArgA}{\ArgB}$ has an eliminator.
 
 The bottom part commutes by Lemma \ref{thm:isoArgAB} and
 calculation. Hence $(\pi_0, \pi'_0) \circ (h, h')$ is a morphism in
-$\Eind{\ArgA}{\ArgB}$ and we must have $(\pi_0, \pi'_0) \circ (h, h')
+$\Eind{\ArgB}$ and we must have $(\pi_0, \pi'_0) \circ (h, h')
 = \id$ by initiality. Thus $\pi_1 \circ h : (x : A) \to P(x)$ and
 $\pi_1(h'(x, y)) : Q(x, y, \pi_1(h(x)))$ for $x : A$, $y : B(x)$, so
 we can define $\elim_{\ArgA}(P, Q, \stepind{c}, \stepind{d}) = \pi_1 \circ h$ and
-$\elim_{\ArgB}(P, Q, \stepind{c}, \stepind{d}, x, y) = \pi_1(h'(x, y))$. 
+$\elim_{\ArgBpp}(P, Q, \stepind{c}, \stepind{d}, x, y) = \pi_1(h'(x, y))$. 
 
 To verify the computation rules, note that since $(\pi_0, \pi'_0)
 \circ (h, h') = \id$, we have $(h, h') = \CwFsect{(\pi_1, \pi'_1)
@@ -920,19 +953,19 @@ To verify the computation rules, note that since $(\pi_0, \pi'_0)
  &= \stepind{c}(\varphi_{\ArgA}(\ArgA(h, h')(x))) \\
  &= \stepind{c}(\varphi_{\ArgA}(\ArgA(\CwFsect{(\pi_1, \pi'_1) \circ (h, h')})(x))) \\
  &= \stepind{c}(x, \dmap_{\ArgA}((\pi_1, \pi'_1) \circ (h, h'))(x)) \\
- &= \stepind{c}(x, \dmap_{\ArgA}(\elim_{\ArgA}(P, Q, \stepind{c}, \stepind{d}), \elim_{\ArgB}(P, Q, \stepind{c}, \stepind{d}), x))
+ &= \stepind{c}(x, \dmap_{\ArgA}(\elim_{\ArgA}(P, Q, \stepind{c}, \stepind{d}), \elim_{\ArgBpp}(P, Q, \stepind{c}, \stepind{d}), x))
 \end{align*}
 \mbox{} \qed %todo
 \end{proof}
 
 \begin{proposition}
 \label{thm:elim-to-weak-init}
-  Every $(A, B, c, d)$ which has an eliminator is weakly initial in $\Eind{\ArgA}{\ArgB}$.
+  Every $(A, B, c, d)$ with an eliminator is weakly initial in $\Eind{\ArgB}$.
 \end{proposition}
 \begin{proof}
   Let $(A', B', c', d')$ be another object in
-  $\Eind{\ArgA}{\ArgB}$. Notice that for $P(x) = A'$, $Q(x, y,
-  \stepind{x}) = B'(\stepind{x})$, the usually dependent second
+  $\Eind{\ArgB}$. Notice that for $P(x) = A'$, $Q(x, y,
+  \stepindarg{x}) = B'(\stepindarg{x})$, the usually dependent second
   projections $\pi_1, \pi'_1$ become non-dependent and make up a
   morphism $(\pi_1, \pi'_1) : \SigmaFAM (A, B)\ (P, Q) \to (A', B')$. 
   Since
@@ -943,25 +976,25 @@ To verify the computation rules, note that since $(\pi_0, \pi'_0)
    this lifts to $(\pi_1, \pi'_1) : \SigmaDialg (A, B, c)\ (P, Q, c'
    \circ \ArgA(\pi_1, \pi'_1) \circ \varphi_{\ArgA}^{-1}) \to (A', B',
    c')$. By currying $(f, g) \coloneqq (c', d') \circ \ArgB(\pi_1,
-   \pi'_1) \circ (\varphi_{\ArgA}, \varphi_{\ArgB})^{-1})$, we get
+   \pi'_1) \circ \varphi_{\ArgB}^{-1}$, we get
    \begin{align*} 
      \stepind{c} \coloneqq \widehat{f} &: (x : \ArgA(A, B)) \to \BOX_{\ArgA}(P, Q, x) \to A' \\ 
-     \stepind{d} \coloneqq \widehat{g} &: (x : \ArgA(A, B)) \to (y : \ArgB''(A, B, c, x))
+     \stepind{d} \coloneqq \widehat{g} &: (x : \ArgA(A, B)) \to (y : \ArgBpp(A, B, c, x))
      \to
-     (\stepind{x} : \BOX_{\ArgA}(P, Q, x))  \\
-     & \qquad\qquad \to \BOX_{\ArgB}(P, Q, c, \widehat{f}, x, y,
-     \stepind{x}) \to B'(\widehat{f}(x, \stepind{x}))
+     (\stepindarg{x} : \BOX_{\ArgA}(P, Q, x))  \\
+     & \qquad\qquad \to \BOX_{\ArgBpp}(P, Q, c, \widehat{f}, x, y,
+     \stepindarg{x}) \to B'(\widehat{f}(x, \stepindarg{x}))
    \end{align*}
    so that $(h, h') \coloneqq (\elim_{\ArgA}(P, Q, \stepind{c}, \stepind{d}),
-   \elim_{\ArgA}(P, Q, \stepind{c}, \stepind{d})) : (A, B) \to (A', B')$.
+   \elim_{\ArgBpp}(P, Q, \stepind{c}, \stepind{d})) : (A, B) \to (A', B')$.
 
    We have to check that $(h, h') \circ (c, d) = (c', d') \circ \ArgB(h, h')$.
    \begin{align*}
      (h, h') \circ (c, d)
      &= (\elim_{\ArgA}(P, Q, \widehat{f}, \widehat{g}),
-          \elim_{\ArgA}(P, Q, \widehat{f}, \widehat{g})) \circ (c, d) \\
-     &= (\widehat{f}, \widehat{g}) \circ \CwFsect{(\dmap_{\ArgA}(h, h'), \dmap_{\ArgB}(h, h'))} \\
-     &= (\widehat{f}, \widehat{g}) \circ (\varphi_{\ArgA}, \varphi_{\ArgB}) \circ \ArgB(\CwFsect{h, h'}) \\
+          \elim_{\ArgBpp}(P, Q, \widehat{f}, \widehat{g})) \circ (c, d) \\
+     &= (\widehat{f}, \widehat{g}) \circ \CwFsect{(\dmap_{\ArgA}(h, h'), \dmap_{\ArgBpp}(h, h'))} \\
+     &= (\widehat{f}, \widehat{g}) \circ \varphi_{\ArgB} \circ \ArgB(\CwFsect{h, h'}) \\
      &= (c', d') \circ \ArgB(\pi_1, \pi'_1) \circ \ArgB(\CwFsect{h, h'}) \\
      &= (c', d') \circ \ArgB(h, h')
    \end{align*}
@@ -974,9 +1007,9 @@ induction over their construction:
 \label{sec:elim-init-equiv-CSL}
 \begin{theorem}
 \label{thm:equiv-init-elim}
-The functors $\ArgA$, $\ArgB$ from the original axiomatisation as
+The functors $\Arggamma = (\ArggammaA, \ArggammaB)$ from the original axiomatisation as
 described in Section \ref{sec:functors-CSL-article} have eliminators
-if and only if $\Eind{\ArggammaA}{\ArggammaB}$ has an initial object.
+if and only if $\Eind{\Arggamma}$ has an initial object.
 \end{theorem}
 \begin{proof}
 %  By Lemma \ref{thm:CSL-functor-CNF}, it is enough to consider
@@ -986,17 +1019,17 @@ Putting Proposition
   together, all that is left to prove is that given an eliminator, the
   arrow $(h, h')$ we construct is actually unique. Assume that $(k,
   k')$ is another arrow with $(k, k') \circ (c, d) = (c', d') \circ
-  \ArgB(k, k')$.
+  \Arggamma(k, k')$.
 
-  We use the eliminator (and extensionality) to prove that $(h, h') =
-  (k ,k')$; let $P(x) = (h(x) = k(x))$ and $Q(x, y, \stepind{x})
+  We use the eliminator (and extensional equality) to prove that $(h, h') =
+  (k ,k')$; let $P(x) = (h(x) = k(x))$ and $Q(x, y, \stepindarg{x})
   = (h'(x, y) = k'(x, y))$. It is enough to prove $P(c(x))$ and
-  $Q(c(x), d(x, y), \_)$ for arbitrary $x : \ArgA(A, B)$, $y :
-  \ArgB(A, B, c, x)$, given the induction hypothesis $\BOX_{\ArgA}(P,
-  Q)$ and $\BOX_{\ArgB}(P, Q)$.
+  $Q(c(x), d(x, y), \_)$ for arbitrary $x : \ArggammaA(A, B)$, $y :
+  \ArggammaB(A, B, c, x)$, given the induction hypothesis $\BOX_{\ArgA}(P,
+  Q)$ and $\BOX_{\ArgBpp}(P, Q)$.
 %But by by Proposition \ref{thm:CSL-functor-box}, they state exactly that 
-By induction on the buildup of $\ArgA$ and $\ArgB$, we can prove that 
-$\BOX_{\ArgA}(P,  Q)$ and $\BOX_{\ArgB}(P, Q)$ give that
+By induction on the buildup of $\ArggammaA$ and $\ArggammaB$, we can prove that 
+$\BOX_{\ArgA}(P,  Q)$ and $\BOX_{\ArgBpp}(P, Q)$ give that
 $\ArgB(h, h') =  \ArgB(k, k')$ , and hence
   \[
   (h, h') \circ (c, d) = (c', d') \circ \ArgB(h, h')
@@ -1038,7 +1071,7 @@ initial in (a subcategory of) $\Dialg{F}{G}$ is equivalent.
 % %\cite{abbottAltenkirchGhani2005containers} description of these functors:
 % \begin{lemma} %todo: consistent with sigma / \times? %todo: fix formatting
 % \label{thm:CSL-functor-CNF}
-% For every pair $(\ArgA, \ArgB'')$ of functors arising from a code
+% For every pair $(\ArgA, \ArgBpp)$ of functors arising from a code
 % $(\gamma_A, \gamma_B)$, there are $S : \Set$, $K : S \to \Set$, $L :
 % (x : S) \to K(x) \to \Set$ and $S' : \Set$, $K' : S' \to \Set$,
 % $L'_{n} : (x : S') \to \ArgA^i(K'(x), \vec{L'(x)}_{(i)} \to \Set$,
@@ -1050,14 +1083,14 @@ initial in (a subcategory of) $\Dialg{F}{G}$ is equivalent.
 % \ArgA(f, g)(\langle s, k, l\rangle) &= \langle s, (f, g) \circ (k, l)\rangle
 % \end{align*}
 % \begin{align*}
-%   \ArgB''(A, B, c, y) &\cong \{ (s : S') \times (k : K'(s) \to A)
+%   \ArgBpp(A, B, c, y) &\cong \{ (s : S') \times (k : K'(s) \to A)
 %   \times (l_0 : (x : K'(s)) \to L'_0(s, x) \to B(k(x))) \\
 %  &\times (l_1 : (x : \ArgA(K'(s), L'_0(s))) \to  L'_1(s, x) \to B(k_1(x)))) \\
 %   \times \ldots 
 %  &\times (l_n : (x : \ArgA^n(K(s), \vec{L'(s)}_{(n)})) \to L'_{n}(s, x) \to
 %   B(k_n(x)))) \\
 %  &|\ c(y) = \ \coprodmorph{k, k_1, \ldots}{k_n}(a_{\text{index}}(s)) \} \\
-%   \ArgB''(f, g)(\langle s, k, l_0, &\ldots, \l_n\rangle) = \langle s, f \circ k, \lambda x y .\, g(k(x), l_0(x, y)), \\
+%   \ArgBpp(f, g)(\langle s, k, l_0, &\ldots, \l_n\rangle) = \langle s, f \circ k, \lambda x y .\, g(k(x), l_0(x, y)), \\
 %  & \qquad\qquad\qquad\qquad\ \  \lambda x y .\, g(k_1(x), l_1(x, y)), \ldots, \\
 %  & \qquad\qquad\qquad\qquad\ \  \lambda x y .\, g(k_n(x), l_n(x, y))\rangle
 % \end{align*} 
@@ -1069,7 +1102,7 @@ initial in (a subcategory of) $\Dialg{F}{G}$ is equivalent.
 % %For functors arising from our earlier axiomatisation, there is a nicer description of $\BOX_{\ArgA}$ and $\BOX_{\ArgB}$:
 % \begin{proposition}
 % \label{thm:CSL-functor-box}
-% For functors $(ArgA, \ArgB'')$ as in Lemma \ref{thm:CSL-functor-CNF},
+% For functors $(ArgA, \ArgBpp)$ as in Lemma \ref{thm:CSL-functor-CNF},
 % we have
 % \begin{multline*}
 % \BOX_{\ArgA}(P, Q)(\langle s, k, l\rangle)  \cong \\ (\overline{k} : (x : K(s)) \to P(k(s)) \times ((x : K(s)) \to (y : L(s, x)) \to Q(k(x), l(x, y), \overline{k}(x)))

@@ -66,6 +66,8 @@
 \newcommand{\Pow}{\ensuremath{\text{Pow}}}
 
 \newcommand{\invIm}[1]{\ensuremath{#1^{*}}}
+\newcommand{\im}[1]{\ensuremath{\text{im}_{#1}}}
+\newcommand{\RinvIm}[2]{\ensuremath{\text{R}^{#1}_{#2}}}
 
 \newcommand{\constFam}[1]{\ensuremath{\widecheck{#1}}}
 \newcommand{\cFhat}[1]{\ensuremath{\widehat{#1}}}

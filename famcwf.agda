@@ -23,6 +23,9 @@ record ⊤ : Set where
 data _==_ {A : Set1} (x : A) : A -> Set where
   refl : x == x
 
+data _==₀_ {A : Set} (x : A) : A -> Set where
+  refl : x ==₀ x
+
 ---------------------------------------------------
 -- Fam(Set)
 
@@ -112,27 +115,26 @@ p = fst , λ x → fst
 q : {Γ : FamSet} -> {σ : Ty Γ} -> Tm (Γ ∙ σ) (σ [ p {Γ} {σ} ]Ty)
 q = snd , λ x → snd
 
-θ : {XY XY' : FamSet}{AB : Ty XY} -> (fg : XY' ⇒ XY) -> (hk : Tm XY' (AB [ fg ]Ty)) -> XY' ⇒ (XY ∙ AB)
-θ (f , g) (h , k) = ((λ x → (f x) , (h x)) , λ x y → (g x y) , (k x y))
+<_,_> : {XY XY' : FamSet}{AB : Ty XY} -> (fg : XY' ⇒ XY) -> (hk : Tm XY' (AB [ fg ]Ty)) -> XY' ⇒ (XY ∙ AB)
+<_,_> (f , g) (h , k) = ((λ x → (f x) , (h x)) , λ x y → (g x y) , (k x y))
 
------
-eqfst : {XY XY' : FamSet}{AB : Ty XY} -> {f : XY' ⇒ XY} -> {M : Tm XY' (AB [ f ]Ty)} ->
-               (p {σ = AB} ∘ (θ {AB = AB} f M)) == f
-eqfst = refl
-
-eqsnd : {XY XY' : FamSet}{AB : Ty XY} -> {f : XY' ⇒ XY} -> {M : Tm XY' (AB [ f ]Ty)} ->
-               (q {σ = AB} [ θ {AB = AB} f M ]Tm) == M
-eqsnd = refl
------
-
-<<<<<<< HEAD
+{-
+  -----
+  eqfst : {XY XY' : FamSet}{AB : Ty XY} -> {f : XY' ⇒ XY} -> {M : Tm XY' (AB [ f ]Ty)} ->
+                  (p {σ = AB} ∘ (<_,_> {AB = AB} f M)) == f
+  eqfst = refl
+  
+  eqsnd : {XY XY' : FamSet}{AB : Ty XY} -> {f : XY' ⇒ XY} -> {M : Tm XY' (AB [ f ]Ty)} ->
+                  (q {σ = AB} [ <_,_> {AB = AB} f M ]Tm) == M
+  eqsnd = refl
+  -----
+-}
 
 -----
 ΣMor : {XY XY' : FamSet}{AB : Ty XY}{AB' : Ty XY'} -> (fg : XY ⇒ XY') ->
        (hk : Tm (XY ∙ AB) (AB' [ fg ∘ p {σ = AB} ]Ty)) -> (XY ∙ AB) ⇒ (XY' ∙ AB')
-ΣMor {XY} {XY'} {AB} {AB'} fg hk = θ {AB = AB'} (fg ∘ (p {σ = AB})) hk
+ΣMor {XY} {XY'} {AB} {AB'} fg hk = <_,_> {AB = AB'} (fg ∘ (p {σ = AB})) hk
 
 sect : {XY : FamSet}{AB : Ty XY} -> (σ : Tm XY AB) -> XY ⇒ (XY ∙ AB)
-sect x = θ id x
-=======
->>>>>>> 88863748f6566d801851ce35e7b0ed8ffd788e44
+sect x = < id , x >
+-----

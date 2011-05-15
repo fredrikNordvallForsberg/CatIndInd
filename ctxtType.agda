@@ -88,10 +88,6 @@ mutual
   wk Γ (ι .Γ) x = ι (x ++ Γ)
   wk Γ (Π .Γ A B) x = Π (x ++ Γ) (wk Γ A x) (wk (Γ ◃ A) B x)
 
-
-
-
-
 module withFold where
 
   A : Set

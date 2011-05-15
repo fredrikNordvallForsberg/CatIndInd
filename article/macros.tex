@@ -28,7 +28,7 @@
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
 \newcommand{\CSLArgA}{\ensuremath{\ArgA'}}
-\newcommand{\CSLArgB}{\ensuremath{\ArgB'}}
+\newcommand{\CSLArgB}{\ensuremath{\ArgBpp'}}
 \newcommand{\CSLIndex}{\ensuremath{\text{Index}'_{\text{B}}}}
 
 
@@ -38,7 +38,7 @@
 \newcommand{\C}{\ensuremath{\mathbb{C}}}
 \newcommand{\D}{\ensuremath{\mathbb{D}}}
 
-\newcommand{\Eind}[2]{\ensuremath{\mathbb{E}_{#1, #2}}}
+\newcommand{\Eind}[1]{\ensuremath{\mathbb{E}_{#1}}}
 \newcommand{\E}{\ensuremath{\mathbb{E}}}
 
 \newcommand{\Set}{\ensuremath{\text{Set}}}
@@ -50,12 +50,14 @@
 % Different functors
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 \newcommand{\ArgA}{\ensuremath{\text{Arg}_{\text{A}}}}
-\newcommand{\ArgB}{\ensuremath{\text{Arg}_{\text{B}}}}
+\newcommand{\ArgB}{\ensuremath{\text{Arg}}}
+\newcommand{\ArgBpp}{\ensuremath{\text{Arg}_{\text{B}}}}
 
 \newcommand{\ArgC}{\ensuremath{\text{Arg}_{\text{C}}}}
 
 \newcommand{\ArggammaA}{\ensuremath{\text{Arg}_{\gamma_\text{A}}}}
 \newcommand{\ArggammaB}{\ensuremath{\text{Arg}_{\gamma_\text{B}}}}
+\newcommand{\Arggamma}{\ensuremath{\text{Arg}_{\gamma}}}
 
 \newcommand{\UFamSet}{\ensuremath{U}} %{\ensuremath{U_{\FamSet}}} 
 \newcommand{\UDialgFG}{\ensuremath{V}} %{\ensuremath{U_{\Dialg{\ArgA}{\UFamSet}}}}
@@ -121,7 +123,10 @@
 \newcommand{\BOX}{\ensuremath{\Box}}
 \newcommand{\dmap}{\ensuremath{\text{dmap}}}
 
-\newcommand{\stepind}[1]{\ensuremath{\widetilde{#1}}}
+
+%\newcommand{\stepind}[1]{\ensuremath{\widetilde{#1}}}
+\newcommand{\stepind}[1]{\ensuremath{\text{step}_{#1}}}
+\newcommand{\stepindarg}[1]{\ensuremath{\widetilde{#1}}}
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 % Sigmas / comprehension

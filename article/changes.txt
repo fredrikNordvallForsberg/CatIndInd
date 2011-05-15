@@ -1,0 +1,14 @@
+FNF 2011-05-16:
+* Changed author order back to ... Morris, Nordvall Forsberg, ...
+  -- N comes after M
+
+* Changed notation: Arg_B -> Arg, Arg_B'' -> Arg_B
+  Also replaced Lemma 2.4 with the "convention" Arg = (Arg_A, Arg_B).
+
+* Rephrased Arg_B on p. 2 slightly.
+
+* Changed title of Sec. 2.3 and rephrased second last paragraph as a proposition.
+
+* Changed "blocks of text" type declarations of elim_... to a rule formulation to make
+  it look less overwhelming. [On the other hand, are rules scary for the less logically
+  inclined?]
