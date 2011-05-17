@@ -19,4 +19,4 @@ FNF 2011-05-16:
 * Added paragraph about conjectured reduction to W-types to conclusion.
 
 * Added paragraph at end of Section 1.1 about difference ind.-ind. and ind.-rec.
-  (Removed categories with families waffle from jsut before Section 1.1 to make it fit.)
+  (Removed categories with families waffle from just before Section 1.1 to make it fit.)
