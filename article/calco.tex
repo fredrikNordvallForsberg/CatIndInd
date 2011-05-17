@@ -25,7 +25,7 @@
 \input{macros.tex}
 
 
-\title{A categorical semantics for inductive-inductive definitions}
+\title{A Categorical Semantics for Inductive-Inductive Definitions}
 
 \author{Thorsten Altenkirch\inst{1}\thanks{Supported by EPSRC grant EP/G033374/1.}\fnmsep
                                    \thanks{Supported by EPSRC grant EP/G034109/1.}
@@ -67,9 +67,9 @@ data types: in Martin-L\"of Type Theory
 \cite{martinlof1984bibliopolis}, each set $A$ comes equipped with an
 eliminator which at the same time represents reasoning by induction
 over $A$ and the definition of recursive functions out of $A$.  A more
-categorical approach~\cite{goguenThatcherWagnerWright1977initialAlgebra}
-models data types as initial $T$-algebras for a suitable endofunctor
-$T$.
+categorical
+approach~\cite{goguenThatcherWagnerWright1977initialAlgebra} models
+data types as initial $T$-algebras for a suitable endofunctor $T$.
 
 At first, it would seem that the eliminator approach is stronger, as
 it allows us to define dependent functions $(x : A) \to P(x)$, in
@@ -90,15 +90,20 @@ covered by these results. One such example are inductive-inductive
 definitions~\cite{nordvallforsbergSetzer2010indind}, where a set $A$
 and a function $B : A \to \Set$ are simultaneously inductively defined
 (compare with induction-recursion, where $A$ is defined inductively
-and $B$ recursively). In addition, the constructors for $B$ can refer
-to the constructors for $A$.
+and $B$ recursively).
+%\footnote{By induction, we mean induction as a
+% definitional principle (corresponding to introduction rules),
+%  whereas recursion corresponds to elimination rules. Induction as a
+%  proof principle is just dependent recursion.}).
+In addition, the constructors for $B$ can refer to the
+constructors for $A$.
 
 In earlier work \cite{nordvallforsbergSetzer2010indind}, a subset of
 the authors gave an eliminator-based axiomatisation of a type theory
-with inductive-inductive definitions and showed it to be consistent
-(i.e.\ not every type is inhabitated). In this article, we describe a
-generalised initial algebra semantics for induction-induction, and
-prove that it is equivalent to the original axiomatisation.
+with inductive-inductive definitions and showed it to be
+consistent. In this article, we describe a generalised initial algebra
+semantics for induction-induction, and prove that it is equivalent to
+the original axiomatisation.
 
 One could imagine that that inductive-inductive definitions could be
 described by functors mapping families of sets to families of sets
@@ -1079,7 +1084,7 @@ interpret inductive-inductive definitions as indexed inductive
 definitions, for which W-types are enough
 \cite{altenkirchMorris2009indexedCont}.
 
-It could also be to generalise this work to a unified setting
+It could also be worthwhile to generalise this work to a unified setting
 including other forms of inductive definitions: let $F, G: \C \to \D$
 be functors between categories having all finite limits. One can then
 extend $\C$ and $\D$ to Categories with
