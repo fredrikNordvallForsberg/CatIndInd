@@ -33,15 +33,15 @@
 \and Fredrik Nordvall Forsberg\inst{2}$^{\star}$
 \and Anton Setzer\inst{2}$^{\star}$}
 
-\institute{School of Computer Science, University of Nottingham
-      \and Department of Computer Science, Swansea University}
+\institute{School of Computer Science, University of Nottingham, UK
+      \and Department of Computer Science, Swansea University, UK}
 
 
 \begin{document}
 \maketitle
 
 \begin{abstract}
-  Induction-induction is a principle for defining datatypes in
+  Induction-induction is a principle for defining data types in
   Martin-L\"of Type Theory. An inductive-inductive definition consists
   of a set $A$, together with an $A$-indexed family $B : A \to \Set$,
   where both $A$ and $B$ are inductively defined in such a way that
@@ -50,7 +50,7 @@
   $A$.
 %
   We extend the usual initial algebra semantics for ordinary
-  inductive datatypes to the inductive-inductive setting by
+  inductive data types to the inductive-inductive setting by
   considering dialgebras instead of ordinary algebras. This gives a
   new and compact formalisation of inductive-inductive definitions,
   which we prove is equivalent to the usual formulation with
@@ -61,14 +61,14 @@
 
 Induction is an important principle of definition and reasoning,
 especially so in constructive mathematics and computer science, where
-the concept of inductively defined set and datatype coincide. There
+the concept of inductively defined set and data type coincide. There
 are two well-established approaches to model the semantics of such
-datatypes: in Martin-L\"of Type Theory
+data types: in Martin-L\"of Type Theory
 \cite{martinlof1984bibliopolis}, each set $A$ comes equipped with an
 eliminator which at the same time represents reasoning by induction
 over $A$ and the definition of recursive functions out of $A$.  A more
 categorical approach~\cite{goguenThatcherWagnerWright1977initialAlgebra}
-models datatypes as initial $T$-algebras for a suitable endofunctor
+models data types as initial $T$-algebras for a suitable endofunctor
 $T$.
 
 At first, it would seem that the eliminator approach is stronger, as
@@ -79,13 +79,13 @@ initiality of the algebra. However, Hermida and Jacobs
 defined for every initial $T$-algebra, where $T$ is a polynomial
 functor.  Ghani \etal\ \cite{ghaniJohannFumex2010fibind} then extended
 this to arbitrary endofunctors.  This covers many forms of induction
-and datatype definitions such as indexed inductive definitions
+and data type definitions such as indexed inductive definitions
 \cite{dybjer1994indfam} and induction-recursion
 \cite{dybjersetzer1999finax} (Dybjer and
 Setzer~\cite{dybjersetzer2003inalg} also give a direct proof for
 induction-recursion).
 
-There are, however, other meaningful forms of datatypes which are not
+There are, however, other meaningful forms of data types which are not
 covered by these results. One such example are inductive-inductive
 definitions~\cite{nordvallforsbergSetzer2010indind}, where a set $A$
 and a function $B : A \to \Set$ are simultaneously inductively defined
@@ -115,15 +115,16 @@ constructor for $A$. However, $(\ArgA, \ArgBpp)$ is then no longer an
 endofunctor and we move to the more general setting of dialgebras
 \cite{hagino1987phdthesis,pollZwanenburg2001dialgebra} to describe
 algebras of such functors.
-
+%
 The equivalence between initiality and having an eliminator still
-carries over to this new setting. This is because our development
-actually is an instance of a generic principle for categories that are
-models of Type Theory (i.e.\ Categories with Families
-\cite{dybjer1996internalTT,hofmann1997syntaxsemantics}). Due to space
-constraints, we have however instantiated the theory to our current
-setting and are only treating the case of inductive-inductive
-definitions.
+carries over to this new setting.
+%This is because our development
+%actually is an instance of a generic principle for categories that are
+%models of Type Theory (i.e.\ Categories with Families
+%\cite{dybjer1996internalTT,hofmann1997syntaxsemantics}). Due to space 
+%constraints, we have however instantiated the theory to our current
+%setting and are only treating the case of inductive-inductive
+%definitions.
 
 
 \subsection{Examples of Inductive-Inductive Definitions}
@@ -162,7 +163,7 @@ introduction rule for $\Pi$ explicitly focuses on a specific
 constructor in the index of the type of $B$.
 
 For an example with more of a programming flavour, consider defining a
-datatype consisting of sorted lists (of natural numbers, say). With
+data type consisting of sorted lists (of natural numbers, say). With
 induction-induction, we can simultaneously define the set
 $\SortedList$ of sorted lists and the predicate $\lessList : (\Nat
 \times \SortedList) \to \Set$ with $n \lessList \ell$ true if $n$ is
@@ -188,7 +189,7 @@ inductively $m \lessList \ell$, then $m \lessList \consList{n}{\ell}{p}$:
        {q : m \leq n \quad & p_{m, \ell} : m \lessList \ell}
 \]
 
-Of course, there are many alternative ways to define such a datatype
+Of course, there are many alternative ways to define such a data type
 using ordinary induction, but the inductive-inductive one seems
 natural and might be more convenient for some purposes. It is
 certainly more pleasant to work with in the proof assistant/
@@ -196,6 +197,21 @@ programming language Agda \cite{norell2007thesis} which allows
 inductive-inductive definitions using the \texttt{mutual} keyword. One
 aim of our investigation into inductive-inductive definitions is to
 justify their existence in Agda.
+
+It might be worth pointing out that inductive-inductive and
+inductive-recursive definitions are different. On the one hand, not
+every inductive-inductive definition can be %straightforwardly
+translated into one using induction-recursion, since the inductive
+definition of the second type $B$ may not proceed according to the
+recursive ordering. The contexts and types example above is an example
+of this. On the other hand, inductive-recursive definitions can use
+negative occurrences of $B$, which is not possible for
+inductive-inductive definitions. For instance, a universe closed under
+$\Pi$-types can be defined using induction-recursion but not
+induction-induction.
+
+
+
 
 \subsection{Preliminaries and notation}
 
@@ -355,7 +371,7 @@ sets.
 Given $\ArgB = (\ArgA, \ArgBpp)$ representing an inductive-inductive
 definition, we will now construct a category $\Eind{\ArgB}$
 whose initial object (if it exists) is the intended interpretation of
-the inductive-inductive definition. Figure \ref{fig:map-of-functors}
+the inductive-inductive definition. Figure~\ref{fig:map-of-functors}
 summarises the functors and categories involved ($\UFamSet$,
 $\UDialgArgAU$ and $\UDialgArgBV$ are all forgetful functors).
 
@@ -432,7 +448,7 @@ Explicitly, the category $\Eind{\ArgB}$ has
 
 
 \begin{example}
-  Consider the functors $\ArgCtxt$, $\ArgType$ from Example \ref{ex:ctxtTy-functor}:
+  Consider the functors $\ArgCtxt$, $\ArgType$ from Example~\ref{ex:ctxtTy-functor}:
 \begin{align*}
   \ArgCtxt(A, B) &= \one + \Sigma\, \Gamma\!:\!A .\, B(\Gamma)\\
   \ArgType(A, B, c, x) &= \one + (\Sigma\,  \sigma\!:\! B(c(x)).\, \tau\!:\!B(c(\inr(c(x), \sigma))) ) \enspace .
@@ -461,7 +477,7 @@ split up into\footnote{Notice that $\baseTybare_{A,B} : (\Gamma :
 \end{remark}
 
 \begin{remark} %todo: keep, remove or expand? [aka cliff, shag or marry?]
-  From Figure \ref{fig:map-of-functors}, it should be clear how to
+  From Figure~\ref{fig:map-of-functors}, it should be clear how to
   generalise the current construction to the simultaneous definition
   of $A : \Set$, $B : A \to \Set$, $C : {(x : A)} \to B(x) \to \Set$,
   etc.: for a definition of $n$ sets, replace $\FamSet$ with the category $\FAM_n$ of families $(A_1, A_2, A_3, \ldots, A_n)$ and
@@ -502,7 +518,7 @@ moment's thought should convince us that we want $\wk$ to satisfy
 \end{align*}
 
 Our hope is now to exploit the initiality of $(\Ctxt, \Type)$ to get
-such operations. Recall from Example \ref{ex:ctxtTy-functor} that
+such operations. Recall from Example~\ref{ex:ctxtTy-functor} that
 $\Ctxt$, $\Type$ are the underlying sets for the inductive-inductive
 definition given by the functors
 \begin{align*}
@@ -558,8 +574,8 @@ the weakening operation hold.
 
 In short, the earlier
 axiomatisation \cite{nordvallforsbergSetzer2010indind} postulated the
-existence of a universe $(\text{SP}'_{\text{A}},
-\text{SP}'_{\text{B}})$ of codes for inductive-inductive sets,
+existence of a universes $\text{SP}'_{\text{A}}$,
+$\text{SP}'_{\text{B}}$ of codes for inductive-inductive sets,
 together with decoding functions $\CSLArgA$, $\CSLArgB$ and
 $\CSLIndex$. Intuitively, $\CSLArgA$ gives the domain of the
 constructor $\text{intro}_{\text{A}}$ for $A$, $\CSLArgB$ the domain
@@ -579,18 +595,21 @@ where $\vec{B}_{(i)} = (B_0, \ldots, B_{i - 1})$ and $\CSLArgA^i(\gamma_A, A, B_
   \CSLArgA^{n + 1}(\gamma_A, A, \vec{B}_{(n), B_{n + 1}}) &\coloneqq \CSLArgA(\gamma_A, \bigplus_{i = 0}^n \CSLArgA^i(\gamma_A, A, \vec{B}_{(i)}), \coprodmorph{B_0}{\coprodmorph{\ldots}{B_n}}) \enspace .
 \end{align*}
 
- The axiomatisation
-then states that we have introduction and elimination rules, i.e.\ that
-for each code $\gamma = (\gamma_A, \gamma_B)$ there exists is a family
-$A_\gamma : \Set$, $B_\gamma : A_\gamma \to \Set$ with constructors
-$\text{intro}_{\text{A}} : \CSLArgA(\gamma_A, A_\gamma, B_\gamma) \to
-A_\gamma$ and $\text{intro}_{\text{B}} : (x : \CSLArgB(\gamma,
-A_\gamma, B_\gamma, B_1, \ldots, B_n)) \to B_\gamma(\text{index}(x))$,
-and a suitable eliminator (see Section \ref{sec:eliminator}). Here,
-$B_i = B \circ k_i$ and $\text{index}(x) = \coprodmorph{k_0,
-  \ldots}{k_n}(\CSLIndex(\gamma, A, B_0, \ldots, B_n, x))$ where $k_0 = \id$ and $k_{i+1}
-= \text{intro}_{\text{A}} \circ \CSLArgA^i(\coprodmorph{k_0,
-  \ldots}{k_{i}}, \coprodmorph{\id', \ldots}{\id'})$.
+The axiomatisation then states that we have introduction and
+elimination rules, i.e.\ that for each code $\gamma = (\gamma_A,
+\gamma_B)$ there exists is a family $A_\gamma : \Set$, $B_\gamma :
+A_\gamma \to \Set$ with constructors $\text{intro}_{\text{A}} :
+\CSLArgA(\gamma_A, A_\gamma, B_\gamma) \to A_\gamma$ and
+$\text{intro}_{\text{B}} : (x : \CSLArgB(\gamma, A_\gamma, B_\gamma,
+B_1, \ldots, B_n)) \to B_\gamma(\text{index}(x))$, and a suitable
+eliminator (see Section~\ref{sec:eliminator}). Here, $B_i = B \circ
+k_i$ and $\text{index}(x) = \coprodmorph{k_0,
+  \ldots}{k_n}(\CSLIndex(\gamma, A, B_0, \ldots, B_n, x))$ where $k_0
+= \id$ and $k_{i+1} = \text{intro}_{\text{A}} \circ
+\CSLArgA^i(\coprodmorph{k_0, \ldots}{k_{i}}, \coprodmorph{\id',
+  \ldots}{\id'})$. The codes are chosen so that all occurrences of $A$
+and $B$ in the domains of $\text{intro}_{\text{A}}$ and
+$\text{intro}_{\text{B}}$ are strictly positive.
 
 The relationship between the codes from this axiomatisation and the formalisation in this article can now be summed up in the following proposition:
 \begin{proposition}
@@ -600,11 +619,13 @@ The relationship between the codes from this axiomatisation and the formalisatio
 \ArggammaB(A, B, c, x) &\coloneqq \{\, y\!:\!\CSLArgB(\gamma_A, \gamma_B, A, B_0, \ldots, B_n)
                                                 \ |\  c(x) = \text{index}(y) \}
 \end{align*}
-are functorial. \qed %as in Definition \ref{def:indind-functors}. \qed
+are functorial. \qed %as in Definition~\ref{def:indind-functors}. \qed
 \end{proposition}
 %
-In Section \ref{sec:elim-init-equiv-CSL} (Theorem
-\ref{thm:equiv-init-elim}), we show that that the original
+We will call a functor $F$ strictly positive if it arises as $F = \Arggamma$ for some code $\gamma$. In Section
+\ref{sec:elim-init-equiv-CSL}
+%(Theorem~\ref{thm:equiv-init-elim})
+, we show that that the original
 introduction and elimination rules hold
 if and only if $\Eind{\Arggamma}$ has an initial object.
   
@@ -613,8 +634,13 @@ if and only if $\Eind{\Arggamma}$ has an initial object.
 \label{sec:eliminator}
 
 In this section, we introduce the elimination principle for
-inductive-inductive definitions and show that it is equivalent to
-the existence of an initial object.
+inductive-inductive definitions. We will show that every initial
+object has an eliminator (Proposition~\ref{thm:init-to-elim}), and
+that every object with an eliminator is weakly initial
+(Proposition~\ref{thm:elim-to-weak-init}). Under the added assumption
+of strict positivity, we can also show uniqueness. Hence the two
+notions are equivalent for strictly positive functors
+(Theorem~\ref{thm:equiv-init-elim}).
 
 \subsection{Warm-up: a Generic Eliminator for an Inductive Definition}
 \label{sec:elim-ind-intro}
@@ -670,7 +696,7 @@ defined for any functor $F : \Set \to \Set$ by defining
   \dmap_F(P, \stepind{c}, x) &\coloneqq F(\lambda y . \langle y, \stepind{c}(y)\rangle)(x) \enspace .
 \end{align*}
 We see that indeed $\BOX_{\one + X}(P, \inl(\oneelt)) \cong \one$ and
-$\BOX_{\one + X}(P, \inr(n)) \cong P(n)$ as in Example \ref{ex:natexample}.
+$\BOX_{\one + X}(P, \inr(n)) \cong P(n)$ as in Example~\ref{ex:natexample}.
 
 
 \subsection{The Generic Eliminator for an Inductive-Inductive Definition}
@@ -830,7 +856,7 @@ where
 \end{definition}
 
  \begin{example}[The eliminator for sorted lists]
-   Recall from Example \ref{ex:SList-functor} that sorted lists were given by the functors $\ArgSList$, $\ArglessList$, where
+   Recall from Example~\ref{ex:SList-functor} that sorted lists were given by the functors $\ArgSList$, $\ArglessList$, where
 \[ %begin{align*}
   \ArgSList(A, B) = \one + (\Sigma\, n\!:\!\Nat .\,\Sigma\,\ell\!:\!A.\, B(n,\ell))
 %  \ArglessList(A, B, c, m, \inl(\oneelt)) &= \one \\
@@ -936,7 +962,7 @@ Every initial object $(A, B, c, d)$ in $\Eind{\ArgB}$ has an eliminator.
 }
 \]
 
-The bottom part commutes by Lemma \ref{thm:isoArgAB} and
+The bottom part commutes by Lemma~\ref{thm:isoArgAB} and
 calculation. Hence $(\pi_0, \pi'_0) \circ (h, h')$ is a morphism in
 $\Eind{\ArgB}$ and we must have $(\pi_0, \pi'_0) \circ (h, h')
 = \id$ by initiality. Thus $\pi_1 \circ h : (x : A) \to P(x)$ and
@@ -953,9 +979,8 @@ To verify the computation rules, note that since $(\pi_0, \pi'_0)
  &= \stepind{c}(\varphi_{\ArgA}(\ArgA(h, h')(x))) \\
  &= \stepind{c}(\varphi_{\ArgA}(\ArgA(\CwFsect{(\pi_1, \pi'_1) \circ (h, h')})(x))) \\
  &= \stepind{c}(x, \dmap_{\ArgA}((\pi_1, \pi'_1) \circ (h, h'))(x)) \\
- &= \stepind{c}(x, \dmap_{\ArgA}(\elim_{\ArgA}(P, Q, \stepind{c}, \stepind{d}), \elim_{\ArgBpp}(P, Q, \stepind{c}, \stepind{d}), x))
+ &= \stepind{c}(x, \dmap_{\ArgA}') & \text{\qed}
 \end{align*}
-\mbox{} \qed %todo
 \end{proof}
 
 \begin{proposition}
@@ -978,15 +1003,15 @@ To verify the computation rules, note that since $(\pi_0, \pi'_0)
    c')$. By currying $(f, g) \coloneqq (c', d') \circ \ArgB(\pi_1,
    \pi'_1) \circ \varphi_{\ArgB}^{-1}$, we get
    \begin{align*} 
-     \stepind{c} \coloneqq \widehat{f} &: (x : \ArgA(A, B)) \to \BOX_{\ArgA}(P, Q, x) \to A' \\ 
-     \stepind{d} \coloneqq \widehat{g} &: (x : \ArgA(A, B)) \to (y : \ArgBpp(A, B, c, x))
+     \widehat{f} &: (x : \ArgA(A, B)) \to \BOX_{\ArgA}(P, Q, x) \to A' \\ 
+     \widehat{g} &: (x : \ArgA(A, B)) \to (y : \ArgBpp(A, B, c, x))
      \to
      (\stepindarg{x} : \BOX_{\ArgA}(P, Q, x))  \\
-     & \qquad\qquad \to \BOX_{\ArgBpp}(P, Q, c, \widehat{f}, x, y,
+     & \qquad\qquad\qquad\qquad\qquad\qquad \to \BOX_{\ArgBpp}(P, Q, c, \widehat{f}, x, y,
      \stepindarg{x}) \to B'(\widehat{f}(x, \stepindarg{x}))
    \end{align*}
-   so that $(h, h') \coloneqq (\elim_{\ArgA}(P, Q, \stepind{c}, \stepind{d}),
-   \elim_{\ArgBpp}(P, Q, \stepind{c}, \stepind{d})) : (A, B) \to (A', B')$.
+   so that $(h, h') \coloneqq (\elim_{\ArgA}(P, Q, \widehat{f}, \widehat{g}),
+   \elim_{\ArgBpp}(P, Q, \widehat{f}, \widehat{g})) : (A, B) \to (A', B')$.
 
    We have to check that $(h, h') \circ (c, d) = (c', d') \circ \ArgB(h, h')$.
    \begin{align*}
@@ -996,9 +1021,8 @@ To verify the computation rules, note that since $(\pi_0, \pi'_0)
      &= (\widehat{f}, \widehat{g}) \circ \CwFsect{(\dmap_{\ArgA}(h, h'), \dmap_{\ArgBpp}(h, h'))} \\
      &= (\widehat{f}, \widehat{g}) \circ \varphi_{\ArgB} \circ \ArgB(\CwFsect{h, h'}) \\
      &= (c', d') \circ \ArgB(\pi_1, \pi'_1) \circ \ArgB(\CwFsect{h, h'}) \\
-     &= (c', d') \circ \ArgB(h, h')
+     &= (c', d') \circ \ArgB(h, h') & \text{\qed}
    \end{align*}
-\mbox{} \qed %todo
 \end{proof}
 
 For strictly positive functors, we can say more, since we can argue by
@@ -1008,18 +1032,17 @@ induction over their construction:
 \begin{theorem}
 \label{thm:equiv-init-elim}
 The functors $\Arggamma = (\ArggammaA, \ArggammaB)$ from the original axiomatisation as
-described in Section \ref{sec:functors-CSL-article} have eliminators
+described in Section~\ref{sec:functors-CSL-article} have eliminators
 if and only if $\Eind{\Arggamma}$ has an initial object.
 \end{theorem}
 \begin{proof}
-%  By Lemma \ref{thm:CSL-functor-CNF}, it is enough to consider
+%  By Lemma~\ref{thm:CSL-functor-CNF}, it is enough to consider
 %  functors of the form mentioned there.
-Putting Proposition
-  \ref{thm:init-to-elim} and Proposition \ref{thm:elim-to-weak-init}
-  together, all that is left to prove is that given an eliminator, the
-  arrow $(h, h')$ we construct is actually unique. Assume that $(k,
-  k')$ is another arrow with $(k, k') \circ (c, d) = (c', d') \circ
-  \Arggamma(k, k')$.
+  Putting Proposition~\ref{thm:init-to-elim} and
+  Proposition~\ref{thm:elim-to-weak-init} together, all that is left
+  to prove is that given an eliminator, the arrow $(h, h')$ we
+  construct is actually unique. Assume that $(k, k')$ is another arrow
+  with $(k, k') \circ (c, d) = (c', d') \circ \Arggamma(k, k')$.
 
   We use the eliminator (and extensional equality) to prove that $(h, h') =
   (k ,k')$; let $P(x) = (h(x) = k(x))$ and $Q(x, y, \stepindarg{x})
@@ -1027,7 +1050,7 @@ Putting Proposition
   $Q(c(x), d(x, y), \_)$ for arbitrary $x : \ArggammaA(A, B)$, $y :
   \ArggammaB(A, B, c, x)$, given the induction hypothesis $\BOX_{\ArgA}(P,
   Q)$ and $\BOX_{\ArgBpp}(P, Q)$.
-%But by by Proposition \ref{thm:CSL-functor-box}, they state exactly that 
+%But by by Proposition~\ref{thm:CSL-functor-box}, they state exactly that 
 By induction on the buildup of $\ArggammaA$ and $\ArggammaB$, we can prove that 
 $\BOX_{\ArgA}(P,  Q)$ and $\BOX_{\ArgBpp}(P, Q)$ give that
 $\ArgB(h, h') =  \ArgB(k, k')$ , and hence
@@ -1041,7 +1064,7 @@ $\ArgB(h, h') =  \ArgB(k, k')$ , and hence
 \section{Conclusions and Future Work}
 
 We have shown how to give a categorical semantics for
-inductive-inductive definitions, a principle for defining datatypes in
+inductive-inductive definitions, a principle for defining data types in
 Martin-L\"of Type Theory. In order to do this, we generalised the
 usual initial algebra semantics to a dialgebra setting and showed that
 there is still an equivalence between this semantics and the more
@@ -1049,15 +1072,21 @@ traditional formulation in terms of elimination and computation rules.
 
 Future work includes extending the notion of
 containers~\cite{abbottAltenkirchGhani2005containers} to
-inductive-inductive definitions, and generalising this work to a
-unified setting including other forms of inductive definitions: let
-$F, G: \C \to \D$ be functors between categories that are Categories
-with Families~\cite{dybjer1996internalTT,hofmann1997syntaxsemantics}.
-If $\C$ and $\D$ have $\Sigma$- and equality types, one can define the
-concept of an eliminator for $F$ and $G$ and with some restrictions on
-$\C$ and $G$ (that $\C$ admits all finite limits and $G$ is left exact
-seems to be enough), one can show that having an eliminator and being
-initial in (a subcategory of) $\Dialg{F}{G}$ is equivalent.
+inductive-inductive definitions. We also conjecture that W-types are
+enough to ensure the existence of inductive-inductive definitions in
+an extensional theory. More precisely, it should be possible to
+interpret inductive-inductive definitions as indexed inductive
+definitions, for which W-types are enough
+\cite{altenkirchMorris2009indexedCont}.
+
+It could also be to generalise this work to a unified setting
+including other forms of inductive definitions: let $F, G: \C \to \D$
+be functors between categories having all finite limits. One can then
+extend $\C$ and $\D$ to Categories with
+Families~\cite{dybjer1996internalTT,hofmann1997syntaxsemantics} and
+use that structure to define the concept of an eliminator for $F$ and
+$G$. If $G$ is left exact, one can show that having an eliminator and
+being initial in (a subcategory of) $\Dialg{F}{G}$ is equivalent.
 
 \bibliographystyle{splncs03}
 \bibliography{all}
@@ -1102,7 +1131,7 @@ initial in (a subcategory of) $\Dialg{F}{G}$ is equivalent.
 % %For functors arising from our earlier axiomatisation, there is a nicer description of $\BOX_{\ArgA}$ and $\BOX_{\ArgB}$:
 % \begin{proposition}
 % \label{thm:CSL-functor-box}
-% For functors $(ArgA, \ArgBpp)$ as in Lemma \ref{thm:CSL-functor-CNF},
+% For functors $(ArgA, \ArgBpp)$ as in Lemma~\ref{thm:CSL-functor-CNF},
 % we have
 % \begin{multline*}
 % \BOX_{\ArgA}(P, Q)(\langle s, k, l\rangle)  \cong \\ (\overline{k} : (x : K(s)) \to P(k(s)) \times ((x : K(s)) \to (y : L(s, x)) \to Q(k(x), l(x, y), \overline{k}(x)))
