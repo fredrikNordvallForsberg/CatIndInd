@@ -1,0 +1,267 @@
+\documentclass{article}
+
+\usepackage{amssymb}
+\usepackage{amsthm}
+\usepackage{amsmath}
+\usepackage{amstext}
+
+\usepackage[all]{xypic}
+\usepackage{stmaryrd}
+\usepackage{enumerate}
+\usepackage{mathtools}
+
+\usepackage{mathabx} % \widecheck
+
+\input header.inc
+
+\title{Random thoughts on $\BOX_F$}
+
+
+\author{Fredrik Nordvall Forsberg}
+
+\begin{document}
+\maketitle
+
+\section{Preliminaries}
+
+Let $F : \C \to \D$ be a functor between two categories with families
+$\C$ and $\D$.
+
+\section{Universal property}
+
+Given $\Gamma \in \C$ and $\sigma \in \Ty_{\C}(\Gamma)$, we should
+have $\BOX_F(\Gamma, \sigma) \in \Ty_{\D}(F(\Gamma))$ such that
+there exist an isomorphism
+\[
+\varphi_F : F(\Gamma . \sigma) \to F(\Gamma).\BOX_F(\Gamma, \sigma)
+\]
+with $\ps \circ \varphi_F = F(\ps)$.
+%$\p{\BOX_F(\Gamma, \sigma)} \circ \varphi_F = F(\p{\sigma})$.
+
+This $\BOX_F$ is unique up to isomorphism; recall that
+$\Ty(\Gamma)$ can be made into a category with objects the elements
+from $\Ty(\Gamma)$, and 
+\[
+\Hom_{\Ty(\Gamma)}(A, B) = \Tm(\Gamma . A, B\{\ps\}) \enspace .
+\]
+Composition is given by $g \circ f \coloneqq g\{\langle \ps,
+f\rangle\}$ (with identity $\vvs$).
+
+\begin{proposition}
+\label{thm:box_uni}
+  Suppose that $\BOX_F(\Gamma, \sigma)$ and $\BOX'_F(\Gamma,
+  \sigma)$ with isomorphisms $\varphi_F$ and $\varphi'_F$ as above are
+  given. Then they are isomorphic as objects in $\Ty(F(\Gamma))$.
+\end{proposition}
+\begin{proof}
+Define
+ \[f \in \Tm(F(\Gamma).\BOX'_F(\Gamma, \sigma),\BOX_F(\Gamma, \sigma)\{\ps\})\]
+and
+\[g \in \Tm(F(\Gamma).\BOX_F(\Gamma, \sigma),\BOX'_F(\Gamma,
+\sigma)\{\ps\})\]
+by $f = \vvs\{\varphi_F \circ \varphi_F^{'-1}\}$ and
+$g = \vvs\{\varphi'_F \circ \varphi_F^{-1}\}$. Both terms have the
+right type since $\ps \circ \varphi_F \circ \varphi_F^{'-1} = F(\ps)
+\circ \varphi_F^{'-1} = \ps$ (and similarly for $g$). We get
+\begin{align*}
+  f \circ g &= f\{\langle \ps, g\rangle\} \\
+  &= \vvs\{\varphi_F \circ \varphi_F^{'-1} \circ \langle \ps, \vvs\{\varphi'_F \circ \varphi_F^{-1}\}\rangle\} \\
+  &= \vvs\{\varphi_F \circ \varphi_F^{'-1} \circ \langle \ps, \vvs \rangle \circ \varphi'_F \circ \varphi_F^{-1}\} \qquad \text{since $\ps \circ \varphi_F \circ \varphi_F^{'-1} = \ps$}\\
+  &= \vvs\{\id\} \\
+  &= \vvs = \id_{\Ty(F(\Gamma))}
+\end{align*}
+and similarly for $g \circ f$. Thus $\BOX_F(\Gamma, \sigma)$ and
+$\BOX'_F(\Gamma, \sigma)$ are isomorphic.
+\end{proof}
+
+We can give an alternative proof by noting that there is another
+characterisation of the morphisms of $\Ty_{\C}(\Gamma)$:
+
+\begin{proposition}
+  $\Ty_{\C}(\Gamma)$ is isomorphic to the category $\Ty'_{\C}(\Gamma)$
+  with the same objects, but where the morphisms from $A$ to $B$ are morphisms $f : \Gamma . A \to \Gamma . B$ in $\C$ such that $\ps \circ f = \ps$.
+\end{proposition}
+\begin{proof}
+  Define $F : \Ty_{\C}(\Gamma) \to \Ty'_{\C}(\Gamma)$ and $G :
+  \Ty'_{\C}(\Gamma) \to \Ty_{\C}(\Gamma)$ to be the identities on
+  objects and by $F(M) = \langle \ps, M\rangle$, $G(f) =
+  \vvs\{f\}$. Note that $\ps \circ F(M) = \ps \circ \langle \ps , M
+  \rangle = \ps$. We calculate:
+\[    F(G(f)) = F(\vvs\{f\}) = \langle \ps, \vvs\{f\}\rangle = \langle \ps \circ f, \vvs\{f\}\rangle = \langle \ps , \vvs\rangle \circ f = f \]\[
+    G(F(M)) = G(\langle \ps, M\rangle) = v\{\langle \ps , M\rangle\} = M
+\]
+\end{proof}
+
+Thus, $\varphi_F \circ \varphi_F^{'-1}$ is obviously an isomorphism in
+$\Ty'_{\C}(\Gamma)$ (note as in the proof of Prop.~\ref{thm:box_uni} that $\ps \circ \varphi_F \circ
+\varphi_F^{'-1} = F(\ps) \circ \varphi_F^{'-1} = \ps$) and hence in
+$\Ty_{\C}(\Gamma)$.
+
+\section{Sufficient conditions for $\BOX_F$ to exist}
+
+\subsection{``Constant family'' types}
+
+$<$Motivation$>$.
+
+\begin{definition}
+  A CwF $\C$ supports constant family types if the following data are given:
+  \begin{itemize}
+  \item For each $\Gamma \in \C$, there is a type $\constFam{\Gamma}_{\Delta} \in
+    \Ty(\Delta)$ for all $\Delta \in \C$ such that
+    $
+    \constFam{\Gamma}_{\Delta}\{g\} = \constFam{\Gamma}_{B}
+    $
+    whenever $g : B \to \Delta$. (We will usually omit the subscript $\Delta$.)
+  \item An isomorphism $\cFhat{\cdot} : \Tm(B, \constFam{\Gamma}\{g\})
+    \to \Hom(B, \Gamma)$ with inverse $\cFcheck{\cdot} : \Hom(B,
+    \Gamma) \to \Tm(B, \constFam{\Gamma}\{g\})$ such that $\cFhat{M}
+    \circ g = \cFhat{M\{g\}}$.
+  \end{itemize}
+\end{definition}
+
+Clairambault and Dybjer \cite{clairambaultDybjer2011lcccML} defines a
+similar notion of \emph{democracy} for a CwF; a CwF is democratic if
+each context is represented by a type. In detail:
+
+\begin{definition}[{\cite[Def.~6]{clairambaultDybjer2011lcccML}}]
+  A CwF $\C$ is \emph{democratic} if for each object $\Gamma$ of $\C$
+  there is $\overline{\Gamma} \in \Ty(\one_{\C})$ and an isomorphism
+  $\gamma_{\Gamma} : \Gamma \to \one_{\C}.\overline{\Gamma}$.
+\end{definition}
+
+Reassuringly, A CwF supports constant families if and only if it is democratic.
+
+\begin{proposition}
+  A CwF $\C$ supports constant families if and only if it is democratic.
+\end{proposition}
+\begin{proof}
+  ($\Rightarrow$) Assume $\C$ supports constant families. Define
+  $\overline{\Gamma} \coloneqq \constFam{\Gamma}_{\one_{\C}}$ and
+  $\gamma_{\Gamma} = \langle !_{\Gamma}, \cFcheck{\id}\rangle : \Gamma
+  \to \one_{\C}.\overline{\Gamma}$ with inverse $\gamma_{\Gamma}^{-1}
+  = \cFhat{\vvs} : \one_{\C}.\overline{\Gamma} \to \Gamma$. Of course,
+  we have to check that $\gamma_{\Gamma}$ and $\gamma_{\Gamma}^{-1}$
+  are really inverse to each other:
+  \begin{align*}
+    \gamma_{\Gamma}^{-1} \circ \gamma_{\Gamma}
+ =  \cFhat{\vvs} \circ \langle !_{\Gamma}, \cFcheck{\id}\rangle 
+ =  \cFhat{\vvs\{\langle !_{\Gamma}, \cFcheck{}\!\id\rangle\}}
+ =  \cFhat{\cFcheck{\id}}
+ =  \id
+  \end{align*}
+  \begin{align*}
+    \gamma_{\Gamma} \circ \gamma_{\Gamma}^{-1}
+ =  \langle !_{\Gamma}, \cFcheck{\id}\rangle  \circ \cFhat{\vvs} 
+ =  \langle !_{\Gamma} \circ \cFhat{\vvs} , \cFcheck{\id}\{\cFhat{\vvs} \}\rangle 
+ =  \langle !_{\one_{\C}.\constFam{\Gamma}} , \cFcheck{\id \circ \cFhat{\vvs}} \rangle 
+ =  \langle \ps , \cFcheck{\cFhat{\vvs}} \rangle 
+ =  \id
+  \end{align*}
+  Here, we use that $\p{\constFam{\Gamma}} :
+  \one_{\C}.\constFam{\Gamma} \to \one_{\C}$ must be equal to
+  $!_{\one_{\C}.\constFam{\Gamma}} : \one_{\C}.\constFam{\Gamma} \to
+  \one_{\C}$ by the uniqueness of $!_{\one_{\C}.\constFam{\Gamma}}$,
+  and that $m\{g\} = \cFcheck{\hat{}\!\!\!m \circ g}$ since
+  $\cFhat{m\{g\}} = \hat{m} \circ g$.
+
+  ($\Leftarrow$) Assume $\C$ is democratic. Define
+  $\constFam{\Gamma}_{\Delta} \coloneqq
+  \overline{\Gamma}\{!_{\Delta}\}$. Then
+  \[\constFam{\Gamma}_{\Delta}\{g\} = \overline{\Gamma}\{!_{\Delta}
+  \circ g\} = \overline{\Gamma}\{!_{B}\} = \constFam{\Gamma}_{B}\] by
+  the uniqueness of $!_{B}$. Define $\cFhat{M} \coloneqq
+  \gamma_{\Gamma}^{-1} \circ \langle !_{B}, M\rangle$ and $\cFcheck{f}
+  \coloneqq \vvs\{\gamma_{\Gamma} \circ f\}$. Then
+  \begin{align*}
+    \cFcheck{\cFhat{M}}
+  = \vvs\{\gamma_{\Gamma} \circ \gamma_{\Gamma}^{-1} \circ \langle !_{B}, M\rangle\}
+  = \vvs\{\langle !_{B}, M\rangle\}
+  = M
+  \end{align*}
+  and using that $\ps \circ \gamma_{\Gamma} \circ f : B \to \one_{\C}$
+  is equal to $!_{B}$ for every $f : B \to \Gamma$, we have
+  \begin{align*}
+    \cFhat{\cFcheck{f}}
+  &= \gamma_{\Gamma}^{-1} \circ \langle !_{B}, \vvs\{\gamma_{\Gamma} \circ f\}\rangle
+   = \gamma_{\Gamma}^{-1} \circ \langle \ps \circ \gamma_{\Gamma} \circ f, \vvs\{\gamma_{\Gamma} \circ f\}\rangle \\
+  &= \gamma_{\Gamma}^{-1} \circ \langle \ps, \vvs\rangle \circ \gamma_{\Gamma} \circ f 
+   = \gamma_{\Gamma}^{-1} \circ \gamma_{\Gamma} \circ f 
+   = f \enspace .
+  \end{align*}
+Finally, we have
+\begin{align*}
+    \cFhat{M} \circ g
+  &= \gamma_{\Gamma}^{-1} \circ \langle !_{B}, M\rangle \circ g
+   = \gamma_{\Gamma}^{-1} \circ \langle !_{B} \circ g, M\{g\}\rangle  
+   = \gamma_{\Gamma}^{-1} \circ \langle !_{\Delta}, M\{g\}\rangle \\
+  &= \cFhat{M\{g\}} \enspace .
+\end{align*}
+
+\end{proof}
+
+
+\subsection{The inverse image type}
+
+\begin{definition}
+  A CwF $\C$ supports inverse image types if the following data are given:
+  \begin{itemize}
+  \item For each $f : A \to B$ in $\C$, there is a type $\invIm{f} \in
+    \Ty(B)$ such that
+    \[
+    \invIm{f}\{g\} = <\text{substitution}>
+    \]
+    whenever $g : \Delta \to B$.
+  \item A morphism $\im{f} : A \to B.\invIm{f}$ such that $\ps \circ
+    \im{f} = f$ and $<$substitution$>$.
+  \item For every type $\rho \in Ty(B.\invIm{f})$ and term $H \in
+    \Tm(A, \rho\{\im{f}\})$ a term $\RinvIm{f}{\rho}(H) \in
+    \Tm(B.\invIm{f}, \rho)$ such that $\RinvIm{f}{\rho}(H)\{\im{f}\} = H$ and
+    $<$substitution$>$.
+  \end{itemize}
+\end{definition}
+
+Inverse image types are not part of most presentations of type theory.
+However, they can be constructed from constant families, sigma types
+and extensional identity types:
+
+\begin{proposition}
+  Let $\C$ be a CwF with constant families, extensional identity types
+  and $\Sigma$-types. Then $\C$ supports inverse image types.
+\end{proposition}
+\begin{proof}
+  Based on the proof of \cite[Prop.~9 and
+  Lemma~25]{clairambaultDybjer2011lcccML}. [Are intensional identity
+  types enough?]
+\end{proof}
+
+\begin{proposition}
+  Let $\C$ be a CwF with extensional identity types and inverse image
+  types.  Then $\BOX_F(\Gamma, \sigma) \approx \invIm{F(\ps)}$.
+\end{proposition}
+\begin{proof}
+  Based on \cite[Lemma 25]{clairambaultDybjer2011lcccML}.
+\end{proof}
+
+\begin{theorem}
+  Let $\C$ be a category with finite limits. Then $\C$ can be extended
+  to a CwF with constant families, extensional identity types and
+  $\Sigma$-types.
+\end{theorem}
+\begin{proof}
+  \cite[Lemma 18]{clairambaultDybjer2011lcccML}.
+\end{proof}
+
+\begin{corollary}
+  Let $\D$ be a category with finite limits, $\C$ a CwF. Then $\BOX_F$ exists for any $F : \C \to \D$.
+\end{corollary}
+
+\section{$\BOX_F$ as a CwF morphism}
+\label{sec:box-as-cwf-morphism}
+
+\cite[Def.~10]{clairambaultDybjer2011lcccML}.
+\cite[Proof of Thm.~10]{clairambaultDybjer2011lcccML}.
+
+\bibliographystyle{alpha}
+\bibliography{../../../references/biblio}
+
+\end{document}

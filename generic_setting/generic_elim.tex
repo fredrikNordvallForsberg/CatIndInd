@@ -1,0 +1,104 @@
+\documentclass{article}
+
+\usepackage{amssymb}
+\usepackage{amsthm}
+\usepackage{amsmath}
+\usepackage{amstext}
+
+\usepackage[all]{xypic}
+\usepackage{stmaryrd}
+\usepackage{enumerate}
+\usepackage{mathtools}
+
+\usepackage{mathabx} % \widecheck
+
+\input header.inc
+
+\title{Generic elimination rules for dialgebras}
+
+
+\author{Fredrik Nordvall Forsberg}
+
+\begin{document}
+\maketitle
+
+\section{Preliminaries}
+
+Let $F$, $G : \C \to \D$ be a functor between two categories with
+families $\C$ and $\D$ such that $\BOX_F$ (and $\BOX_G$) exists. Fix
+an $(F,G)$-dialgebra $(X, \inn)$.
+
+\section{Taking care of recursive calls with $\dmap_F$}
+
+The usual elimination rules (rather, the computation rules associated
+to them) refers to an operation $\dmap_F$ taking care of recursive
+calls (called \textit{mapIH} by Dybjer and
+Setzer~\cite{dybjersetzer1999finax}).
+
+In the generic setting, $\dmap_F$ should have ``type''
+\[
+\frac{P \in \Ty(X) \qquad g \in \Tm(G(X), \BOX_G(P))}
+     {\dmap_{F}(P, g) \in \Tm(F(X), \BOX_F(P))}
+\]
+and satisfy 
+\[
+\varphi_F \circ F(\cwfbar{f}) = \cwfbar{\dmap_F(P, \vvs\{\varphi_G \circ G(\cwfbar{f})\})} \enspace ,
+\]
+where $f \in \Tm(X, P)$.
+
+%REMARK: This looks hairy, is there a better way?
+
+\section{Generic elimination rules}
+\label{sec:generic-elim}
+
+The generic elimination rule for $(X, \inn)$ is
+%
+\begin{equation*}
+\frac{P \in \Ty(X) \qquad \step \in \Tm(\compr{F(X)}{\BOX_F(P)}, \BOX_G(P)\{\inn \circ \ps\})}{\elim(P, \step) \in \Tm(G(X), \BOX_G(P))}
+\label{eq:elim-general}
+\end{equation*}
+%
+with computation rule:
+%
+\[
+\elim(P, \step)\{\inn\} = \step\{ \cwfbar{\dmap_F(P, \elim(P, \step))} \}
+\]
+
+\begin{example}[The elimination rule in $\Set$ with $G = \id$]
+  The category $\Set$ can be extended to a category with families by
+  defining
+  \begin{align*}
+\Ty(\Gamma) & = \{ A\ \vert\ \text{$A : \Gamma \to \Set$ is a $\Gamma$-indexed family of (small) sets}\} \enspace ,\\
+A\{f\} & = A \circ f \in \Ty(\Delta) \qquad\qquad\quad \text{($f : \Delta \to \Gamma$)} \enspace,\\ 
+\Tm(\Gamma, A) & = (x : \Gamma) \to A(x) \enspace,\\
+a\{f\} &= a \circ f \in \Tm(\Delta, A\{f\}) \ \,\qquad \text{($f : \Delta \to \Gamma$)} \enspace,\\
+\compr{\Gamma}{A} & = (\Sigma x : \Gamma)A(x) \enspace,\\
+\ps(x, y) & = x , \qquad \vvs(x, y)  = y \enspace,\\
+\comprmor{f}{M}(x) & = (f(x), M(x)) \enspace .
+  \end{align*}
+%
+  Let $F : \Set \to \Set$ be an endofunctor and $\id : \Set \to \Set$
+  the identity functor. Then $\BOX_{\id}(P) = P$.  For $(F,
+  \id$)-dialgebras (i.e.\ ordinary $F$-algebras) the elimination rule
+  becomes (after currying $\step$)
+\begin{align*}
+\frac{P : X \to \Set \qquad
+      \step : (x : F(X)) \to  \BOX_F(P, x) \to P(\inn(x))}
+    {\elim(P, \step) : (x : X) \to P(x)}
+\label{eq:elim-set}
+\end{align*}
+ as we are used to. The computation rule becomes (for $x : F(X)$)
+\[
+\elim(P, \step, \inn(x)) = \step(x, \dmap_F(P, \elim(P, \step))) \enspace .
+\]
+%
+Notice how the condition on $\dmap_F$ boils down to $\varphi_F \circ
+F(\cwfbar{f}) = \cwfbar{\dmap_F(P, f)}$ when $G = \id$.
+\end{example}
+
+%TODO: Example induction-induction?
+
+\bibliographystyle{alpha}
+\bibliography{../../../references/biblio}
+
+\end{document}

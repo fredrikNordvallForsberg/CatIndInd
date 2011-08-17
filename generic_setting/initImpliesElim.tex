@@ -1,0 +1,84 @@
+\documentclass{article}
+
+\usepackage{amssymb}
+\usepackage{amsthm}
+\usepackage{amsmath}
+\usepackage{amstext}
+
+\usepackage[all]{xypic}
+\usepackage{stmaryrd}
+\usepackage{enumerate}
+\usepackage{mathtools}
+
+\usepackage{mathabx} % \widecheck
+
+\input header.inc
+
+\title{Init $\implies$ elim}
+
+
+\author{Fredrik Nordvall Forsberg}
+
+\begin{document}
+\maketitle
+
+\section{Init $\implies$ elim}
+
+\begin{theorem}
+  Let $F, G : \C \to \D$ with $\C$ and $\D$ CwFs. If $(X, \inn)$ is
+  initial in $\Dialg(F, G)$ then the elimination principle holds for
+  $(X, \inn)$.
+\end{theorem}
+\begin{proof}
+  Let $P \in \Ty(X)$ and $g \in \Tm(\compr{F(X)}{\BOX_F(P)},
+  \BOX_G(P)\{\inn \circ \ps\})$ be given. Then $h \coloneqq
+  \varphi_G^{-1} \circ \comprmor{\inn \circ p}{g} \circ \varphi_F
+  : F(\compr{X}{P}) \to G(\compr{X}{P})$, so by initiality, we get $\fold(h) : X \to
+  \compr{X}{P}$ such that $h \circ F(\fold(h)) = G(\fold(h)) \circ \inn$. Hence
+  the following diagram commutes:
+\[
+\xymatrix@-1pc{
+F(X) \ar^-{\inn}[rrr] \ar_-{F(\fold(h))}[d] & & & G(X) \ar^-{G(\fold(h))}[d] \\
+F(\compr{X}{P}) \ar_{\varphi_F}[dr] \ar_-{F(\ps)}[dd] & & & G(\compr{X}{P}) \ar@<-1ex>_-{\varphi_G}[dl] \ar^-{G(\ps)}[dd]\\
+ & F(X).\BOX_F(P) \ar^{\comprmor{\inn \circ p}{g}}[r] \ar^{\ps}[dl]& \compr{G(X)}{\BOX_G(P)} \ar@<-1ex>_-{\varphi_G^{-1}}[ur] \ar^{\ps}[dr] & \\
+F(X) \ar_-{\inn}[rrr] & & & G(X)
+}
+\]
+This means that $\ps \circ \fold(h)$ is a morphism in $\Dialg(F, G)$,
+so by initiality, we must have $\ps \circ \fold(h) = \id$. We now
+define $\elim(P, g) \coloneqq \vv{}\{\varphi_G \circ G(\fold(h))\}$.
+We then have
+\begin{align*}
+  \elim(p, G) &\in \Tm(G(X), \BOX_G(P)\{ \ps \circ \varphi_G \circ G(\fold(h))\}) \\
+              &=  \Tm(G(X), \BOX_G(P)\{ G(\ps) \circ G(\fold(h))\}) \\
+              &=  \Tm(G(X), \BOX_G(P)\{ G(\ps \circ \fold(h))\}) \\
+              &=  \Tm(G(X), \BOX_G(P)\{ G(\id)\}) \\
+              &=  \Tm(G(X), \BOX_G(P))
+\end{align*}
+as required.
+
+We must check that the computation rule $\elim(P, g)\{\inn\} =
+g\{\overline{\dmap_F(P, \elim(P, g))}\}$ holds. Note first that since
+$\ps \circ \fold(h) = \id$, we have
+\[
+\fold(h) = \langle \ps \circ \fold(h), \vv{}\{\fold(h)\}\rangle
+         = \langle \id , \vv{}\{\fold(h)\}\rangle
+         = \overline{\vv{}\{\fold(h)\}}
+\]
+Using this, we have
+\begin{align*}
+  \elim(P, g)\{\inn\} &=  \vv{}\{\varphi_G \circ G(\fold(h)) \circ \inn\} \\
+                      &=  \vv{}\{\varphi_G \circ \varphi_G^{-1} \circ \langle \inn \circ \ps, g\rangle \circ \varphi_F \circ F(\fold(h))\} \\
+                      &=  g\{\varphi_F \circ F(\fold(h))\} \\
+                      &=  g\{\varphi_F \circ F(\overline{\vv{}\{\fold(h)\}})\} \\
+                      &=  g\{\overline{\dmap_F(P, \vv{}\{\varphi_G \circ G(\overline{\vv{}\{\fold(h)\}})\})}\} \\
+                      &=  g\{\overline{\dmap_F(P, \vv{}\{\varphi_G \circ G(\fold(h))\})}\} \\
+                      &=  g\{\overline{\dmap_F(P, \elim(P, g))}\}
+\end{align*}
+as required.
+\end{proof}
+
+\bibliographystyle{alpha}
+\bibliography{../../../references/biblio}
+
+\end{document}
