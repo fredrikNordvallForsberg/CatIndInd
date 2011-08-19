@@ -1,0 +1,216 @@
+\documentclass{article}
+
+\usepackage{amssymb}
+\usepackage{amsthm}
+\usepackage{amsmath}
+\usepackage{amstext}
+
+\usepackage[all]{xypic}
+\usepackage{stmaryrd}
+\usepackage{enumerate}
+\usepackage{mathtools}
+
+\usepackage{mathabx} % \widecheck
+
+\input header.inc
+
+\title{Relationship to fibrational setting}
+
+
+\author{Fredrik Nordvall Forsberg}
+
+\begin{document}
+\maketitle
+
+\section{Fibrations}
+
+We will follow the notation from Ghani et.\
+al.\ ~\cite{ghaniJohannFumex2010fibind,ghaniJohannFumex2011indexedInd}.
+
+\begin{definition}[Cartesian morphism]
+  Let $U : \mathcal{E} \to \mathcal{B}$ be a functor. A morphism
+  $\cart{f}{P} : f^* P \to P$ is \emph{cartesian} over a morphism $f :
+  X \to Y$ in $\mathcal{B}$ if $U(\cart{f}{P}) = f$ and, for every $g
+  : Q \to P$ in $\mathcal{E}$ with $U(g) = f \circ v$ for some $v :
+  U(Q) \to X$, there exists a unique $h : Q \to f^* P$ in $\mathcal{E}$
+  such that $U(h) = v$ and $\cart{f}{P} \circ h = g$.
+\end{definition}
+
+The notations $\cart{f}{P}$ and $f^8 P$ are justified since the cartesian morphism
+over $f$ with codomain $U(P)$ is unique up to isomorphism.
+
+\begin{definition}[Fibration]
+  A functor $U : \mathcal{E} \to \mathcal{B}$ is a \emph{fibration} if
+  for every object $P$ of $\mathcal{E}$ and every morphism $f : X \to
+  U(P)$ there is a cartesian morphism $\cart{f}{P} : f^* P \to P$ in
+  $\mathcal{E}$ over $f$.
+\end{definition}
+
+A fibration $U : \mathcal{E} \to \mathcal{B}$ is \emph{split} if there
+is a choice of cartesian liftings which is strictly functorial, i.e.\
+if $\cart{\id}{} = \id$ and $\cart{(g \circ f)}{} = \cart{g}{} \circ
+\cart{f}{}$.
+%TODO: Induced renaming functors instead of $\cart{\cdot}{}$?
+
+\begin{definition}[Comprehension category]
+  A comprehension category is a functor $U : \mathcal{E} \to
+  \mathcal{B}^{\rightarrow}$ such that
+  \begin{itemize}
+  \item $\cod \circ U : \mathcal{E} \to \mathcal{B}$ is a fibration, and
+  \item $U(g)$ is a pullback square in $\mathcal{B}$ for every
+    cartesian morphism $g$ in $\mathcal{E}$ (with respect to the
+    fibration $\cod \circ U : \mathcal{E} \to \mathcal{B}$).
+  \end{itemize}
+\end{definition}
+
+A comprehension category $U$ is \emph{full} if $U : \mathcal{E} \to
+\mathcal{B}^{\rightarrow}$ is full and faithfull, and \emph{split}
+(\emph{cloven}) if $\cod \circ U : \mathcal{E} \to \mathcal{B}$ is
+split (cloven).
+
+Given a fibration $U : \mathcal{E} \to \mathcal{B}$, the terminal
+object functor $1 : \mathcal{B} \to \mathcal{E}$ (if it exists)
+assigns to each $X$ in $\mathcal{B}$ the terminal object in the fibre
+$\mathcal{E}_X$. It is automatically right adjoint to $U$.
+
+\begin{definition}[Comprehension category with unit]
+  A \emph{comprehension category with unit} is a fibration $U :
+  \mathcal{E} \to \mathcal{B}$ with a terminal object functor $1 :
+  \mathcal{B} \to \mathcal{E}$, which itself has a right adjoint
+  $\{\cdot\} : \mathcal{E} \to \mathcal{B}$:
+\[
+U \dashv 1 \dashv \{\cdot\}
+\]
+\end{definition}
+
+\section{Fibrations from CwFs}
+
+Exercise 10.4.6 in Jacobs' book \cite{jacobs1999catlogTT} constructs a
+split full comprehension category from a category with families. Even
+though Jacobs \cite[p.\ 618]{jacobs1999catlogTT} warns us that a
+comprehension category with a fibred terminal object is not
+automatically a comprehension category with unit, it is true in this
+instance.
+
+\begin{theorem} \label{thm:comprcat}
+  Given a category with families $\C$, one can construct a comprehension category $U :
+  \Ty_{\C} \to \C^{\rightarrow}$.
+\end{theorem}
+\begin{proof} \mbox{}
+  \begin{itemize}
+  \item The category $\Ty_{\C}$ has objects pairs $(\Gamma, \sigma)$
+    with $\Gamma \in \C$ and $\sigma \in \Ty(\Gamma)$, and morphisms
+    $(\Gamma, \sigma) \to (\Delta, \tau)$ are pairs $(f, M)$ with $f :
+    \Gamma \to \Delta$ in $\C$ and ${M \in \Tm(\compr{\Gamma}{\sigma},
+      \tau\{f \circ \ps\})}$.
+
+  \item Now define the comprehension category $U : \Ty_{\C} \to
+    \C^{\rightarrow}$ by
+  %
+  \begin{align*}
+  U(\Gamma, \sigma) &= (\p{\sigma} : \compr{\Gamma}{\sigma} \to \Gamma) \enspace ,\\
+  U(f, M) &= (\comprmor{f \circ \ps}{M}, f) \enspace .
+  \end{align*}
+  % 
+  One should check that $U(f, M)$ really is a morphism $\p{\sigma} \to
+  \p{\tau}$ in $\C^{\rightarrow}$, which is so since the following
+  diagram commutes:
+\[
+\xymatrix{
+\compr{\Gamma}{\sigma} \ar^-{\p{\sigma}}[r] \ar_-{\comprmor{f \circ \ps}{M}}[d] & \Gamma \ar^-{f}[d] \\
+\compr{\Delta}{\tau} \ar_-{\p{\tau}}[r] & \Delta
+}
+\]
+
+\item Next, we should check that $P \coloneqq \cod \circ U : \Ty_{\C} \to \C$
+  is a fibration. Explicitly, we have $P(\Gamma, \sigma) = \Gamma$,
+  $P(f, M) = f$. Given $(\Delta, \tau)$ in $\Ty_{\C}$ and $f : X \to
+  \Delta$ in $\C$, we construct the cartesian morphism
+  $\cart{f}{(\Delta, \tau)} \coloneqq (f, \vvs) : (X, \tau\{f\}) \to
+  (\Delta, \tau)$ over $f$. (That is, $f^* (\Delta, \tau) \coloneqq
+  (\Gamma, \tau\{f\})$.)  Suppose $(g, N) : (\Gamma', \sigma') \to
+  (\Delta, \tau)$ with $g = P(g, N) = f \circ u$ for some $u : \Gamma'
+  \to X$.  We define the mediating morphism $h : (\Gamma', \sigma')
+  \to (X, \tau\{f\})$ by $h = (u, N)$ (this typechecks since $g = f
+  \circ u$). Then $P(h) = u$ and
+\begin{align*}
+\cart{f}{(\Delta, \tau)} \circ h
+  & = (f, \vvs) \circ (u, N) \\
+  & = (f \circ u, \vvs\{\comprmor{u \circ \ps}{N}) \\
+  & = (g, N)
+\end{align*}
+as required. Uniqueness follows from $P(h) = u$ and the equation above.
+\item We now confirm that $U(\cart{f}{(\Delta, \tau)})$ is a pullback
+  square in $\C$. Suppose that we have $r : X \to
+  \compr{\Delta}{\tau}$ and $q : X \to \Gamma$ making the diagram commute:
+\[
+\xymatrix{
+X \ar_-{r}@/_2.5pc/[ddr] \ar^-{q}@/^2pc/[drr] & & \\
+& \compr{\Gamma}{\tau\{f\}} \ar^-{\p{\sigma}}[r] \ar_-{\comprmor{f \circ \ps}{\vvs}}[d] & \Gamma \ar^-{f}[d] \\
+& \compr{\Delta}{\tau} \ar_-{\p{\tau}}[r] & \Delta
+}
+\]
+%
+The unique mediating morphism is $\comprmor{q}{\vvs\{r\}} : X \to \compr{\Gamma}{\sigma}$.
+\item $U$ is full (i.e. $U : \Ty_{\C} \to \C^{\rightarrow}$ is full
+  and faithfull): If $$(\comprmor{f \circ \ps}{M}, f) = U(f, M) = U(g,
+  N) = (\comprmor{g \circ \ps}{N}, g),$$ then $f = g$ directly, and $M
+  = \vvs\{\comprmor{f \circ \ps}{M}\} = \vvs\{\comprmor{g \circ
+    \ps}{N}\} = N$ so that $(f, M) = (g, N)$. Hence $U$ is faithful.
+
+  For fullness, assume
+\[
+\xymatrix{
+\compr{\Gamma}{\sigma} \ar^-{\ps}[r] \ar_-{\alpha}[d] & \Gamma \ar^-{\beta}[d] \\
+\compr{\Delta}{\tau} \ar^-{\ps}[r] & \Delta 
+}
+\]
+Then $(\alpha, \beta) = (\comprmor{\ps \circ \alpha}{\vvs\{\alpha\}},
+\beta) = (\comprmor{\beta \circ \ps}{\vvs\{\alpha\}}, \beta) =
+U(\beta, \vvs\{\alpha\})$ so $U$ is full.
+
+\item $U$ is split (i.e.\ $\cod \circ U : \Ty_{\C} \to \C$ is split):
+  $\cart{\id}{} = (\id, \vvs) = \id_{\Ty_{\C}}$, and
+  \begin{align*}
+    \cart{(f \circ g)}{}
+ = (f \circ g, \vvs) 
+& = (f \circ g, \vvs\{\comprmor{g \circ \ps}{\vvs}\}) \\
+& = (f, \vvs) \circ (g, \vvs) 
+ = \cart{f}{} \circ \cart{g}{}.
+  \end{align*}
+\end{itemize}
+\end{proof}
+
+\begin{theorem}
+  The underlying fibration in the comprehension category in Theorem
+  \ref{thm:comprcat} is a comprehension category with unit if $\C$ has
+  constant families.
+\end{theorem}
+\begin{proof}
+  Define the terminal object functor $1 : \C \to \Ty_{\C}$ by
+  $1(\Gamma) = (\Gamma, \constFam{\one})$, $1(f) = (f, \vvs)$. We
+  should check the adjunctions $\cod \circ U \dashv 1 \dashv \dom
+  \circ U$. Let us concentrate on $1 \dashv \dom \circ U$. Explicitly,
+  $\{\cdot\} \coloneqq \dom \circ U$ sends an object $(\Gamma,
+  \sigma)$ to $\compr{\Gamma}{\sigma}$ and a morphism $(f, M)$ to
+  $\comprmor{f \circ \ps}{M}$. We want a natural isomorphism
+  $\Hom((\Gamma, \constFam{\one}), (\Delta, \tau)) = \Hom(1(\Gamma),
+  (\Delta, \tau)) \simeq \Hom(\Gamma, \{(\Delta, \tau)\}) =
+  \Hom(\Gamma, \compr{\Delta}{\tau})$.  This is achieved by sending
+  $(f, M) : (\Gamma, \constFam{\one}) \to (\Delta, \tau)$ to
+  $\comprmor{f}{M\{\comprmor{\id}{\cFlift{!_{\Delta}}}\}}$ and $g :
+  \Gamma \to \compr{\Delta}{\tau}$ to $(\ps \circ g, \vvs\{g \circ
+  \ps\})$ in the other direction. The naturality is straightforward to
+  check.
+
+
+
+\end{proof}
+
+
+%\section{Categories with attributes from fibrations}
+
+\bibliographystyle{alpha}
+\bibliography{../../../references/biblio}
+
+\end{document}

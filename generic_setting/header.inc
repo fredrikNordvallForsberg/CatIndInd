@@ -53,9 +53,8 @@
 \newcommand{\ps}{\ensuremath{\textbf{p}}}
 \newcommand{\vv}[1]{\ensuremath{\textbf{v}_{#1}}}
 \newcommand{\vvs}{\ensuremath{\textbf{v}}}
-\newcommand{\compr}[2]{\ensuremath{#1\cdot#2}}
+\newcommand{\compr}[2]{\ensuremath{{#1\cdot#2}}}
 %\newcommand{\compr}[2]{\ensuremath{#1\bf{;}\,#2}}
-%CwF defined thingies
 \newcommand{\comprmor}[2]{\ensuremath{\langle #1 , #2 \rangle}}
 \newcommand{\cwfbar}[1]{\ensuremath{\overline{#1}}}
 
@@ -78,7 +77,14 @@
 \newcommand{\RinvIm}[2]{\ensuremath{\text{R}^{#1}_{#2}}}
 
 \newcommand{\constFam}[1]{\ensuremath{\widecheck{#1}}}
-\newcommand{\cFhat}[1]{\ensuremath{\widehat{#1}}}
-\newcommand{\cFcheck}[1]{\ensuremath{\widecheck{#1}}}
+\newcommand{\cFlower}[1]{\ensuremath{\widehat{#1}}}
+\newcommand{\cFlift}[1]{\ensuremath{\widecheck{#1}}}
 %\newcommand{\Glift}[1]{\ensuremath{\ulcorner #1 \urcorner}}
 \newcommand{\Glift}[1]{\ensuremath{\wideparen{#1}}}
+
+%Fibrations
+\newcommand{\cart}[2]{\ensuremath{#1^{\S}_{#2}}}
+
+\newcommand{\cod}{\ensuremath{\text{cod}}}
+\newcommand{\dom}{\ensuremath{\text{dom}}}
+

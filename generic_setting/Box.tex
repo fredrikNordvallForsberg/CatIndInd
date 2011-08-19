@@ -112,10 +112,10 @@ $<$Motivation$>$.
     \constFam{\Gamma}_{\Delta}\{g\} = \constFam{\Gamma}_{B}
     $
     whenever $g : B \to \Delta$. (We will usually omit the subscript $\Delta$.)
-  \item An isomorphism $\cFhat{\cdot} : \Tm(B, \constFam{\Gamma}\{g\})
-    \to \Hom(B, \Gamma)$ with inverse $\cFcheck{\cdot} : \Hom(B,
-    \Gamma) \to \Tm(B, \constFam{\Gamma}\{g\})$ such that $\cFhat{M}
-    \circ g = \cFhat{M\{g\}}$.
+  \item An isomorphism $\cFlower{\cdot} : \Tm(B, \constFam{\Gamma})
+    \to \Hom(B, \Gamma)$ with inverse $\cFlift{\cdot} : \Hom(B,
+    \Gamma) \to \Tm(B, \constFam{\Gamma})$ such that $\cFlower{M}
+    \circ g = \cFlower{M\{g\}}$.
   \end{itemize}
 \end{definition}
 
@@ -129,7 +129,7 @@ each context is represented by a type. In detail:
   $\gamma_{\Gamma} : \Gamma \to \one_{\C}.\overline{\Gamma}$.
 \end{definition}
 
-Reassuringly, A CwF supports constant families if and only if it is democratic.
+Reassuringly, constant families and democracy are interderivable.
 
 \begin{proposition}
   A CwF $\C$ supports constant families if and only if it is democratic.
@@ -137,43 +137,43 @@ Reassuringly, A CwF supports constant families if and only if it is democratic.
 \begin{proof}
   ($\Rightarrow$) Assume $\C$ supports constant families. Define
   $\overline{\Gamma} \coloneqq \constFam{\Gamma}_{\one_{\C}}$ and
-  $\gamma_{\Gamma} = \langle !_{\Gamma}, \cFcheck{\id}\rangle : \Gamma
+  $\gamma_{\Gamma} = \langle !_{\Gamma}, \cFlift{\id}\rangle : \Gamma
   \to \one_{\C}.\overline{\Gamma}$ with inverse $\gamma_{\Gamma}^{-1}
-  = \cFhat{\vvs} : \one_{\C}.\overline{\Gamma} \to \Gamma$. Of course,
+  = \cFlower{\vvs} : \one_{\C}.\overline{\Gamma} \to \Gamma$. Of course,
   we have to check that $\gamma_{\Gamma}$ and $\gamma_{\Gamma}^{-1}$
   are really inverse to each other:
   \begin{align*}
     \gamma_{\Gamma}^{-1} \circ \gamma_{\Gamma}
- =  \cFhat{\vvs} \circ \langle !_{\Gamma}, \cFcheck{\id}\rangle 
- =  \cFhat{\vvs\{\langle !_{\Gamma}, \cFcheck{}\!\id\rangle\}}
- =  \cFhat{\cFcheck{\id}}
+ =  \cFlower{\vvs} \circ \langle !_{\Gamma}, \cFlift{\id}\rangle 
+ =  \cFlower{\vvs\{\langle !_{\Gamma}, \cFlift{}\!\id\rangle\}}
+ =  \cFlower{\cFlift{\id}}
  =  \id
   \end{align*}
   \begin{align*}
     \gamma_{\Gamma} \circ \gamma_{\Gamma}^{-1}
- =  \langle !_{\Gamma}, \cFcheck{\id}\rangle  \circ \cFhat{\vvs} 
- =  \langle !_{\Gamma} \circ \cFhat{\vvs} , \cFcheck{\id}\{\cFhat{\vvs} \}\rangle 
- =  \langle !_{\one_{\C}.\constFam{\Gamma}} , \cFcheck{\id \circ \cFhat{\vvs}} \rangle 
- =  \langle \ps , \cFcheck{\cFhat{\vvs}} \rangle 
+ =  \langle !_{\Gamma}, \cFlift{\id}\rangle  \circ \cFlower{\vvs} 
+ =  \langle !_{\Gamma} \circ \cFlower{\vvs} , \cFlift{\id}\{\cFlower{\vvs} \}\rangle 
+ =  \langle !_{\one_{\C}.\constFam{\Gamma}} , \cFlift{\id \circ \cFlower{\vvs}} \rangle 
+ =  \langle \ps , \cFlift{\cFlower{\vvs}} \rangle 
  =  \id
   \end{align*}
   Here, we use that $\p{\constFam{\Gamma}} :
   \one_{\C}.\constFam{\Gamma} \to \one_{\C}$ must be equal to
   $!_{\one_{\C}.\constFam{\Gamma}} : \one_{\C}.\constFam{\Gamma} \to
   \one_{\C}$ by the uniqueness of $!_{\one_{\C}.\constFam{\Gamma}}$,
-  and that $m\{g\} = \cFcheck{\hat{}\!\!\!m \circ g}$ since
-  $\cFhat{m\{g\}} = \hat{m} \circ g$.
+  and that $m\{g\} = \cFlift{\hat{}\!\!\!m \circ g}$ since
+  $\cFlower{m\{g\}} = \hat{m} \circ g$.
 
   ($\Leftarrow$) Assume $\C$ is democratic. Define
   $\constFam{\Gamma}_{\Delta} \coloneqq
   \overline{\Gamma}\{!_{\Delta}\}$. Then
   \[\constFam{\Gamma}_{\Delta}\{g\} = \overline{\Gamma}\{!_{\Delta}
   \circ g\} = \overline{\Gamma}\{!_{B}\} = \constFam{\Gamma}_{B}\] by
-  the uniqueness of $!_{B}$. Define $\cFhat{M} \coloneqq
-  \gamma_{\Gamma}^{-1} \circ \langle !_{B}, M\rangle$ and $\cFcheck{f}
+  the uniqueness of $!_{B}$. Define $\cFlower{M} \coloneqq
+  \gamma_{\Gamma}^{-1} \circ \langle !_{B}, M\rangle$ and $\cFlift{f}
   \coloneqq \vvs\{\gamma_{\Gamma} \circ f\}$. Then
   \begin{align*}
-    \cFcheck{\cFhat{M}}
+    \cFlift{\cFlower{M}}
   = \vvs\{\gamma_{\Gamma} \circ \gamma_{\Gamma}^{-1} \circ \langle !_{B}, M\rangle\}
   = \vvs\{\langle !_{B}, M\rangle\}
   = M
@@ -181,7 +181,7 @@ Reassuringly, A CwF supports constant families if and only if it is democratic.
   and using that $\ps \circ \gamma_{\Gamma} \circ f : B \to \one_{\C}$
   is equal to $!_{B}$ for every $f : B \to \Gamma$, we have
   \begin{align*}
-    \cFhat{\cFcheck{f}}
+    \cFlower{\cFlift{f}}
   &= \gamma_{\Gamma}^{-1} \circ \langle !_{B}, \vvs\{\gamma_{\Gamma} \circ f\}\rangle
    = \gamma_{\Gamma}^{-1} \circ \langle \ps \circ \gamma_{\Gamma} \circ f, \vvs\{\gamma_{\Gamma} \circ f\}\rangle \\
   &= \gamma_{\Gamma}^{-1} \circ \langle \ps, \vvs\rangle \circ \gamma_{\Gamma} \circ f 
@@ -190,11 +190,11 @@ Reassuringly, A CwF supports constant families if and only if it is democratic.
   \end{align*}
 Finally, we have
 \begin{align*}
-    \cFhat{M} \circ g
+    \cFlower{M} \circ g
   &= \gamma_{\Gamma}^{-1} \circ \langle !_{B}, M\rangle \circ g
    = \gamma_{\Gamma}^{-1} \circ \langle !_{B} \circ g, M\{g\}\rangle  
    = \gamma_{\Gamma}^{-1} \circ \langle !_{\Delta}, M\{g\}\rangle \\
-  &= \cFhat{M\{g\}} \enspace .
+  &= \cFlower{M\{g\}} \enspace .
 \end{align*}
 
 \end{proof}
