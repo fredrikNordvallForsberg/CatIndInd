@@ -202,13 +202,93 @@ U(\beta, \vvs\{\alpha\})$ so $U$ is full.
   \Gamma \to \compr{\Delta}{\tau}$ to $(\ps \circ g, \vvs\{g \circ
   \ps\})$ in the other direction. The naturality is straightforward to
   check.
+\end{proof}
 
+\section{CwFs from fibrations}
 
+It is not surprising that comprehension categories give rise to models
+of type theory -- after all, that is why they were introduced by
+Jacobs! Given a comprehension category with unit, we will construct a
+Category with Attributes. It is then well-known (see e.g.\
+Hofmann~\cite[Sect.\ 3.2]{hofmann1997syntaxsemantics}) how to make a
+CwF from the CwA by defining the terms of type $\sigma$ to be the
+sections of $\p{\sigma}$ (i.e.\ $f : \Gamma \to
+\compr{\Gamma}{\sigma}$ such that $\p{\sigma} \circ f =
+\id_{\Gamma}$).
 
+\begin{theorem}
+  Given a comprehension category with units $U : \mathcal{E} \to
+  \mathcal{B}$, with adjunctions $U \dashv 1 \dashv \{ \cdot\}$, say,
+  one can construct a CwA.
+\end{theorem}
+\begin{proof}
+  Define $\Ty(\Gamma) \coloneqq \mathcal{E}_{\Gamma} $, the fibre over
+  $\Gamma$. Substitution is taken care of by reindexing: $\sigma\{f\}
+  \coloneqq f^* \sigma$. The functor laws are satisfied since $f^* :
+  \mathcal{E}_\Delta \to \mathcal{E}_{\Gamma}$ is a functor. Further
+  define $\compr{\Gamma}{\sigma} \coloneqq \{ \sigma \}$ with
+  projection $U(\epsilon_{\sigma}) : \{\sigma\} \to \Gamma$, where
+  $\epsilon : 1\{\cdot\} \to \id$ is the counit of the
+  adjunction. This is typecorrect, since $U1 = \id$ and $U(\sigma) =
+  \Gamma$.
+  
+  Finally, we have to check that
+  \[
+  \xymatrix{
+    \{f^* \sigma\} \ar^-{\{\cart{f}{\sigma}\}}[r] \ar_-{U(\epsilon_{f^* \sigma})}[d] & \{ \sigma\} \ar^-{U(\epsilon_{\sigma})}[d] \\
+    B \ar_-{f}[r] & \Gamma
+  }
+  \]
+  is a pullback square. But this is exactly Jacobs verification that
+  every CCU induces a comprehension category \cite[p.\
+  616]{jacobs1999catlogTT}. We repeat the argument here. First, the
+  square commutes since it is $U$ applied to the naturality square for
+  $\epsilon$. Suppose $u : Q \to B$ and $v : Q \to \{ \sigma\}$ are
+  given such that $f \circ u = U(\epsilon_{\sigma}) \circ v$. Via the
+  Hom-set isomorphism, we have a transpose $\varphi(v) =
+  \epsilon_{\sigma} \circ 1(v) : 1(Q) \to \sigma$ such that
+  $U(\varphi(v)) = U(\epsilon_{\sigma}) \circ U(1(v)) =
+  U(\epsilon_{\sigma}) \circ v = f \circ u$. Since $\cart{f}{\sigma}$
+  is cartesian, this gives a morphism $h : 1(Q) \to f^* \sigma$ over
+  $u$ such that $\cart{f}{\sigma} \circ h = \varphi(v)$. Now
+  $\varphi^{-1}(h) = \{h\} \circ \eta_{Q} : Q \to \{f^* \sigma\}$ is
+  the required mediating morphism, since we have
+  \begin{align*}
+    \{\cart{f}{\sigma}\} \circ \varphi^{-1}(h)
+ &= \{\cart{f}{\sigma} \circ h \} \circ \eta_Q \\ 
+ &= \{\varphi(v) \} \circ \eta_Q \\
+ &= \varphi^{-1}(\varphi(v)) = v
+  \end{align*}
+  and
+  \begin{align*}
+    U(\epsilon_{f^* \sigma}) \circ \varphi^{-1}(h)
+ &= U(\epsilon_{f^* \sigma}) \circ \{h\} \circ \eta_Q \\
+ &= U(h) \circ U(\epsilon_{1(Q)}) \circ \eta_Q \qquad \text{(by naturality)}\\
+ &= u \circ U(\epsilon_{1(Q)}) \circ \eta_Q\\
+ &= u \circ U(\epsilon_{1(Q)}) \circ U(1(\eta_Q)) \quad \text{($U1 = \id$)}\\
+ &= u \circ U(\epsilon_{1(Q)} \circ 1(\eta_Q))\\
+ &= u \circ U(\id) = u \enspace .
+  \end{align*}
+  For uniqueness, assume there is $h' : Q \to \{f^* \sigma\}$ with
+  $U(\epsilon_{f^* \sigma}) \circ h' = u$ and $\{\cart{f}{\sigma}\}
+  \circ h' = v$. Then $\varphi(h') : 1(Q) \to f^* \sigma$, and
+  $\varphi(h')$ is over $u$, since $U(\varphi(h')) = U(\epsilon_{f^*
+    \sigma} \circ 1(h')) = U(\epsilon_{f^* \sigma}) \circ h' =
+  u$. Furthermore, we have
+  \begin{align*}
+    \varphi(\{\cart{f}{\sigma}\} \circ h')
+ &= \epsilon_{\sigma} \circ 1(\{\cart{f}{\sigma}\} \circ h') \\
+ &= \epsilon_{\sigma} \circ 1(\{\cart{f}{\sigma}\}) \circ 1(h') \\
+ &= \cart{f}{\sigma} \circ \epsilon_{f^* \sigma} \circ 1(h')
+ = \cart{f}{\sigma} \circ \varphi(h')
+  \end{align*}
+  so that $\cart{f}{\sigma} \circ \varphi(h') =
+  \varphi(\{\cart{f}{\sigma}\} \circ h') = \varphi(v)$. Thus, by the
+  uniqueness of cartesian liftings, we must have $h = \varphi(h')$ so
+  that $\varphi^{-1}(h) = h'$ as required.
 \end{proof}
 
 
-%\section{Categories with attributes from fibrations}
 
 \bibliographystyle{alpha}
 \bibliography{../../../references/biblio}
